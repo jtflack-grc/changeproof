@@ -1,0 +1,1295 @@
+[
+  {
+    "id": "rpgle-orderpro-rpgle-ordprc-rpgle-comment-3",
+    "artifact": "orderpro/rpgle/ORDPRC.rpgle",
+    "artifactType": "RPGLE",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "TARGET_VALIDATION_REQUIRED",
+    "validationTarget": "IBM_I",
+    "symbol": "comment",
+    "finding": "comment 'comment' = Handles order cutoff validation and inventory allocation. — keywords: cutoff",
+    "lineRef": "orderpro/rpgle/ORDPRC.rpgle:5",
+    "keywords": [
+      "cutoff"
+    ],
+    "relevanceScore": 1
+  },
+  {
+    "id": "rpgle-orderpro-rpgle-ordprc-rpgle-comment-4",
+    "artifact": "orderpro/rpgle/ORDPRC.rpgle",
+    "artifactType": "RPGLE",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "TARGET_VALIDATION_REQUIRED",
+    "validationTarget": "IBM_I",
+    "symbol": "comment",
+    "finding": "comment 'comment' = Cutoff per CHG-0042 (supersedes spec ORD-001 dated 2019-03-15) — keywords: cutoff",
+    "lineRef": "orderpro/rpgle/ORDPRC.rpgle:7",
+    "keywords": [
+      "cutoff"
+    ],
+    "relevanceScore": 1
+  },
+  {
+    "id": "rpgle-orderpro-rpgle-ordprc-rpgle-comment-7",
+    "artifact": "orderpro/rpgle/ORDPRC.rpgle",
+    "artifactType": "RPGLE",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "TARGET_VALIDATION_REQUIRED",
+    "validationTarget": "IBM_I",
+    "symbol": "comment",
+    "finding": "comment 'comment' = Prototype: Check Order Cutoff — keywords: cutoff",
+    "lineRef": "orderpro/rpgle/ORDPRC.rpgle:13",
+    "keywords": [
+      "cutoff"
+    ],
+    "relevanceScore": 1
+  },
+  {
+    "id": "rpgle-orderpro-rpgle-ordprc-rpgle-comment-10",
+    "artifact": "orderpro/rpgle/ORDPRC.rpgle",
+    "artifactType": "RPGLE",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "TARGET_VALIDATION_REQUIRED",
+    "validationTarget": "IBM_I",
+    "symbol": "comment",
+    "finding": "comment 'comment' = Procedure: CHKORDCTF - Check Order Cutoff Time — keywords: cutoff",
+    "lineRef": "orderpro/rpgle/ORDPRC.rpgle:27",
+    "keywords": [
+      "cutoff"
+    ],
+    "relevanceScore": 1
+  },
+  {
+    "id": "rpgle-orderpro-rpgle-ordprc-rpgle-comment-12",
+    "artifact": "orderpro/rpgle/ORDPRC.rpgle",
+    "artifactType": "RPGLE",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "TARGET_VALIDATION_REQUIRED",
+    "validationTarget": "IBM_I",
+    "symbol": "comment",
+    "finding": "comment 'comment' = Returns *OFF if the cutoff time has passed. — keywords: cutoff",
+    "lineRef": "orderpro/rpgle/ORDPRC.rpgle:29",
+    "keywords": [
+      "cutoff"
+    ],
+    "relevanceScore": 1
+  },
+  {
+    "id": "rpgle-orderpro-rpgle-ordprc-rpgle-comment-13",
+    "artifact": "orderpro/rpgle/ORDPRC.rpgle",
+    "artifactType": "RPGLE",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "TARGET_VALIDATION_REQUIRED",
+    "validationTarget": "IBM_I",
+    "symbol": "comment",
+    "finding": "comment 'comment' = Cutoff rules (CHG-0042): — keywords: cutoff",
+    "lineRef": "orderpro/rpgle/ORDPRC.rpgle:31",
+    "keywords": [
+      "cutoff"
+    ],
+    "relevanceScore": 1
+  },
+  {
+    "id": "rpgle-orderpro-rpgle-ordprc-rpgle-comment-14",
+    "artifact": "orderpro/rpgle/ORDPRC.rpgle",
+    "artifactType": "RPGLE",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "TARGET_VALIDATION_REQUIRED",
+    "validationTarget": "IBM_I",
+    "symbol": "comment",
+    "finding": "comment 'comment' = Preferred customers (CUSCLS = 'P'): expedited cutoff = 18:00:00 — keywords: cutoff, preferred, expedited, CUSCLS, P",
+    "lineRef": "orderpro/rpgle/ORDPRC.rpgle:32",
+    "keywords": [
+      "cutoff",
+      "preferred",
+      "expedited",
+      "CUSCLS",
+      "P"
+    ],
+    "relevanceScore": 5
+  },
+  {
+    "id": "rpgle-orderpro-rpgle-ordprc-rpgle-comment-15",
+    "artifact": "orderpro/rpgle/ORDPRC.rpgle",
+    "artifactType": "RPGLE",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "TARGET_VALIDATION_REQUIRED",
+    "validationTarget": "IBM_I",
+    "symbol": "comment",
+    "finding": "comment 'comment' = Standard customers  (CUSCLS = 'S'): expedited cutoff = 16:00:00 — keywords: cutoff, expedited, CUSCLS",
+    "lineRef": "orderpro/rpgle/ORDPRC.rpgle:33",
+    "keywords": [
+      "cutoff",
+      "expedited",
+      "CUSCLS"
+    ],
+    "relevanceScore": 3
+  },
+  {
+    "id": "rpgle-orderpro-rpgle-ordprc-rpgle-comment-16",
+    "artifact": "orderpro/rpgle/ORDPRC.rpgle",
+    "artifactType": "RPGLE",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "TARGET_VALIDATION_REQUIRED",
+    "validationTarget": "IBM_I",
+    "symbol": "comment",
+    "finding": "comment 'comment' = Standard orders: no intraday cutoff restriction. — keywords: cutoff",
+    "lineRef": "orderpro/rpgle/ORDPRC.rpgle:34",
+    "keywords": [
+      "cutoff"
+    ],
+    "relevanceScore": 1
+  },
+  {
+    "id": "rpgle-orderpro-rpgle-ordprc-rpgle-comment-21",
+    "artifact": "orderpro/rpgle/ORDPRC.rpgle",
+    "artifactType": "RPGLE",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "TARGET_VALIDATION_REQUIRED",
+    "validationTarget": "IBM_I",
+    "symbol": "comment",
+    "finding": "comment 'comment' = Only expedited orders are subject to the cutoff window — keywords: cutoff, expedited",
+    "lineRef": "orderpro/rpgle/ORDPRC.rpgle:46",
+    "keywords": [
+      "cutoff",
+      "expedited"
+    ],
+    "relevanceScore": 2
+  },
+  {
+    "id": "rpgle-orderpro-rpgle-ordprc-rpgle-e-22",
+    "artifact": "orderpro/rpgle/ORDPRC.rpgle",
+    "artifactType": "RPGLE",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "TARGET_VALIDATION_REQUIRED",
+    "validationTarget": "IBM_I",
+    "symbol": "e",
+    "finding": "condition literal 'e' = 'e' — keywords: E",
+    "lineRef": "orderpro/rpgle/ORDPRC.rpgle:47",
+    "keywords": [
+      "E"
+    ],
+    "relevanceScore": 1
+  },
+  {
+    "id": "rpgle-orderpro-rpgle-ordprc-rpgle-comment-23",
+    "artifact": "orderpro/rpgle/ORDPRC.rpgle",
+    "artifactType": "RPGLE",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "TARGET_VALIDATION_REQUIRED",
+    "validationTarget": "IBM_I",
+    "symbol": "comment",
+    "finding": "comment 'comment' = CHG-0042: Preferred customers have extended cutoff of 18:00:00 — keywords: cutoff, preferred",
+    "lineRef": "orderpro/rpgle/ORDPRC.rpgle:48",
+    "keywords": [
+      "cutoff",
+      "preferred"
+    ],
+    "relevanceScore": 2
+  },
+  {
+    "id": "rpgle-orderpro-rpgle-ordprc-rpgle-p-24",
+    "artifact": "orderpro/rpgle/ORDPRC.rpgle",
+    "artifactType": "RPGLE",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "TARGET_VALIDATION_REQUIRED",
+    "validationTarget": "IBM_I",
+    "symbol": "p",
+    "finding": "condition literal 'p' = 'p' — keywords: P",
+    "lineRef": "orderpro/rpgle/ORDPRC.rpgle:49",
+    "keywords": [
+      "P"
+    ],
+    "relevanceScore": 1
+  },
+  {
+    "id": "rpgle-orderpro-rpgle-ordprc-rpgle-comment-25",
+    "artifact": "orderpro/rpgle/ORDPRC.rpgle",
+    "artifactType": "RPGLE",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "TARGET_VALIDATION_REQUIRED",
+    "validationTarget": "IBM_I",
+    "symbol": "comment",
+    "finding": "comment 'comment' = Preferred customer cutoff: 18:00:00 — keywords: cutoff, preferred",
+    "lineRef": "orderpro/rpgle/ORDPRC.rpgle:50",
+    "keywords": [
+      "cutoff",
+      "preferred"
+    ],
+    "relevanceScore": 2
+  },
+  {
+    "id": "rpgle-orderpro-rpgle-ordprc-rpgle-comment-26",
+    "artifact": "orderpro/rpgle/ORDPRC.rpgle",
+    "artifactType": "RPGLE",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "TARGET_VALIDATION_REQUIRED",
+    "validationTarget": "IBM_I",
+    "symbol": "comment",
+    "finding": "comment 'comment' = Standard customer cutoff: 16:00:00 — keywords: cutoff",
+    "lineRef": "orderpro/rpgle/ORDPRC.rpgle:52",
+    "keywords": [
+      "cutoff"
+    ],
+    "relevanceScore": 1
+  },
+  {
+    "id": "rpgle-orderpro-rpgle-ordprc-rpgle-comment-27",
+    "artifact": "orderpro/rpgle/ORDPRC.rpgle",
+    "artifactType": "RPGLE",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "TARGET_VALIDATION_REQUIRED",
+    "validationTarget": "IBM_I",
+    "symbol": "comment",
+    "finding": "comment 'comment' = Cutoff exceeded - order rejected — keywords: cutoff",
+    "lineRef": "orderpro/rpgle/ORDPRC.rpgle:58",
+    "keywords": [
+      "cutoff"
+    ],
+    "relevanceScore": 1
+  },
+  {
+    "id": "clle-orderpro-clle-fulmnt-clle-comment-1",
+    "artifact": "orderpro/clle/FULMNT.clle",
+    "artifactType": "CLLE",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "TARGET_VALIDATION_REQUIRED",
+    "validationTarget": "IBM_I",
+    "symbol": "comment",
+    "finding": "comment 'comment' = FULMNT - Fulfillment Batch Job — keywords: batch, fulfillment",
+    "lineRef": "orderpro/clle/FULMNT.clle:2",
+    "keywords": [
+      "batch",
+      "fulfillment"
+    ],
+    "relevanceScore": 2
+  },
+  {
+    "id": "clle-orderpro-clle-fulmnt-clle-comment-4",
+    "artifact": "orderpro/clle/FULMNT.clle",
+    "artifactType": "CLLE",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "TARGET_VALIDATION_REQUIRED",
+    "validationTarget": "IBM_I",
+    "symbol": "comment",
+    "finding": "comment 'comment' = Processes open expedited orders at end of business day. — keywords: expedited",
+    "lineRef": "orderpro/clle/FULMNT.clle:5",
+    "keywords": [
+      "expedited"
+    ],
+    "relevanceScore": 1
+  },
+  {
+    "id": "clle-orderpro-clle-fulmnt-clle-comment-7",
+    "artifact": "orderpro/clle/FULMNT.clle",
+    "artifactType": "CLLE",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "TARGET_VALIDATION_REQUIRED",
+    "validationTarget": "IBM_I",
+    "symbol": "comment",
+    "finding": "comment 'comment' = CHG-0042: Batch rescheduled to 18:15 to avoid collision with — keywords: batch",
+    "lineRef": "orderpro/clle/FULMNT.clle:8",
+    "keywords": [
+      "batch"
+    ],
+    "relevanceScore": 1
+  },
+  {
+    "id": "clle-orderpro-clle-fulmnt-clle-comment-8",
+    "artifact": "orderpro/clle/FULMNT.clle",
+    "artifactType": "CLLE",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "TARGET_VALIDATION_REQUIRED",
+    "validationTarget": "IBM_I",
+    "symbol": "comment",
+    "finding": "comment 'comment' = the new 18:00 Preferred customer expedited order cutoff. — keywords: cutoff, preferred, expedited",
+    "lineRef": "orderpro/clle/FULMNT.clle:9",
+    "keywords": [
+      "cutoff",
+      "preferred",
+      "expedited"
+    ],
+    "relevanceScore": 3
+  },
+  {
+    "id": "clle-orderpro-clle-fulmnt-clle-comment-10",
+    "artifact": "orderpro/clle/FULMNT.clle",
+    "artifactType": "CLLE",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "TARGET_VALIDATION_REQUIRED",
+    "validationTarget": "IBM_I",
+    "symbol": "comment",
+    "finding": "comment 'comment' = the batch run executes. — keywords: batch",
+    "lineRef": "orderpro/clle/FULMNT.clle:11",
+    "keywords": [
+      "batch"
+    ],
+    "relevanceScore": 1
+  },
+  {
+    "id": "clle-orderpro-clle-fulmnt-clle-comment-15",
+    "artifact": "orderpro/clle/FULMNT.clle",
+    "artifactType": "CLLE",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "TARGET_VALIDATION_REQUIRED",
+    "validationTarget": "IBM_I",
+    "symbol": "comment",
+    "finding": "comment 'comment' = Read all order header records and process open expedited orders — keywords: expedited",
+    "lineRef": "orderpro/clle/FULMNT.clle:31",
+    "keywords": [
+      "expedited"
+    ],
+    "relevanceScore": 1
+  },
+  {
+    "id": "clle-orderpro-clle-fulmnt-clle-comment-16",
+    "artifact": "orderpro/clle/FULMNT.clle",
+    "artifactType": "CLLE",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "TARGET_VALIDATION_REQUIRED",
+    "validationTarget": "IBM_I",
+    "symbol": "comment",
+    "finding": "comment 'comment' = Process only Open Expedited orders — keywords: expedited",
+    "lineRef": "orderpro/clle/FULMNT.clle:35",
+    "keywords": [
+      "expedited"
+    ],
+    "relevanceScore": 1
+  },
+  {
+    "id": "clle-orderpro-clle-fulmnt-clle-orderpro-ordprc-17",
+    "artifact": "orderpro/clle/FULMNT.clle",
+    "artifactType": "CLLE",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "TARGET_VALIDATION_REQUIRED",
+    "validationTarget": "IBM_I",
+    "symbol": "ORDERPRO/ORDPRC",
+    "finding": "call 'ORDERPRO/ORDPRC' — keywords: ORDTYP",
+    "lineRef": "orderpro/clle/FULMNT.clle:39",
+    "keywords": [
+      "ORDTYP"
+    ],
+    "relevanceScore": 1
+  },
+  {
+    "id": "clle-orderpro-clle-fulmnt-clle-comment-20",
+    "artifact": "orderpro/clle/FULMNT.clle",
+    "artifactType": "CLLE",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "TARGET_VALIDATION_REQUIRED",
+    "validationTarget": "IBM_I",
+    "symbol": "comment",
+    "finding": "comment 'comment' = Job submission — schedule next run — keywords: schedule",
+    "lineRef": "orderpro/clle/FULMNT.clle:66",
+    "keywords": [
+      "schedule"
+    ],
+    "relevanceScore": 1
+  },
+  {
+    "id": "clle-orderpro-clle-fulmnt-clle-comment-21",
+    "artifact": "orderpro/clle/FULMNT.clle",
+    "artifactType": "CLLE",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "TARGET_VALIDATION_REQUIRED",
+    "validationTarget": "IBM_I",
+    "symbol": "comment",
+    "finding": "comment 'comment' = CHG-0042: moved from 18:00 to 18:15 to ensure all Preferred — keywords: preferred",
+    "lineRef": "orderpro/clle/FULMNT.clle:67",
+    "keywords": [
+      "preferred"
+    ],
+    "relevanceScore": 1
+  },
+  {
+    "id": "clle-orderpro-clle-fulmnt-clle-comment-22",
+    "artifact": "orderpro/clle/FULMNT.clle",
+    "artifactType": "CLLE",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "TARGET_VALIDATION_REQUIRED",
+    "validationTarget": "IBM_I",
+    "symbol": "comment",
+    "finding": "comment 'comment' = customer expedited orders (cutoff 18:00) are captured before — keywords: cutoff, expedited",
+    "lineRef": "orderpro/clle/FULMNT.clle:68",
+    "keywords": [
+      "cutoff",
+      "expedited"
+    ],
+    "relevanceScore": 2
+  },
+  {
+    "id": "clle-orderpro-clle-fulmnt-clle-comment-23",
+    "artifact": "orderpro/clle/FULMNT.clle",
+    "artifactType": "CLLE",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "TARGET_VALIDATION_REQUIRED",
+    "validationTarget": "IBM_I",
+    "symbol": "comment",
+    "finding": "comment 'comment' = the batch run executes. — keywords: batch",
+    "lineRef": "orderpro/clle/FULMNT.clle:69",
+    "keywords": [
+      "batch"
+    ],
+    "relevanceScore": 1
+  },
+  {
+    "id": "clle-orderpro-clle-fulmnt-clle-orderpro-fulmnt-26",
+    "artifact": "orderpro/clle/FULMNT.clle",
+    "artifactType": "CLLE",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "TARGET_VALIDATION_REQUIRED",
+    "validationTarget": "IBM_I",
+    "symbol": "ORDERPRO/FULMNT",
+    "finding": "call 'ORDERPRO/FULMNT' — keywords: cutoff, preferred, SCDTIME",
+    "lineRef": "orderpro/clle/FULMNT.clle:73",
+    "keywords": [
+      "cutoff",
+      "preferred",
+      "SCDTIME"
+    ],
+    "relevanceScore": 3
+  },
+  {
+    "id": "dds-orderpro-dds-cusmas-dds-cuscls-5",
+    "artifact": "orderpro/dds/CUSMAS.dds",
+    "artifactType": "DDS",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "RESOLVED",
+    "validationTarget": "LOCAL",
+    "symbol": "CUSCLS",
+    "finding": "field 'CUSCLS' = Customer Class S=Standard P=Preferred — keywords: preferred, CUSCLS",
+    "lineRef": "orderpro/dds/CUSMAS.dds:6",
+    "keywords": [
+      "preferred",
+      "CUSCLS"
+    ],
+    "relevanceScore": 2
+  },
+  {
+    "id": "dds-orderpro-dds-ordhed-dds-ordtyp-6",
+    "artifact": "orderpro/dds/ORDHED.dds",
+    "artifactType": "DDS",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "RESOLVED",
+    "validationTarget": "LOCAL",
+    "symbol": "ORDTYP",
+    "finding": "field 'ORDTYP' = Order Type E=Expedited S=Standard — keywords: expedited, ORDTYP",
+    "lineRef": "orderpro/dds/ORDHED.dds:7",
+    "keywords": [
+      "expedited",
+      "ORDTYP"
+    ],
+    "relevanceScore": 2
+  },
+  {
+    "id": "db2sql-orderpro-sql-db2-cusmas-sql-cuscls-10",
+    "artifact": "orderpro/sql/db2/CUSMAS.sql",
+    "artifactType": "DB2SQL",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "TARGET_VALIDATION_REQUIRED",
+    "validationTarget": "IBM_I",
+    "symbol": "CUSCLS",
+    "finding": "column 'CUSCLS' = CHAR — keywords: CUSCLS",
+    "lineRef": "orderpro/sql/db2/CUSMAS.sql:11",
+    "keywords": [
+      "CUSCLS"
+    ],
+    "relevanceScore": 1
+  },
+  {
+    "id": "db2sql-orderpro-sql-db2-cusmas-sql-cuscls-18",
+    "artifact": "orderpro/sql/db2/CUSMAS.sql",
+    "artifactType": "DB2SQL",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "TARGET_VALIDATION_REQUIRED",
+    "validationTarget": "IBM_I",
+    "symbol": "CUSCLS",
+    "finding": "column 'CUSCLS' = TEXT — keywords: preferred, CUSCLS",
+    "lineRef": "orderpro/sql/db2/CUSMAS.sql:24",
+    "keywords": [
+      "preferred",
+      "CUSCLS"
+    ],
+    "relevanceScore": 2
+  },
+  {
+    "id": "db2sql-orderpro-sql-db2-cusmas-sql-comment-24",
+    "artifact": "orderpro/sql/db2/CUSMAS.sql",
+    "artifactType": "DB2SQL",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "TARGET_VALIDATION_REQUIRED",
+    "validationTarget": "IBM_I",
+    "symbol": "comment",
+    "finding": "comment 'comment' = CUSCLS label updated per CHG-0042: P=Preferred replaces legacy B=Business designation. — keywords: preferred, CUSCLS",
+    "lineRef": "orderpro/sql/db2/CUSMAS.sql:28",
+    "keywords": [
+      "preferred",
+      "CUSCLS"
+    ],
+    "relevanceScore": 2
+  },
+  {
+    "id": "db2sql-orderpro-sql-db2-ordhed-sql-ordtyp-10",
+    "artifact": "orderpro/sql/db2/ORDHED.sql",
+    "artifactType": "DB2SQL",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "TARGET_VALIDATION_REQUIRED",
+    "validationTarget": "IBM_I",
+    "symbol": "ORDTYP",
+    "finding": "column 'ORDTYP' = CHAR — keywords: ORDTYP",
+    "lineRef": "orderpro/sql/db2/ORDHED.sql:11",
+    "keywords": [
+      "ORDTYP"
+    ],
+    "relevanceScore": 1
+  },
+  {
+    "id": "db2sql-orderpro-sql-db2-ordhed-sql-ordtyp-20",
+    "artifact": "orderpro/sql/db2/ORDHED.sql",
+    "artifactType": "DB2SQL",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "TARGET_VALIDATION_REQUIRED",
+    "validationTarget": "IBM_I",
+    "symbol": "ORDTYP",
+    "finding": "column 'ORDTYP' = TEXT — keywords: expedited, ORDTYP",
+    "lineRef": "orderpro/sql/db2/ORDHED.sql:27",
+    "keywords": [
+      "expedited",
+      "ORDTYP"
+    ],
+    "relevanceScore": 2
+  },
+  {
+    "id": "doc-orderpro-docs-operations-guide-md-0042-8",
+    "artifact": "orderpro/docs/operations-guide.md",
+    "artifactType": "DOC",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "RESOLVED",
+    "validationTarget": "LOCAL",
+    "symbol": "0042",
+    "finding": "time expression '0042' = 0042 — keywords: cutoff, preferred, expedited",
+    "lineRef": "orderpro/docs/operations-guide.md:6",
+    "keywords": [
+      "cutoff",
+      "preferred",
+      "expedited"
+    ],
+    "relevanceScore": 3
+  },
+  {
+    "id": "doc-orderpro-docs-operations-guide-md-allocates-inventory-and-triggers-end-of--16",
+    "artifact": "orderpro/docs/operations-guide.md",
+    "artifactType": "DOC",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "RESOLVED",
+    "validationTarget": "LOCAL",
+    "symbol": "allocates inventory, and triggers end-of-day batch fulfillment processing.",
+    "finding": "sentence 'allocates inventory, and triggers end-of-day batch fulfillment processing.' = allocates inventory, and triggers end-of-day batch fulfillment processing. — keywords: batch, fulfillment",
+    "lineRef": "orderpro/docs/operations-guide.md:14",
+    "keywords": [
+      "batch",
+      "fulfillment"
+    ],
+    "relevanceScore": 2
+  },
+  {
+    "id": "doc-orderpro-docs-operations-guide-md--e-expedited-priority-fulfilment-subject-25",
+    "artifact": "orderpro/docs/operations-guide.md",
+    "artifactType": "DOC",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "RESOLVED",
+    "validationTarget": "LOCAL",
+    "symbol": "`E`  | Expedited — priority fulfilment, subject to cutoff window |",
+    "finding": "list item '`E`  | Expedited — priority fulfilment, subject to cutoff window |' = | `E`  | Expedited — priority fulfilment, subject to cutoff window | — keywords: cutoff, expedited",
+    "lineRef": "orderpro/docs/operations-guide.md:25",
+    "keywords": [
+      "cutoff",
+      "expedited"
+    ],
+    "relevanceScore": 2
+  },
+  {
+    "id": "doc-orderpro-docs-operations-guide-md--s-standard-normal-processing-no-intrada-27",
+    "artifact": "orderpro/docs/operations-guide.md",
+    "artifactType": "DOC",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "RESOLVED",
+    "validationTarget": "LOCAL",
+    "symbol": "`S`  | Standard — normal processing, no intraday cutoff |",
+    "finding": "list item '`S`  | Standard — normal processing, no intraday cutoff |' = | `S`  | Standard — normal processing, no intraday cutoff | — keywords: cutoff",
+    "lineRef": "orderpro/docs/operations-guide.md:26",
+    "keywords": [
+      "cutoff"
+    ],
+    "relevanceScore": 1
+  },
+  {
+    "id": "doc-orderpro-docs-operations-guide-md-customers-are-classified-at-account-setu-31",
+    "artifact": "orderpro/docs/operations-guide.md",
+    "artifactType": "DOC",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "RESOLVED",
+    "validationTarget": "LOCAL",
+    "symbol": "Customers are classified at account setup and stored in the `CUSCLS` field",
+    "finding": "sentence 'Customers are classified at account setup and stored in the `CUSCLS` field' = Customers are classified at account setup and stored in the `CUSCLS` field — keywords: CUSCLS",
+    "lineRef": "orderpro/docs/operations-guide.md:32",
+    "keywords": [
+      "CUSCLS"
+    ],
+    "relevanceScore": 1
+  },
+  {
+    "id": "doc-orderpro-docs-operations-guide-md--p-preferred-top-tier-accounts-with-exte-39",
+    "artifact": "orderpro/docs/operations-guide.md",
+    "artifactType": "DOC",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "RESOLVED",
+    "validationTarget": "LOCAL",
+    "symbol": "`P`  | Preferred — top-tier accounts with extended service levels |",
+    "finding": "list item '`P`  | Preferred — top-tier accounts with extended service levels |' = | `P`  | Preferred — top-tier accounts with extended service levels | — keywords: preferred",
+    "lineRef": "orderpro/docs/operations-guide.md:38",
+    "keywords": [
+      "preferred"
+    ],
+    "relevanceScore": 1
+  },
+  {
+    "id": "doc-orderpro-docs-operations-guide-md-customer-class-determines-the-applicable-41",
+    "artifact": "orderpro/docs/operations-guide.md",
+    "artifactType": "DOC",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "RESOLVED",
+    "validationTarget": "LOCAL",
+    "symbol": "Customer class determines the applicable expedited order cutoff time.",
+    "finding": "sentence 'Customer class determines the applicable expedited order cutoff time.' = Customer class determines the applicable expedited order cutoff time. — keywords: cutoff, expedited",
+    "lineRef": "orderpro/docs/operations-guide.md:40",
+    "keywords": [
+      "cutoff",
+      "expedited"
+    ],
+    "relevanceScore": 2
+  },
+  {
+    "id": "doc-orderpro-docs-operations-guide-md-see-section-4-cutoff-policy-for-details--42",
+    "artifact": "orderpro/docs/operations-guide.md",
+    "artifactType": "DOC",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "RESOLVED",
+    "validationTarget": "LOCAL",
+    "symbol": "See **Section 4 — Cutoff Policy** for details.",
+    "finding": "sentence 'See **Section 4 — Cutoff Policy** for details.' = See **Section 4 — Cutoff Policy** for details. — keywords: cutoff",
+    "lineRef": "orderpro/docs/operations-guide.md:41",
+    "keywords": [
+      "cutoff"
+    ],
+    "relevanceScore": 1
+  },
+  {
+    "id": "doc-orderpro-docs-operations-guide-md-4-cutoff-policy-44",
+    "artifact": "orderpro/docs/operations-guide.md",
+    "artifactType": "DOC",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "RESOLVED",
+    "validationTarget": "LOCAL",
+    "symbol": "4. Cutoff Policy",
+    "finding": "heading '4. Cutoff Policy' = ## — keywords: cutoff",
+    "lineRef": "orderpro/docs/operations-guide.md:45",
+    "keywords": [
+      "cutoff"
+    ],
+    "relevanceScore": 1
+  },
+  {
+    "id": "doc-orderpro-docs-operations-guide-md-expedited-orders-must-be-submitted-by-th-45",
+    "artifact": "orderpro/docs/operations-guide.md",
+    "artifactType": "DOC",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "RESOLVED",
+    "validationTarget": "LOCAL",
+    "symbol": "Expedited orders must be submitted by the applicable cutoff time. Orders",
+    "finding": "sentence 'Expedited orders must be submitted by the applicable cutoff time. Orders' = Expedited orders must be submitted by the applicable cutoff time. Orders — keywords: cutoff, expedited",
+    "lineRef": "orderpro/docs/operations-guide.md:47",
+    "keywords": [
+      "cutoff",
+      "expedited"
+    ],
+    "relevanceScore": 2
+  },
+  {
+    "id": "doc-orderpro-docs-operations-guide-md-4001-46",
+    "artifact": "orderpro/docs/operations-guide.md",
+    "artifactType": "DOC",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "RESOLVED",
+    "validationTarget": "LOCAL",
+    "symbol": "4001",
+    "finding": "time expression '4001' = 4001 — keywords: cutoff",
+    "lineRef": "orderpro/docs/operations-guide.md:48",
+    "keywords": [
+      "cutoff"
+    ],
+    "relevanceScore": 1
+  },
+  {
+    "id": "doc-orderpro-docs-operations-guide-md-standard-orders-have-no-intraday-submiss-48",
+    "artifact": "orderpro/docs/operations-guide.md",
+    "artifactType": "DOC",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "RESOLVED",
+    "validationTarget": "LOCAL",
+    "symbol": "Standard orders have no intraday submission cutoff.",
+    "finding": "sentence 'Standard orders have no intraday submission cutoff.' = Standard orders have no intraday submission cutoff. — keywords: cutoff",
+    "lineRef": "orderpro/docs/operations-guide.md:50",
+    "keywords": [
+      "cutoff"
+    ],
+    "relevanceScore": 1
+  },
+  {
+    "id": "doc-orderpro-docs-operations-guide-md-customer-class-expedited-cutoff-notes--49",
+    "artifact": "orderpro/docs/operations-guide.md",
+    "artifactType": "DOC",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "RESOLVED",
+    "validationTarget": "LOCAL",
+    "symbol": "Customer Class | Expedited Cutoff | Notes |",
+    "finding": "list item 'Customer Class | Expedited Cutoff | Notes |' = | Customer Class | Expedited Cutoff | Notes | — keywords: cutoff, expedited",
+    "lineRef": "orderpro/docs/operations-guide.md:52",
+    "keywords": [
+      "cutoff",
+      "expedited"
+    ],
+    "relevanceScore": 2
+  },
+  {
+    "id": "doc-orderpro-docs-operations-guide-md-6-00-pm-56",
+    "artifact": "orderpro/docs/operations-guide.md",
+    "artifactType": "DOC",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "RESOLVED",
+    "validationTarget": "LOCAL",
+    "symbol": "6:00 PM",
+    "finding": "time expression '6:00 PM' = 6:00 PM — keywords: preferred",
+    "lineRef": "orderpro/docs/operations-guide.md:55",
+    "keywords": [
+      "preferred"
+    ],
+    "relevanceScore": 1
+  },
+  {
+    "id": "doc-orderpro-docs-operations-guide-md-0042-61",
+    "artifact": "orderpro/docs/operations-guide.md",
+    "artifactType": "DOC",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "RESOLVED",
+    "validationTarget": "LOCAL",
+    "symbol": "0042",
+    "finding": "time expression '0042' = 0042 — keywords: preferred, expedited, CUSCLS, P",
+    "lineRef": "orderpro/docs/operations-guide.md:57",
+    "keywords": [
+      "preferred",
+      "expedited",
+      "CUSCLS",
+      "P"
+    ],
+    "relevanceScore": 4
+  },
+  {
+    "id": "doc-orderpro-docs-operations-guide-md--and-the-batch-fulfillment-schedule--66",
+    "artifact": "orderpro/docs/operations-guide.md",
+    "artifactType": "DOC",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "RESOLVED",
+    "validationTarget": "LOCAL",
+    "symbol": "> and the batch fulfillment schedule.",
+    "finding": "sentence '> and the batch fulfillment schedule.' = > and the batch fulfillment schedule. — keywords: batch, fulfillment, schedule",
+    "lineRef": "orderpro/docs/operations-guide.md:60",
+    "keywords": [
+      "batch",
+      "fulfillment",
+      "schedule"
+    ],
+    "relevanceScore": 3
+  },
+  {
+    "id": "doc-orderpro-docs-operations-guide-md-5-batch-processing-68",
+    "artifact": "orderpro/docs/operations-guide.md",
+    "artifactType": "DOC",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "RESOLVED",
+    "validationTarget": "LOCAL",
+    "symbol": "5. Batch Processing",
+    "finding": "heading '5. Batch Processing' = ## — keywords: batch",
+    "lineRef": "orderpro/docs/operations-guide.md:64",
+    "keywords": [
+      "batch"
+    ],
+    "relevanceScore": 1
+  },
+  {
+    "id": "doc-orderpro-docs-operations-guide-md-the-end-of-day-fulfillment-batch-job-ful-69",
+    "artifact": "orderpro/docs/operations-guide.md",
+    "artifactType": "DOC",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "RESOLVED",
+    "validationTarget": "LOCAL",
+    "symbol": "The end-of-day fulfillment batch job (`FULMNT`) runs automatically at",
+    "finding": "sentence 'The end-of-day fulfillment batch job (`FULMNT`) runs automatically at' = The end-of-day fulfillment batch job (`FULMNT`) runs automatically at — keywords: batch, fulfillment",
+    "lineRef": "orderpro/docs/operations-guide.md:66",
+    "keywords": [
+      "batch",
+      "fulfillment"
+    ],
+    "relevanceScore": 2
+  },
+  {
+    "id": "doc-orderpro-docs-operations-guide-md-0042-74",
+    "artifact": "orderpro/docs/operations-guide.md",
+    "artifactType": "DOC",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "RESOLVED",
+    "validationTarget": "LOCAL",
+    "symbol": "0042",
+    "finding": "time expression '0042' = 0042 — keywords: batch, schedule",
+    "lineRef": "orderpro/docs/operations-guide.md:69",
+    "keywords": [
+      "batch",
+      "schedule"
+    ],
+    "relevanceScore": 2
+  },
+  {
+    "id": "doc-orderpro-docs-operations-guide-md-18-00-78",
+    "artifact": "orderpro/docs/operations-guide.md",
+    "artifactType": "DOC",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "RESOLVED",
+    "validationTarget": "LOCAL",
+    "symbol": "18:00",
+    "finding": "time expression '18:00' = 18:00 — keywords: preferred, expedited",
+    "lineRef": "orderpro/docs/operations-guide.md:70",
+    "keywords": [
+      "preferred",
+      "expedited"
+    ],
+    "relevanceScore": 2
+  },
+  {
+    "id": "doc-orderpro-docs-operations-guide-md--in-the-queue-before-the-batch-run-begin-80",
+    "artifact": "orderpro/docs/operations-guide.md",
+    "artifactType": "DOC",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "RESOLVED",
+    "validationTarget": "LOCAL",
+    "symbol": "> in the queue before the batch run begins.",
+    "finding": "sentence '> in the queue before the batch run begins.' = > in the queue before the batch run begins. — keywords: batch",
+    "lineRef": "orderpro/docs/operations-guide.md:71",
+    "keywords": [
+      "batch"
+    ],
+    "relevanceScore": 1
+  },
+  {
+    "id": "doc-orderpro-docs-operations-guide-md-the-batch-job-reads-all-open-expedited-o-81",
+    "artifact": "orderpro/docs/operations-guide.md",
+    "artifactType": "DOC",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "RESOLVED",
+    "validationTarget": "LOCAL",
+    "symbol": "The batch job reads all open expedited orders from `ORDHED` and calls the",
+    "finding": "sentence 'The batch job reads all open expedited orders from `ORDHED` and calls the' = The batch job reads all open expedited orders from `ORDHED` and calls the — keywords: expedited, batch",
+    "lineRef": "orderpro/docs/operations-guide.md:73",
+    "keywords": [
+      "expedited",
+      "batch"
+    ],
+    "relevanceScore": 2
+  },
+  {
+    "id": "doc-orderpro-docs-operations-guide-md-18-15--87",
+    "artifact": "orderpro/docs/operations-guide.md",
+    "artifactType": "DOC",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "RESOLVED",
+    "validationTarget": "LOCAL",
+    "symbol": "18:15 ",
+    "finding": "time expression '18:15 ' = 18:15  — keywords: schedule, SCDTIME",
+    "lineRef": "orderpro/docs/operations-guide.md:78",
+    "keywords": [
+      "schedule",
+      "SCDTIME"
+    ],
+    "relevanceScore": 2
+  },
+  {
+    "id": "doc-orderpro-docs-operations-guide-md-4001-103",
+    "artifact": "orderpro/docs/operations-guide.md",
+    "artifactType": "DOC",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "RESOLVED",
+    "validationTarget": "LOCAL",
+    "symbol": "4001",
+    "finding": "time expression '4001' = 4001 — keywords: cutoff",
+    "lineRef": "orderpro/docs/operations-guide.md:98",
+    "keywords": [
+      "cutoff"
+    ],
+    "relevanceScore": 1
+  },
+  {
+    "id": "nodejs-api-src-routes-orders-js-cutoffhour-3",
+    "artifact": "api/src/routes/orders.js",
+    "artifactType": "NODEJS",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "RESOLVED",
+    "validationTarget": "LOCAL",
+    "symbol": "cutoffHour",
+    "finding": "function 'cutoffHour' — keywords: CUSCLS, P",
+    "lineRef": "api/src/routes/orders.js:34",
+    "keywords": [
+      "CUSCLS",
+      "P"
+    ],
+    "relevanceScore": 2
+  },
+  {
+    "id": "nodejs-api-src-adapters-mock-adapter-js-cutoff-7",
+    "artifact": "api/src/adapters/mock-adapter.js",
+    "artifactType": "NODEJS",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "RESOLVED",
+    "validationTarget": "LOCAL",
+    "symbol": "cutoff",
+    "finding": "function 'cutoff' — keywords: cutoff, CUSCLS, P",
+    "lineRef": "api/src/adapters/mock-adapter.js:89",
+    "keywords": [
+      "cutoff",
+      "CUSCLS",
+      "P"
+    ],
+    "relevanceScore": 3
+  },
+  {
+    "id": "data-cusmas-cuscls-P",
+    "artifact": "orderpro/sql/sqlite/orderpro.db",
+    "artifactType": "NODEJS",
+    "evidenceBasis": "EXECUTED_LOCAL",
+    "status": "RESOLVED",
+    "validationTarget": "LOCAL",
+    "symbol": "CUSCLS=P",
+    "finding": "Customer class 'P' has 2 customer(s) in the local SQLite surrogate.",
+    "lineRef": null,
+    "keywords": [
+      "CUSCLS",
+      "P"
+    ],
+    "relevanceScore": 2
+  },
+  {
+    "id": "data-cusmas-cuscls-S",
+    "artifact": "orderpro/sql/sqlite/orderpro.db",
+    "artifactType": "NODEJS",
+    "evidenceBasis": "EXECUTED_LOCAL",
+    "status": "RESOLVED",
+    "validationTarget": "LOCAL",
+    "symbol": "CUSCLS=S",
+    "finding": "Customer class 'S' has 3 customer(s) in the local SQLite surrogate.",
+    "lineRef": null,
+    "keywords": [
+      "CUSCLS"
+    ],
+    "relevanceScore": 2
+  },
+  {
+    "id": "test-api-tests-orders-test-js-post-orders-accepts-a-valid-standard-ord-0",
+    "artifact": "api/tests/orders.test.js",
+    "artifactType": "TEST",
+    "evidenceBasis": "EXECUTED_LOCAL",
+    "status": "RESOLVED",
+    "validationTarget": "LOCAL",
+    "symbol": "POST /orders accepts a valid standard order well before cutoff",
+    "finding": "PASSING test: POST /orders accepts a valid standard order well before cutoff",
+    "lineRef": "api/tests/orders.test.js:?",
+    "keywords": [
+      "cutoff"
+    ],
+    "relevanceScore": 1
+  },
+  {
+    "id": "test-api-tests-orders-test-js-post-orders-rejects-a-request-with-missi-1",
+    "artifact": "api/tests/orders.test.js",
+    "artifactType": "TEST",
+    "evidenceBasis": "EXECUTED_LOCAL",
+    "status": "RESOLVED",
+    "validationTarget": "LOCAL",
+    "symbol": "POST /orders rejects a request with missing required fields",
+    "finding": "PASSING test: POST /orders rejects a request with missing required fields",
+    "lineRef": "api/tests/orders.test.js:?",
+    "keywords": [],
+    "relevanceScore": 0
+  },
+  {
+    "id": "test-api-tests-orders-test-js-post-orders-rejects-an-expedited-order-s-2",
+    "artifact": "api/tests/orders.test.js",
+    "artifactType": "TEST",
+    "evidenceBasis": "EXECUTED_LOCAL",
+    "status": "RESOLVED",
+    "validationTarget": "LOCAL",
+    "symbol": "POST /orders rejects an expedited order submitted after cutoff (hour=17)",
+    "finding": "PASSING test: POST /orders rejects an expedited order submitted after cutoff (hour=17)",
+    "lineRef": "api/tests/orders.test.js:?",
+    "keywords": [
+      "cutoff",
+      "expedited"
+    ],
+    "relevanceScore": 2
+  },
+  {
+    "id": "test-api-tests-orders-test-js-post-orders-accepts-an-expedited-order-s-3",
+    "artifact": "api/tests/orders.test.js",
+    "artifactType": "TEST",
+    "evidenceBasis": "EXECUTED_LOCAL",
+    "status": "RESOLVED",
+    "validationTarget": "LOCAL",
+    "symbol": "POST /orders accepts an expedited order submitted before cutoff (hour=15)",
+    "finding": "PASSING test: POST /orders accepts an expedited order submitted before cutoff (hour=15)",
+    "lineRef": "api/tests/orders.test.js:?",
+    "keywords": [
+      "cutoff",
+      "expedited"
+    ],
+    "relevanceScore": 2
+  },
+  {
+    "id": "test-api-tests-orders-test-js-post-orders-accepts-preferred-customer-e-4",
+    "artifact": "api/tests/orders.test.js",
+    "artifactType": "TEST",
+    "evidenceBasis": "EXECUTED_LOCAL",
+    "status": "RESOLVED",
+    "validationTarget": "LOCAL",
+    "symbol": "POST /orders accepts Preferred customer expedited order at 17:00 (CHG-0042)",
+    "finding": "PASSING test: POST /orders accepts Preferred customer expedited order at 17:00 (CHG-0042)",
+    "lineRef": "api/tests/orders.test.js:?",
+    "keywords": [
+      "preferred",
+      "expedited"
+    ],
+    "relevanceScore": 2
+  },
+  {
+    "id": "test-api-tests-orders-test-js-post-orders-rejects-preferred-customer-e-5",
+    "artifact": "api/tests/orders.test.js",
+    "artifactType": "TEST",
+    "evidenceBasis": "EXECUTED_LOCAL",
+    "status": "RESOLVED",
+    "validationTarget": "LOCAL",
+    "symbol": "POST /orders rejects Preferred customer expedited order at 19:00 (after 18:00 cutoff)",
+    "finding": "PASSING test: POST /orders rejects Preferred customer expedited order at 19:00 (after 18:00 cutoff)",
+    "lineRef": "api/tests/orders.test.js:?",
+    "keywords": [
+      "cutoff",
+      "preferred",
+      "expedited"
+    ],
+    "relevanceScore": 3
+  },
+  {
+    "id": "test-api-tests-orders-test-js-get-orders-id-returns-404-for-an-unknown-6",
+    "artifact": "api/tests/orders.test.js",
+    "artifactType": "TEST",
+    "evidenceBasis": "EXECUTED_LOCAL",
+    "status": "RESOLVED",
+    "validationTarget": "LOCAL",
+    "symbol": "GET /orders/:id returns 404 for an unknown order",
+    "finding": "PASSING test: GET /orders/:id returns 404 for an unknown order",
+    "lineRef": "api/tests/orders.test.js:?",
+    "keywords": [],
+    "relevanceScore": 0
+  },
+  {
+    "id": "test-tests-regression-cutoff-test-js-cutoff-regression-chg-0042-standard-cust-0",
+    "artifact": "tests/regression/cutoff.test.js",
+    "artifactType": "TEST",
+    "evidenceBasis": "EXECUTED_LOCAL",
+    "status": "RESOLVED",
+    "validationTarget": "LOCAL",
+    "symbol": "Cutoff regression — CHG-0042 Standard customer expedited order at 15:00 is accepted",
+    "finding": "PASSING test: Cutoff regression — CHG-0042 Standard customer expedited order at 15:00 is accepted",
+    "lineRef": "tests/regression/cutoff.test.js:?",
+    "keywords": [
+      "cutoff",
+      "expedited"
+    ],
+    "relevanceScore": 2
+  },
+  {
+    "id": "test-tests-regression-cutoff-test-js-cutoff-regression-chg-0042-standard-cust-1",
+    "artifact": "tests/regression/cutoff.test.js",
+    "artifactType": "TEST",
+    "evidenceBasis": "EXECUTED_LOCAL",
+    "status": "RESOLVED",
+    "validationTarget": "LOCAL",
+    "symbol": "Cutoff regression — CHG-0042 Standard customer expedited order at 17:00 is rejected",
+    "finding": "PASSING test: Cutoff regression — CHG-0042 Standard customer expedited order at 17:00 is rejected",
+    "lineRef": "tests/regression/cutoff.test.js:?",
+    "keywords": [
+      "cutoff",
+      "expedited"
+    ],
+    "relevanceScore": 2
+  },
+  {
+    "id": "test-tests-regression-cutoff-test-js-cutoff-regression-chg-0042-preferred-cus-2",
+    "artifact": "tests/regression/cutoff.test.js",
+    "artifactType": "TEST",
+    "evidenceBasis": "EXECUTED_LOCAL",
+    "status": "RESOLVED",
+    "validationTarget": "LOCAL",
+    "symbol": "Cutoff regression — CHG-0042 Preferred customer expedited order at 17:00 should be accepted (CHG-0042)",
+    "finding": "PASSING test: Cutoff regression — CHG-0042 Preferred customer expedited order at 17:00 should be accepted (CHG-0042)",
+    "lineRef": "tests/regression/cutoff.test.js:?",
+    "keywords": [
+      "cutoff",
+      "preferred",
+      "expedited"
+    ],
+    "relevanceScore": 3
+  },
+  {
+    "id": "test-tests-regression-cutoff-test-js-cutoff-regression-chg-0042-preferred-cus-3",
+    "artifact": "tests/regression/cutoff.test.js",
+    "artifactType": "TEST",
+    "evidenceBasis": "EXECUTED_LOCAL",
+    "status": "RESOLVED",
+    "validationTarget": "LOCAL",
+    "symbol": "Cutoff regression — CHG-0042 Preferred customer expedited order at 19:00 is rejected",
+    "finding": "PASSING test: Cutoff regression — CHG-0042 Preferred customer expedited order at 19:00 is rejected",
+    "lineRef": "tests/regression/cutoff.test.js:?",
+    "keywords": [
+      "cutoff",
+      "preferred",
+      "expedited"
+    ],
+    "relevanceScore": 3
+  },
+  {
+    "id": "test-tests-regression-batch-test-js-batch-fulfillment-ibm-i-validation-bound-0",
+    "artifact": "tests/regression/batch.test.js",
+    "artifactType": "TEST",
+    "evidenceBasis": "EXECUTED_LOCAL",
+    "status": "TARGET_VALIDATION_REQUIRED",
+    "validationTarget": "IBM_I",
+    "symbol": "Batch fulfillment — IBM_I validation boundary FULMNT completes within batch window after CHG-0042",
+    "finding": "SKIPPED (IBM_I boundary): Batch fulfillment — IBM_I validation boundary FULMNT completes within batch window after CHG-0042",
+    "lineRef": "tests/regression/batch.test.js:?",
+    "keywords": [
+      "batch",
+      "fulfillment"
+    ],
+    "relevanceScore": 2
+  },
+  {
+    "id": "test-tests-regression-batch-test-js-batch-fulfillment-ibm-i-validation-bound-1",
+    "artifact": "tests/regression/batch.test.js",
+    "artifactType": "TEST",
+    "evidenceBasis": "EXECUTED_LOCAL",
+    "status": "TARGET_VALIDATION_REQUIRED",
+    "validationTarget": "IBM_I",
+    "symbol": "Batch fulfillment — IBM_I validation boundary ORDPRC compiles cleanly after CUSCLS branch addition",
+    "finding": "SKIPPED (IBM_I boundary): Batch fulfillment — IBM_I validation boundary ORDPRC compiles cleanly after CUSCLS branch addition",
+    "lineRef": "tests/regression/batch.test.js:?",
+    "keywords": [
+      "CUSCLS",
+      "batch",
+      "fulfillment"
+    ],
+    "relevanceScore": 3
+  },
+  {
+    "id": "test-tests-regression-batch-test-js-batch-fulfillment-ibm-i-validation-bound-2",
+    "artifact": "tests/regression/batch.test.js",
+    "artifactType": "TEST",
+    "evidenceBasis": "EXECUTED_LOCAL",
+    "status": "TARGET_VALIDATION_REQUIRED",
+    "validationTarget": "IBM_I",
+    "symbol": "Batch fulfillment — IBM_I validation boundary SCDTIME(181500) takes effect in production job schedule",
+    "finding": "SKIPPED (IBM_I boundary): Batch fulfillment — IBM_I validation boundary SCDTIME(181500) takes effect in production job schedule",
+    "lineRef": "tests/regression/batch.test.js:?",
+    "keywords": [
+      "batch",
+      "fulfillment",
+      "schedule",
+      "SCDTIME"
+    ],
+    "relevanceScore": 4
+  },
+  {
+    "id": "test-api-tests-customers-test-js-get-customers-id-returns-customer-data-f-0",
+    "artifact": "api/tests/customers.test.js",
+    "artifactType": "TEST",
+    "evidenceBasis": "EXECUTED_LOCAL",
+    "status": "RESOLVED",
+    "validationTarget": "LOCAL",
+    "symbol": "GET /customers/:id returns customer data for a known Preferred customer",
+    "finding": "PASSING test: GET /customers/:id returns customer data for a known Preferred customer",
+    "lineRef": "api/tests/customers.test.js:?",
+    "keywords": [
+      "preferred"
+    ],
+    "relevanceScore": 1
+  },
+  {
+    "id": "test-api-tests-customers-test-js-get-customers-id-returns-404-for-an-unkn-1",
+    "artifact": "api/tests/customers.test.js",
+    "artifactType": "TEST",
+    "evidenceBasis": "EXECUTED_LOCAL",
+    "status": "RESOLVED",
+    "validationTarget": "LOCAL",
+    "symbol": "GET /customers/:id returns 404 for an unknown customer",
+    "finding": "PASSING test: GET /customers/:id returns 404 for an unknown customer",
+    "lineRef": "api/tests/customers.test.js:?",
+    "keywords": [],
+    "relevanceScore": 0
+  },
+  {
+    "id": "test-tests-regression-inventory-test-js-inventory-allocation-regression-order-fo-0",
+    "artifact": "tests/regression/inventory.test.js",
+    "artifactType": "TEST",
+    "evidenceBasis": "EXECUTED_LOCAL",
+    "status": "RESOLVED",
+    "validationTarget": "LOCAL",
+    "symbol": "Inventory allocation regression Order for in-stock item is accepted",
+    "finding": "PASSING test: Inventory allocation regression Order for in-stock item is accepted",
+    "lineRef": "tests/regression/inventory.test.js:?",
+    "keywords": [],
+    "relevanceScore": 0
+  },
+  {
+    "id": "test-tests-regression-inventory-test-js-inventory-allocation-regression-customer-1",
+    "artifact": "tests/regression/inventory.test.js",
+    "artifactType": "TEST",
+    "evidenceBasis": "EXECUTED_LOCAL",
+    "status": "RESOLVED",
+    "validationTarget": "LOCAL",
+    "symbol": "Inventory allocation regression Customer lookup returns correct class for Preferred customer",
+    "finding": "PASSING test: Inventory allocation regression Customer lookup returns correct class for Preferred customer",
+    "lineRef": "tests/regression/inventory.test.js:?",
+    "keywords": [
+      "preferred"
+    ],
+    "relevanceScore": 1
+  },
+  {
+    "id": "test-tests-regression-inventory-test-js-inventory-allocation-regression-inactive-2",
+    "artifact": "tests/regression/inventory.test.js",
+    "artifactType": "TEST",
+    "evidenceBasis": "EXECUTED_LOCAL",
+    "status": "RESOLVED",
+    "validationTarget": "LOCAL",
+    "symbol": "Inventory allocation regression Inactive customer data is present in surrogate",
+    "finding": "PASSING test: Inventory allocation regression Inactive customer data is present in surrogate",
+    "lineRef": "tests/regression/inventory.test.js:?",
+    "keywords": [],
+    "relevanceScore": 0
+  }
+]
