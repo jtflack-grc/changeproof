@@ -25,23 +25,22 @@ function resolvePassValue(value, pass) {
   return value;
 }
 
-function runTests(testPaths, outputPath) {
+function runTests(testPaths, outputPath, jestConfig) {
   if (!Array.isArray(testPaths) || testPaths.length === 0) return false;
   console.log(`  Running ${testPaths.length} scoped test file(s)...`);
+
+  const argv = [
+    require.resolve('jest/bin/jest'),
+    '--json',
+    `--outputFile=${outputPath}`,
+    '--passWithNoTests',
+    '--runInBand'
+  ];
+  if (jestConfig) argv.push('--config', path.resolve(REPO_ROOT, jestConfig));
+  argv.push('--runTestsByPath', ...testPaths.map(testPath => path.resolve(REPO_ROOT, testPath)));
+
   try {
-    execFileSync(
-      process.execPath,
-      [
-        require.resolve('jest/bin/jest'),
-        '--json',
-        `--outputFile=${outputPath}`,
-        '--passWithNoTests',
-        '--runInBand',
-        '--runTestsByPath',
-        ...testPaths
-      ],
-      { cwd: REPO_ROOT, stdio: 'pipe' }
-    );
+    execFileSync(process.execPath, argv, { cwd: REPO_ROOT, stdio: 'pipe' });
   } catch (_) {
     // Jest exits non-zero for an expected baseline failure; JSON still lands.
   }
@@ -77,7 +76,7 @@ async function main() {
   console.log('='.repeat(64));
 
   console.log('\n[1/4] Scoped execution receipt...');
-  const testsRan = runTests(testPaths, testJsonPath);
+  const testsRan = runTests(testPaths, testJsonPath, profile.jestConfig || null);
   if (!testsRan) console.warn('      No scoped test receipt was produced.');
 
   console.log('\n[2/4] Profile-driven evidence collection...');
@@ -89,6 +88,7 @@ async function main() {
     pass,
     inferenceRules: profile.inferenceRules || [],
     validationTargetResolver: profile.validationTargetResolver || null,
+    artifactPathMapper: profile.artifactPathMapper || null,
     pendingValidationTarget: profile.pendingValidationTarget || 'LOCAL'
   });
   console.log(`      ${findings.length} findings collected.`);
