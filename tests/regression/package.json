@@ -1,0 +1,10 @@
+{
+  "name": "regression-tests",
+  "version": "0.1.0",
+  "private": true,
+  "jest": {
+    "displayName": "regression",
+    "testMatch": ["<rootDir>/**/*.test.js"],
+    "testEnvironment": "node"
+  }
+}
