@@ -3,16 +3,18 @@
 **AI can write the change. ChangeProof proves what deserves to ship.**
 
 > **[Open the live ChangeProof experience →](https://jtflack-grc.github.io/changeproof/)**  
-> Run the synthetic ORDERPRO change, then follow the actual machine evidence behind the release decision.
+> Run the synthetic ORDERPRO change, review the actual machine evidence behind the release decision, then inspect the independent reuse proof.
 >
 > **[Launch ORDERPRO directly →](https://jtflack-grc.github.io/changeproof/orderpro/app/)**  
 > Synthetic enterprise order-processing workload used to reproduce CHG-0042.
 
-ChangeProof is an evidence-producing maintenance workflow built for the **IBM TechXchange 2026 Pre-conference Dev Day Hackathon**. It demonstrates an auditable change lifecycle for a fictional polyglot IBM i brownfield application named **ORDERPRO**.
+ChangeProof is an evidence-producing maintenance workflow built for the **IBM TechXchange 2026 Pre-conference Dev Day Hackathon**. ORDERPRO is the primary demonstration workload, not the product itself.
 
-The project is not asking a reviewer to trust a warning rendered beside fake code. The public **ChangeProof Review Workspace** loads the actual preserved evidence artifacts from this repository and lets the reviewer walk backward from a release decision to the machine record, test receipt, inference rule, source artifact, and residual IBM i validation boundary that support it.
+The public **ChangeProof Review Workspace** loads actual preserved evidence artifacts from this repository and lets a reviewer walk backward from a release decision to machine records, test receipts, inference logic, source artifacts, remediation, and residual validation boundaries.
 
-## The scenario
+A second workload, **REPORT-GW**, exists specifically to demonstrate reuse. It contains no RPGLE, CLLE, DDS, Db2, 5250 surface, ORDERPRO adapter, or IBM i dependency. GitHub Actions runs REPORT-GW through the same workload-neutral evidence core and commits the resulting evidence receipts back to the repository.
+
+## Primary scenario: ORDERPRO / CHG-0042
 
 > **CHG-0042:** Preferred customers (`CUSCLS = 'P'`) may submit expedited orders until 6:00 PM instead of the standard 4:00 PM cutoff.
 
@@ -32,7 +34,7 @@ The remediation keeps Preferred at 18:00, keeps Standard at 16:00, and moves the
 
 ## The ChangeProof Review Workspace
 
-This is now the centerpiece of the public experience.
+This is the primary review surface in the public experience.
 
 The browser loads **eight required repository artifacts at runtime**:
 
@@ -47,7 +49,7 @@ orderpro/clle/FULMNT.clle
 engine/evidence/collector.js
 ```
 
-The workspace then reconstructs the review path:
+The workspace reconstructs this path:
 
 ```text
 CHG-0042
@@ -58,6 +60,9 @@ Preferred / expedited / 17:00 → FAIL
 PRESERVED MACHINE FINDING
 inferred-fulmnt-batch-window-collision
 SCDTIME(180000) / OPEN / IBM_I
+   ↓
+INFERENCE IMPLEMENTATION
+inferBatchWindowCollision()
    ↓
 REVIEW DECISION
 functional acceptance can pass / release remains HOLD
@@ -72,31 +77,101 @@ RESIDUAL BOUNDARY
 3 IBM_I checks remain pending
 ```
 
-Every node is inspectable. The evidence drawer exposes the exact evidence ID, artifact, line reference, `evidenceBasis`, status, `validationTarget`, finding text, raw machine record, and links back to the submitted artifact.
-
-The inference node also links to `engine/evidence/collector.js` and shows the submitted `inferBatchWindowCollision()` implementation that produced the collision finding.
+Every node is inspectable. The evidence drawer exposes evidence ID, artifact, line reference, `evidenceBasis`, status, `validationTarget`, finding text, raw machine record, and links back to the submitted artifact.
 
 ### Fail-closed review rendering
 
-The Review Workspace deliberately has **no canned evidence fallback**.
-
-If a required repository artifact cannot be fetched, or if the expected machine finding/test record cannot be resolved from those artifacts, the workspace shows an evidence-load failure and does **not** render the lineage.
-
-The public UI therefore follows a simple rule:
+The Review Workspace has **no canned evidence fallback**. If a required repository artifact cannot be fetched, or an expected machine finding/test record cannot be resolved, the workspace shows an evidence-load failure and does not render the lineage.
 
 > **NO EVIDENCE → NO CHAIN**
 
-That is the key distinction between the synthetic ORDERPRO workload and ChangeProof itself. ORDERPRO demonstrates the problem. The Review Workspace renders the evidence produced by the engine.
+ORDERPRO demonstrates the problem. The Review Workspace renders the evidence produced by ChangeProof.
+
+## Reuse proof: REPORT-GW / CHG-WEB-017
+
+The second workload exists to answer two obvious objections:
+
+1. “This looks hard-coded to the IBM i scenario.”
+2. “You created a synthetic problem that conveniently fits the solution.”
+
+REPORT-GW is deliberately boring: Node.js source, a small edge-proxy configuration file, a Markdown runbook, and a scoped Jest test.
+
+Its ticket says only:
+
+> **CHG-WEB-017:** Increase the application request timeout from 30 seconds to 60 seconds.
+
+It does **not** request a proxy change.
+
+The same ChangeProof evidence core processes three immutable fixture states:
+
+| State | App timeout | Proxy timeout | Scoped Jest | Evidence result |
+|---|---:|---:|---:|---|
+| `baseline` | 30s | 45s | **1 pass / 1 fail** | requested behavior missing |
+| `literal` | 60s | 45s | **2 pass / 0 fail** | **`INFERRED / OPEN` upstream timeout mismatch** |
+| `post-change` | 60s | 75s | **2 pass / 0 fail** | mismatch removed |
+
+The literal pass emits this independent machine finding:
+
+```text
+id: inferred-upstream-timeout-ordering
+artifact: config/edge-proxy.conf
+lineRef: config/edge-proxy.conf:2
+evidenceBasis: INFERRED
+status: OPEN
+validationTarget: LOCAL
+symbol: proxy(45) < app(60)
+```
+
+The REPORT-GW profile does not change the evidence model. It supplies discovery scope, canonical artifact mapping across snapshots, a scoped Jest configuration, and one small domain inference plug-in. The common implementation remains in:
+
+```text
+engine/evidence/core.js
+engine/evidence/model.js
+engine/evidence/diff.js
+engine/profile-runner.js
+engine/reporters/profile-pack.js
+```
+
+The profile-specific pieces are:
+
+```text
+examples/timeout-service/changeproof.profile.js
+examples/timeout-service/inference.js
+```
+
+### CI-generated, not hand-authored evidence
+
+`.github/workflows/reuse-proof.yml` performs the reuse proof on GitHub-hosted CI:
+
+1. syntax-check the reusable engine/profile code;
+2. rerun the authoritative ORDERPRO test gate (`16 passed / 3 skipped`);
+3. generate REPORT-GW baseline, literal, and remediated evidence;
+4. assert that the literal state has functional PASS plus `inferred-upstream-timeout-ordering` as `INFERRED / OPEN / LOCAL`;
+5. assert that the remediated state no longer contains that finding;
+6. commit the generated evidence receipts with `github-actions[bot]`.
+
+The resulting artifacts are under:
+
+```text
+examples/timeout-service/evidence-pack/
+  baseline/
+  literal/
+  post-change/
+```
+
+The public Reuse Proof section loads those generated receipts at runtime. If they are unavailable or inconsistent, the page refuses to substitute a canned reuse story.
+
+This makes the claim falsifiable: change the application timeout, proxy timeout, scoped test, source discovery profile, or inference plug-in and the generated evidence changes.
 
 ## Interactive ORDERPRO lifecycle
 
-The public page also embeds a synthetic enterprise-style ORDERPRO workbench with three states:
+The public page embeds an enterprise-style ORDERPRO workbench with three scenario states:
 
 1. **Current production** — the default Preferred expedited order at 17:00 fails because the effective cutoff is still 16:00.
 2. **Ticket applied literally** — the same order passes locally, but the release remains **HOLD** because preserved baseline evidence contains `SCDTIME(180000)`.
 3. **ChangeProof remediation** — the order still passes and submitted CL source contains `SCDTIME(181500)`. The workflow advances to IBM i target validation rather than declaring production success.
 
-The middle state is intentionally a split decision:
+The middle state is intentionally split:
 
 > **FUNCTIONAL TEST = PASS**  
 > **RELEASE GATE = HOLD**
@@ -105,7 +180,7 @@ Passing an acceptance criterion is not the same as proving the whole change is r
 
 ORDERPRO uses dense enterprise ERP/BASIS-style visual conventions for realism, but no SAP assets, logos, proprietary fonts, or live SAP system are used.
 
-## Authoritative results
+## Authoritative ORDERPRO results
 
 | | Baseline | Post-change |
 |---|---:|---:|
@@ -138,11 +213,11 @@ ChangeProof separates three questions that AI-assisted maintenance often blurs t
 - `LOCAL`
 - `IBM_I`
 
-An RPGLE or CLLE source edit can therefore be directly observed without being represented as target runtime proof.
+An RPGLE or CLLE source edit can therefore be directly observed without being represented as target runtime proof. The same model also works for an entirely local modern workload such as REPORT-GW.
 
 ## IBM i evidence sessions
 
-The Pages experience also includes three bounded IronTerm-style 5250 source-evidence replays:
+The Pages experience includes three bounded IronTerm-style 5250 source-evidence replays:
 
 1. preserved baseline `FULMNT.clle` evidence around `SCDTIME(180000)`;
 2. submitted `ORDPRC.rpgle` conditional Preferred/Standard rule;
@@ -153,45 +228,48 @@ These are source-evidence fixtures, not live `WRKJOBSCDE` state and not a live T
 ## Repository layout
 
 ```text
-api/                       Node.js/Express API facade and tests
+api/                          Node.js/Express ORDERPRO facade and tests
 engine/
-  analyzers/                Polyglot static/document analyzers
-  evidence/                 Finding model, collector, diff logic
-  reporters/                HTML/Markdown evidence-pack generation
-orderpro/
-  app/                      Synthetic browser-visible enterprise workload
-  rpgle/                    RPGLE business logic
-  clle/                     CLLE fulfillment logic
-  dds/                      DDS definitions
-  sql/db2/                  Db2 for i DDL for static analysis
-  sql/sqlite/               Explicit local surrogate
-  docs/                     Operations documentation
-tests/regression/          Cross-artifact regression tests
-evidence-pack/
-  baseline/                 Preserved PRE-CHG-0042 evidence
-  post-change/              Final POST-CHG-0042 evidence
-bob_sessions/              IBM Bob task/session evidence
-review-workspace.js        Runtime evidence-lineage renderer
-review-workspace.css       Review workspace presentation
-CHANGE_REQUEST.md          Formal CHG-0042 input
-DEMO.md                    Three-minute demonstration script
-SUBMISSION.md              Hackathon submission copy
-index.html                 GitHub Pages shell
+  analyzers/                   Reusable artifact analyzers, including generic config
+  evidence/
+    core.js                    Workload-neutral discovery/evidence/test core
+    collector.js               ORDERPRO specialization
+    model.js                   Common Finding/evidence semantics
+    diff.js                    Common baseline/change diff
+  profile-runner.js            Config-driven workload runner
+  reporters/
+    pack.js                    ORDERPRO evidence pack
+    profile-pack.js            Workload-neutral profile evidence pack
+orderpro/                      Primary IBM i brownfield demonstration workload
+examples/timeout-service/      Independent modern reuse workload
+  changeproof.profile.js       Discovery/test/diff profile
+  inference.js                 Timeout-ordering inference plug-in
+  states/                      baseline / literal / post-change fixtures
+  evidence-pack/               CI-generated receipts committed by Actions
+tests/regression/             ORDERPRO cross-artifact regression tests
+evidence-pack/                Preserved ORDERPRO baseline/post-change evidence
+bob_sessions/                 IBM Bob task/session evidence
+review-workspace.js           Runtime ORDERPRO evidence-lineage renderer
+reuse-proof.js                Runtime second-workload proof renderer
+.github/workflows/
+  reuse-proof.yml              Independent CI regeneration + assertions
+CHANGE_REQUEST.md             Formal CHG-0042 input
+DEMO.md                       Three-minute demonstration script
+SUBMISSION.md                 Hackathon submission copy
+index.html                    GitHub Pages shell
 ```
 
-## Important historical-integrity note
+## Historical-integrity note
 
-The repository working tree is intentionally in the **post-change** state.
+The main ORDERPRO working tree is intentionally in the **post-change** state.
 
-`evidence-pack/baseline/` is the preserved historical evidence generated while the source still represented the original 16:00 behavior and `SCDTIME(180000)` schedule literal.
+`evidence-pack/baseline/` is preserved historical evidence generated while source still represented the original 16:00 behavior and `SCDTIME(180000)` schedule literal. Do **not** run `npm run baseline` against the current tree and expect it to recreate that historical state.
 
-Do **not** run `npm run baseline` against the current tree and expect it to recreate that historical state. Doing so would analyze current source and overwrite the preserved baseline artifacts.
-
-The Review Workspace reflects this distinction: baseline facts come from preserved baseline traceability/test evidence; current RPG/CL excerpts come from submitted post-change source. It does not present current source as historical source.
+REPORT-GW avoids that limitation by storing separate immutable baseline/literal/post-change fixture directories and canonicalizing their artifact paths through the workload profile before diffing.
 
 ## Local surrogate versus IBM i
 
-SQLite and the browser ORDERPRO UI exist to make part of the workflow executable during the hackathon. They are explicitly **not equivalent to Db2 for i or an IBM i runtime**.
+SQLite and the browser ORDERPRO UI exist to make part of the primary workflow executable during the hackathon. They are explicitly **not equivalent to Db2 for i or an IBM i runtime**.
 
 Documented real IBM i adapter paths include:
 
@@ -199,7 +277,7 @@ Documented real IBM i adapter paths include:
 - program interaction through `itoolkit` / XMLSERVICE or SSH where appropriate
 - compile/system commands through SSH or `QSYS2.QCMDEXC` via Db2
 
-No live IBM i connection was required for this proof of concept. ChangeProof treats that absence as an evidence boundary instead of pretending it does not exist.
+No live IBM i connection was required. ChangeProof treats that absence as an evidence boundary instead of pretending it does not exist.
 
 ## IBM Bob 2.0
 
@@ -212,13 +290,14 @@ The retained Bob task-session summary and full task-context screenshots are in `
 - Live judge-facing Pages experience
 - Interactive ORDERPRO workload
 - Evidence-driven Review Workspace
-- Baseline and post-change HTML/Markdown Evidence Packs
-- Baseline and post-change `traceability.json`
-- Preserved Jest receipts
+- Runtime Reuse Proof backed by CI-generated REPORT-GW evidence
+- ORDERPRO baseline and post-change Evidence Packs / traceability / Jest receipts
+- REPORT-GW baseline, literal, and post-change Evidence Packs / traceability / Jest receipts
+- Reusable profile-driven evidence core
 - IBM Bob task-session screenshots
 - Three-minute demo script
 - Submission copy
 
 ## Scope
 
-ORDERPRO is fictional and all data is synthetic. No client, employer, personal, or confidential data is included.
+ORDERPRO and REPORT-GW are fictional and all data is synthetic. No client, employer, personal, or confidential data is included.
