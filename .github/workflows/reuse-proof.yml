@@ -111,14 +111,25 @@ jobs:
           console.log('Reuse proof verified: baseline 1/1; literal 2/0 + inferred OPEN mismatch; remediation 2/0 and mismatch removed.');
           NODE
 
+      - name: Refresh Pages asset revision
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('index.html')
+          text = path.read_text(encoding='utf-8')
+          text = text.replace('site.css?v=20260828-1', 'site.css?v=20260828-6')
+          text = text.replace('site.js?v=20260828-1', 'site.js?v=20260828-6')
+          path.write_text(text, encoding='utf-8')
+          PY
+
       - name: Commit generated evidence receipts
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add evidence-pack/post-change examples/timeout-service/evidence-pack
+          git add evidence-pack/post-change examples/timeout-service/evidence-pack index.html
           if git diff --cached --quiet; then
-            echo 'Generated evidence is already current.'
+            echo 'Generated evidence and Pages shell are already current.'
           else
-            git commit -m 'Refresh current evidence receipts [evidence-freeze]'
+            git commit -m 'Refresh evidence and Pages shell [evidence-freeze]'
             git push
           fi
