@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0a6ed1" />
+  <meta name="description" content="ORDERPRO synthetic enterprise order-management scenario used by ChangeProof." />
+  <title>ORDERPRO | Enterprise Order Management</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=72:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="orderpro.css?v=20260828-1" />
+</head>
+<body>
+  <header class="shellbar">
+    <div class="shell-left">
+      <a class="product-mark" href="../../" aria-label="Return to ChangeProof">OP</a>
+      <div class="product-copy">
+        <strong>ORDERPRO</strong>
+        <span>Enterprise Order Management</span>
+      </div>
+      <span class="edition">ECC-ish / v8.4</span>
+    </div>
+    <div class="shell-right">
+      <span class="system-pill"><i></i> ORDERPRO-PROD</span>
+      <span class="shell-user">ORDERADM</span>
+      <a href="../../#sessions" class="cp-link">ChangeProof ↗</a>
+    </div>
+  </header>
+
+  <div class="workspace">
+    <aside class="side-nav" aria-label="ORDERPRO navigation">
+      <div class="nav-title">Work Centers</div>
+      <button class="nav-item active"><span>▣</span> Order Entry</button>
+      <button class="nav-item"><span>◫</span> Customers</button>
+      <button class="nav-item"><span>▦</span> Inventory</button>
+      <button class="nav-item"><span>◷</span> Fulfillment</button>
+      <button class="nav-item"><span>▤</span> Reports</button>
+      <div class="nav-title nav-spacer">System</div>
+      <button class="nav-item"><span>⚙</span> Administration</button>
+      <div class="nav-bottom">
+        <small>IBM i backend</small>
+        <b>ORDERPRO</b>
+        <span>Synthetic scenario</span>
+      </div>
+    </aside>
+
+    <main class="main" id="main">
+      <div class="page-head">
+        <div>
+          <p class="breadcrumb">Home / Sales & Distribution / Order Processing</p>
+          <h1>Order Entry Work Center</h1>
+          <p class="subtitle">Create and validate customer orders against ORDERPRO business rules.</p>
+        </div>
+        <div class="change-badge">
+          <span>Change under review</span>
+          <b>CHG-0042</b>
+          <small>Expedited cutoff extension</small>
+        </div>
+      </div>
+
+      <section class="scenario-bar" aria-label="Scenario state">
+        <div class="scenario-copy">
+          <span>Scenario state</span>
+          <strong id="scenario-title">Current production</strong>
+          <small id="scenario-subtitle">Pre-change behavior with the existing 16:00 expedited cutoff.</small>
+        </div>
+        <div class="scenario-tabs" role="tablist" aria-label="Change lifecycle state">
+          <button role="tab" aria-selected="true" data-state="baseline"><span>01</span> Current production</button>
+          <button role="tab" aria-selected="false" data-state="requested"><span>02</span> Requested CHG-0042</button>
+          <button role="tab" aria-selected="false" data-state="remediated"><span>03</span> ChangeProof remediation</button>
+        </div>
+      </section>
+
+      <section class="kpi-row" aria-label="Operational summary">
+        <article class="kpi">
+          <span>Preferred expedited cutoff</span>
+          <strong id="kpi-cutoff">16:00</strong>
+          <small id="kpi-cutoff-note">Same as Standard</small>
+        </article>
+        <article class="kpi">
+          <span>FULMNT batch</span>
+          <strong id="kpi-batch">18:00</strong>
+          <small id="kpi-batch-note">Daily / enabled</small>
+        </article>
+        <article class="kpi">
+          <span>Change status</span>
+          <strong id="kpi-change">BASELINE</strong>
+          <small id="kpi-change-note">Ticket not applied</small>
+        </article>
+        <article class="kpi target-kpi">
+          <span>IBM i runtime validation</span>
+          <strong>REQUIRED</strong>
+          <small>Source observation ≠ target proof</small>
+        </article>
+      </section>
+
+      <div class="primary-grid">
+        <section class="card entry-card">
+          <div class="card-head">
+            <div><span class="eyebrow">Sales order</span><h2>New Order</h2></div>
+            <span class="doc-number">Draft / unsaved</span>
+          </div>
+          <form id="order-form">
+            <div class="form-grid">
+              <label class="span-2">Customer
+                <select id="customer"></select>
+              </label>
+              <label>Order type
+                <select id="order-type">
+                  <option value="E" selected>Expedited</option>
+                  <option value="S">Standard</option>
+                </select>
+              </label>
+              <label>Order time
+                <input id="order-time" type="time" value="17:00" step="60" />
+              </label>
+              <label class="span-2">Item
+                <select id="item"></select>
+              </label>
+              <label>Quantity
+                <input id="quantity" type="number" min="1" value="10" />
+              </label>
+              <label>Requested ship date
+                <input type="date" value="2024-11-15" />
+              </label>
+            </div>
+            <div class="form-actions">
+              <button class="secondary" type="button" id="reset-order">Reset</button>
+              <button class="primary" type="submit">Validate & Submit Order</button>
+            </div>
+          </form>
+        </section>
+
+        <aside class="card customer-card">
+          <div class="card-head compact">
+            <div><span class="eyebrow">Business partner</span><h2>Customer Context</h2></div>
+            <span class="class-chip" id="customer-class">P</span>
+          </div>
+          <dl class="customer-data">
+            <div><dt>Customer</dt><dd id="customer-name"></dd></div>
+            <div><dt>Account</dt><dd id="customer-number"></dd></div>
+            <div><dt>Class</dt><dd id="customer-class-text"></dd></div>
+            <div><dt>Credit limit</dt><dd id="customer-credit"></dd></div>
+            <div><dt>Status</dt><dd id="customer-status"></dd></div>
+            <div><dt>Address</dt><dd id="customer-address"></dd></div>
+          </dl>
+          <div class="policy-box">
+            <span>Effective expedited policy</span>
+            <strong id="policy-text">Orders accepted through 16:00</strong>
+          </div>
+        </aside>
+      </div>
+
+      <section class="result-zone" id="result-zone" aria-live="polite">
+        <div class="result-card neutral" id="result-card">
+          <div class="result-icon">?</div>
+          <div>
+            <span>Order validation</span>
+            <strong id="result-title">Ready to validate</strong>
+            <p id="result-detail">The default scenario uses a Preferred customer submitting an expedited order at 17:00.</p>
+          </div>
+          <div class="result-meta">
+            <span>ORDTYP <b id="result-type">E</b></span>
+            <span>CUSCLS <b id="result-class">P</b></span>
+            <span>ORDTIM <b id="result-time">170000</b></span>
+          </div>
+        </div>
+        <aside class="cp-insight" id="cp-insight">
+          <div class="cp-insight-head"><span class="cp-dot"></span><b>ChangeProof observation</b></div>
+          <p id="cp-insight-copy">CHG-0042 proposes an 18:00 Preferred cutoff while the existing FULMNT schedule is already 18:00. The ticket and schedule intersect even before code is changed.</p>
+          <div class="cp-tags" id="cp-tags">
+            <span>OBSERVED_SOURCE</span><span>INFERRED</span><span>IBM_I</span>
+          </div>
+          <a href="../../#sessions">Inspect evidence sessions →</a>
+        </aside>
+      </section>
+
+      <div class="ops-grid">
+        <section class="card schedule-card">
+          <div class="card-head compact">
+            <div><span class="eyebrow">Background processing</span><h2>Fulfillment Schedule</h2></div>
+            <span class="enabled">● ENABLED</span>
+          </div>
+          <table>
+            <thead><tr><th>Job</th><th>Frequency</th><th>Scheduled</th><th>Program</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr class="focus-row"><td><b>FULMNT</b></td><td>Daily</td><td id="schedule-time"><b>18:00</b></td><td>ORDERPRO/ORDPRC</td><td><span class="table-chip">Enabled</span></td></tr>
+              <tr><td>ORDCLOSE</td><td>Daily</td><td>23:30</td><td>ORDERPRO/ORDCLOSE</td><td><span class="table-chip">Enabled</span></td></tr>
+              <tr><td>INVRECON</td><td>Daily</td><td>02:00</td><td>ORDERPRO/INVRECON</td><td><span class="table-chip">Enabled</span></td></tr>
+            </tbody>
+          </table>
+          <div class="schedule-warning" id="schedule-warning"><span>!</span><p><b>Change intersection:</b> Proposed Preferred cutoff and FULMNT both resolve to 18:00.</p></div>
+        </section>
+
+        <section class="card inventory-card">
+          <div class="card-head compact">
+            <div><span class="eyebrow">Warehouse 01</span><h2>Inventory Snapshot</h2></div>
+            <span class="asof">Local surrogate</span>
+          </div>
+          <div id="inventory-list" class="inventory-list"></div>
+        </section>
+      </div>
+
+      <section class="card orders-card">
+        <div class="card-head compact">
+          <div><span class="eyebrow">Order history</span><h2>Recent Orders</h2></div>
+          <span class="asof">Synthetic data / 10 records</span>
+        </div>
+        <div class="table-scroll">
+          <table>
+            <thead><tr><th>Order</th><th>Customer</th><th>Class</th><th>Type</th><th>Time</th><th>Status</th><th>Total</th></tr></thead>
+            <tbody id="orders-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <footer class="app-footer">
+        <span>ORDERPRO Enterprise Order Management · synthetic hackathon workload</span>
+        <span>Local UI simulation · not connected to a live IBM i</span>
+      </footer>
+    </main>
+  </div>
+
+  <script src="orderpro.js?v=20260828-1"></script>
+</body>
+</html>
