@@ -1,16 +1,31 @@
 (() => {
+  // Progressive enhancement contract: the static page is visible by default.
+  // Only hide/reveal elements when this bootstrap script actually executes.
+  document.documentElement.classList.add('js-enabled');
+
+  const showModuleWarning = (src) => {
+    if (document.querySelector('.module-load-warning')) return;
+    const warning = document.createElement('div');
+    warning.className = 'module-load-warning';
+    warning.setAttribute('role','status');
+    warning.textContent = `Interactive module blocked or unavailable (${src}). Static evidence links remain usable.`;
+    document.body.prepend(warning);
+  };
+
   const loadStyle = (href) => {
     if (document.querySelector(`link[href^="${href}"]`)) return;
     const link = document.createElement('link');
     link.rel = 'stylesheet';
-    link.href = `${href}?v=20260828-6`;
+    link.href = `${href}?v=20260828-7`;
     document.head.appendChild(link);
   };
 
   const loadScript = (src) => {
     if (document.querySelector(`script[src^="${src}"]`)) return;
     const script = document.createElement('script');
-    script.src = `${src}?v=20260828-6`;
+    script.src = `${src}?v=20260828-7`;
+    script.defer = true;
+    script.addEventListener('error',() => showModuleWarning(src),{once:true});
     document.head.appendChild(script);
   };
 
