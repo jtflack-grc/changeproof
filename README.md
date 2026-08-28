@@ -6,7 +6,7 @@
 > Judge-facing walkthrough of the CHG-0042 scenario, interactive ORDERPRO workload, before/after evidence, IBM i validation boundary, and Bob usage.
 >
 > **[Launch ORDERPRO directly →](https://jtflack-grc.github.io/changeproof/orderpro/app/)**  
-> Synthetic enterprise order-management work center used to reproduce the change lifecycle.
+> Synthetic enterprise order-processing workbench used to reproduce the change lifecycle.
 
 ChangeProof is a proof-of-concept built for the **IBM TechXchange 2026 Pre-conference Dev Day Hackathon**. It demonstrates a complete, auditable change-management lifecycle for a fictional polyglot IBM i brownfield application named **ORDERPRO**.
 
@@ -14,23 +14,30 @@ The scenario begins with a deceptively simple request:
 
 > **CHG-0042:** Preferred customers (`CUSCLS = 'P'`) may submit expedited orders until 6:00 PM instead of the standard 4:00 PM cutoff.
 
-That one-line request crosses a Node.js API, RPGLE business logic, CL scheduling, DDS/Db2 definitions, tests, operational documentation, and the browser-visible ORDERPRO work center. ChangeProof uses static analysis, local execution, document inspection, and evidence correlation to show what is affected, what was actually validated, what is inferred, and what still requires IBM i target validation.
+That one-line request crosses a Node.js API, RPGLE business logic, CL scheduling, DDS/Db2 definitions, tests, operational documentation, and the browser-visible ORDERPRO workbench. ChangeProof uses static analysis, local execution, document inspection, and evidence correlation to show what is affected, what was actually validated, what is inferred, and what still requires IBM i target validation.
 
 The central design principle is simple:
 
 > **The requested change is not necessarily the actual change.**
 
-In the preserved pre-change baseline, ChangeProof discovers an operational consequence not stated in CHG-0042: the fulfillment batch is scheduled for exactly 18:00, the same time as the new Preferred-customer cutoff. That creates a potential batch-window collision. The remediation therefore moves the batch to 18:15 while updating the application behavior, RPGLE logic, customer-class documentation, and regression coverage.
+In the preserved pre-change baseline, ChangeProof discovers an operational consequence not stated in CHG-0042: the `FULMNT.clle` source contains `SCDTIME(180000)`, the same boundary introduced by the new Preferred-customer cutoff. ChangeProof correlates those observations and produces an **INFERRED** potential batch-window collision. The remediation moves that source schedule literal to `SCDTIME(181500)` while updating application behavior, RPGLE logic, customer-class documentation, and regression coverage.
 
 ## Interactive scenario
 
-The GitHub Pages experience embeds a synthetic ORDERPRO work center with three explicit lifecycle states:
+The GitHub Pages experience embeds a synthetic ORDERPRO enterprise workbench with three explicit lifecycle states:
 
-1. **Current production** — Preferred expedited orders still use the 16:00 cutoff; FULMNT is scheduled for 18:00.
-2. **Requested CHG-0042** — a scenario replay of the ticket implemented literally: Preferred orders are accepted through 18:00 while the batch remains at 18:00, exposing the collision.
-3. **ChangeProof remediation** — Preferred cutoff remains 18:00, Standard remains 16:00, and FULMNT moves to 18:15 while IBM i runtime validation remains outstanding.
+1. **Current production** — the default Preferred expedited order at 17:00 fails because the effective cutoff is still 16:00.
+2. **Ticket applied literally** — the same order now passes locally because Preferred customers receive the requested 18:00 cutoff. **The functional test is PASS, but the release gate is HOLD** because the preserved CL schedule evidence is also 18:00.
+3. **ChangeProof remediation** — the functional test remains PASS and the submitted CL source moves FULMNT to 18:15. The change advances to **IBM i target validation**, not directly to production approval.
 
-The middle state exists to demonstrate a core point: **passing the stated acceptance criterion is not the same as proving the change is safe to ship.** It is a browser scenario replay, not another preserved source snapshot.
+The middle state is intentionally a split outcome:
+
+> **ORDER TEST = PASS**  
+> **RELEASE GATE = HOLD**
+
+That is not a contradiction. It demonstrates a core ChangeProof claim: **passing the stated acceptance criterion is not the same as proving the whole change is ready to ship.** The browser state is a scenario replay of the ticket implemented literally, not another preserved source snapshot.
+
+ORDERPRO intentionally uses dense enterprise ERP/BASIS-style visual conventions for realism, but it uses no SAP assets, logos, proprietary fonts, or live SAP system.
 
 ## Demo results
 
@@ -64,7 +71,17 @@ ChangeProof intentionally separates three questions that are often blurred toget
 - `LOCAL`
 - `IBM_I`
 
-An RPGLE source edit can therefore be directly observed without being falsely presented as production-validated. ChangeProof never claims that RPG compilation, CL execution, or Db2 for i runtime behavior occurred when no IBM i runtime was available.
+An RPGLE or CLLE source edit can therefore be directly observed without being falsely presented as target runtime proof. ChangeProof never claims that RPG compilation, CL execution, job submission, or Db2 for i runtime behavior occurred when no IBM i runtime was available.
+
+## IBM i evidence sessions
+
+The Pages experience includes three bounded IronTerm-style 5250 evidence replays:
+
+1. **Baseline CL source evidence** — `FULMNT.clle` with the preserved `SCDTIME(180000)` finding.
+2. **Submitted RPG source** — the real `ORDPRC.rpgle` conditional rule for expedited orders and Preferred customers.
+3. **Submitted post-change CL source** — `FULMNT.clle` with `SCDTIME(181500)`.
+
+These are **source-evidence fixtures**, not live `WRKJOBSCDE` state and not a live TN5250 connection. The screen structure follows Legacy Control Lab source-display conventions; IronTerm remains a separate GPL-3.0 work and is not redistributed by ChangeProof.
 
 ## Repository layout
 
@@ -72,7 +89,7 @@ An RPGLE source edit can therefore be directly observed without being falsely pr
 api/                  Node.js/Express API facade and API tests
 engine/               ChangeProof analyzers, evidence model, diff, reporter, CLI
 orderpro/             Fictional IBM i brownfield workload
-  app/                 Browser-visible synthetic ORDERPRO work center
+  app/                 Browser-visible synthetic enterprise workbench
   rpgle/               RPGLE business logic
   clle/                CL batch workflow
   dds/                 DDS definitions
@@ -94,7 +111,7 @@ index.html            GitHub Pages judge-facing experience
 
 The repository is intentionally left in the **post-change CHG-0042 source state**.
 
-`evidence-pack/baseline/` is the preserved pre-change snapshot generated while the source still represented the original 4:00 PM behavior and 18:00 batch schedule.
+`evidence-pack/baseline/` is the preserved pre-change snapshot generated while the source still represented the original 4:00 PM behavior and `SCDTIME(180000)` schedule literal.
 
 **Do not run `npm run baseline` against the current post-change source and expect it to recreate that historical state.** Doing so would analyze the current source and overwrite the preserved baseline artifacts.
 
@@ -115,7 +132,7 @@ npm run post-change
 
 SQLite exists only to make a portion of the workflow executable during the hackathon. The surrogate schema explicitly states that it is **not equivalent to Db2 for i runtime semantics**.
 
-The browser-visible ORDERPRO work center is likewise a synthetic interaction layer over repository fixture data and business-rule states. It is not a live IBM i session and does not replace the evidence engine.
+The browser-visible ORDERPRO workbench is likewise a synthetic interaction layer over repository fixture data and business-rule states. It is not a live IBM i or SAP session and does not replace the evidence engine.
 
 Real IBM i integration is isolated behind a transport-independent adapter contract. Documented production paths include:
 
