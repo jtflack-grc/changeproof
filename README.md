@@ -2,6 +2,9 @@
 
 **AI can write the change. ChangeProof proves what deserves to ship.**
 
+> **[Open the live ChangeProof experience →](https://jtflack-grc.github.io/changeproof/)**  
+> Judge-facing walkthrough of the CHG-0042 scenario, before/after evidence, IBM i validation boundary, and Bob usage.
+
 ChangeProof is a proof-of-concept built for the **IBM TechXchange 2026 Pre-conference Dev Day Hackathon**. It demonstrates a complete, auditable change-management lifecycle for a fictional polyglot IBM i brownfield application named **ORDERPRO**.
 
 The scenario begins with a deceptively simple request:
@@ -70,6 +73,7 @@ bob_sessions/         IBM Bob task/session evidence
 CHANGE_REQUEST.md     Formal CHG-0042 input
 DEMO.md               Three-minute demonstration script
 SUBMISSION.md         Hackathon written submission material
+index.html            GitHub Pages judge-facing experience
 ```
 
 ## Important baseline note
@@ -109,7 +113,7 @@ No live IBM i connection was required for this proof of concept, and ChangeProof
 
 IBM Bob was a core development component of ChangeProof and was used across architecture, project scaffolding, polyglot source creation, API and test implementation, analyzer development, evidence-pack generation, and iterative remediation. The project consumed the full hackathon allocation of **40 Bobcoins**.
 
-Actual IBM Bob task-session summary screenshots should be stored in `bob_sessions/` alongside the supporting session notes before final hackathon submission.
+The retained Bob task-session summary and full task-context screenshots are included in `bob_sessions/` alongside supporting historical session notes. Bob retained the ChangeProof build as one continuous task session.
 
 ## Hackathon artifacts
 
@@ -117,6 +121,7 @@ Actual IBM Bob task-session summary screenshots should be stored in `bob_session
 - `evidence-pack/post-change/evidence-pack.html` — final after-state report
 - `evidence-pack/*/traceability.json` — machine-readable evidence
 - `evidence-pack/*/test-results.json` — preserved Jest results
+- `bob_sessions/*.png` — retained IBM Bob task/session evidence
 - `SUBMISSION.md` — problem/solution and IBM Bob usage statements
 - `DEMO.md` — timed three-minute demo script
 
