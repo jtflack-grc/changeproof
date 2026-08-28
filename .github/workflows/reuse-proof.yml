@@ -1,0 +1,97 @@
+name: ChangeProof reuse proof
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'engine/evidence/core.js'
+      - 'engine/evidence/collector.js'
+      - 'engine/evidence/model.js'
+      - 'engine/evidence/diff.js'
+      - 'engine/analyzers/config.js'
+      - 'engine/profile-runner.js'
+      - 'engine/reporters/profile-pack.js'
+      - 'examples/timeout-service/CHANGE_REQUEST.md'
+      - 'examples/timeout-service/changeproof.profile.js'
+      - 'examples/timeout-service/inference.js'
+      - 'examples/timeout-service/states/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.github/workflows/reuse-proof.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  generate-and-verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Syntax gate
+        run: |
+          node --check engine/evidence/core.js
+          node --check engine/evidence/collector.js
+          node --check engine/profile-runner.js
+          node --check engine/reporters/profile-pack.js
+          node --check examples/timeout-service/inference.js
+          node --check examples/timeout-service/changeproof.profile.js
+
+      - name: Preserve ORDERPRO test gate
+        run: npm test
+
+      - name: Generate independent reuse evidence
+        run: npm run reuse-proof
+
+      - name: Verify reusable-workload behavior
+        run: |
+          node - <<'NODE'
+          const fs = require('fs');
+          const read = p => JSON.parse(fs.readFileSync(p, 'utf8'));
+          const base = read('examples/timeout-service/evidence-pack/baseline/traceability.json');
+          const literal = read('examples/timeout-service/evidence-pack/literal/traceability.json');
+          const post = read('examples/timeout-service/evidence-pack/post-change/traceability.json');
+          const literalTests = read('examples/timeout-service/evidence-pack/literal/test-results.json');
+          const postTests = read('examples/timeout-service/evidence-pack/post-change/test-results.json');
+
+          const mismatch = literal.find(f => f.id === 'inferred-upstream-timeout-ordering');
+          if (!mismatch) throw new Error('literal pass did not produce inferred upstream timeout mismatch');
+          if (mismatch.evidenceBasis !== 'INFERRED' || mismatch.status !== 'OPEN' || mismatch.validationTarget !== 'LOCAL') {
+            throw new Error('literal mismatch evidence semantics are incorrect');
+          }
+          if (post.some(f => f.id === 'inferred-upstream-timeout-ordering')) {
+            throw new Error('remediated pass still contains timeout mismatch');
+          }
+          if (base.some(f => f.id === 'inferred-upstream-timeout-ordering')) {
+            throw new Error('baseline unexpectedly contains timeout mismatch');
+          }
+          if (literalTests.numFailedTests !== 0 || postTests.numFailedTests !== 0) {
+            throw new Error('literal/remediated functional acceptance must pass');
+          }
+          if (literalTests.numPassedTests < 2 || postTests.numPassedTests < 2) {
+            throw new Error('scoped acceptance receipt is incomplete');
+          }
+          console.log('Reuse proof verified: literal functional PASS + inferred OPEN mismatch; remediation removes mismatch.');
+          NODE
+
+      - name: Commit generated evidence receipts
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add examples/timeout-service/evidence-pack
+          if git diff --cached --quiet; then
+            echo 'Generated evidence is already current.'
+          else
+            git commit -m 'Generate timeout-service reuse evidence [reuse-proof]'
+            git push
+          fi
