@@ -6,9 +6,9 @@
 
 ## Before recording
 
-Open the live ChangeProof page and hard-refresh it. Scroll once through the page so the browser has loaded the embedded ORDERPRO workbench and evidence sessions. Keep the Bob task-session summary available in another tab if you want to show it briefly.
+Open the live ChangeProof page and hard-refresh it. Scroll through once so the embedded ORDERPRO workbench and ChangeProof Review Workspace have loaded. The Review Workspace should show **8/8 repository artifacts loaded**. If it does not, do not record until that is fixed.
 
-Use the default ORDERPRO test throughout the demo:
+Use the default ORDERPRO test throughout:
 
 - Customer: `1000001 — Hartwell Manufacturing Ltd`
 - Class: Preferred (`P`)
@@ -17,107 +17,108 @@ Use the default ORDERPRO test throughout the demo:
 - Item: `ITM0001`
 - Quantity: `10`
 
-The key visual in Step 2 is the deliberate split between **FUNCTIONAL TEST = PASS** and **RELEASE GATE = HOLD**.
+The memorable moment is not merely the fake ERP. It is the transition from **FUNCTIONAL TEST = PASS / RELEASE GATE = HOLD** into the evidence lineage that proves why.
 
-## 0:00–0:16 | Hook
+## 0:00–0:14 | Hook
 
-**On screen:** ChangeProof hero, then scroll immediately to **LIVE SCENARIO / ORDERPRO**.
-
-**Say:**
-
-“AI can write the change. ChangeProof asks whether the change deserves to ship. This is ORDERPRO, a fictional brownfield IBM i order system. The ticket sounds tiny: Preferred customers get until 6 PM instead of 4 PM for expedited orders.”
-
-## 0:16–0:42 | Reproduce the existing behavior
-
-**On screen:** Embedded ORDERPRO. Leave **Current production** selected and run **Check Order** for the default 17:00 Preferred expedited order.
+**On screen:** ChangeProof hero, then move to ORDERPRO.
 
 **Say:**
 
-“In the current state, this Preferred customer submitting at 5 PM is rejected because the effective expedited cutoff is still 4 PM. So the functional gap is easy to reproduce.”
+“AI can write the change. ChangeProof asks whether the change deserves to ship. This is ORDERPRO, a fictional brownfield IBM i system. The ticket sounds tiny: Preferred customers get until 6 PM instead of 4 PM for expedited orders.”
 
-**Expected result:** `FUNCTIONAL TEST = FAIL`. Release remains `NO-GO`.
+## 0:14–0:34 | Reproduce the gap
 
-## 0:42–1:16 | Implement the ticket literally — and stop on the split result
-
-**On screen:** Click **02 / Ticket applied literally**, run the exact same order again, then pause on the two decision cards and gate matrix.
+**On screen:** ORDERPRO / Current production. Run **Check Order** with the defaults.
 
 **Say:**
 
-“Now apply the ticket literally. The exact same order passes. That is a real functional PASS — the acceptance criterion is satisfied.”
+“In the preserved baseline, this Preferred customer at 5 PM fails the requested behavior. That is the obvious part.”
 
-**Pause. Point to the amber release card.**
+**Expected visual:** functional FAIL / release NO-GO.
 
-“But the release gate is still HOLD. The preserved CL evidence contains `SCDTIME(180000)`, exactly the new customer cutoff. ChangeProof separates ‘the order test passed’ from ‘the change is ready to ship’ and holds the release because the downstream collision is still open.”
+## 0:34–0:54 | Implement the ticket literally
 
-**Expected result:**
+**On screen:** Select **02 / Ticket applied literally** and run the same order.
+
+**Say:**
+
+“Apply the ticket literally and the exact same order passes. The acceptance criterion is satisfied. But ChangeProof still holds the release because preserved CL evidence contains `SCDTIME(180000)`, the same new boundary.”
+
+Pause on:
 
 - `FUNCTIONAL TEST = PASS`
 - `RELEASE GATE = HOLD`
-- FULMNT source boundary = `18:00`
 
-Do not describe Step 2 as “passing but failing.” Say: **“the functional test passes; the release gate holds.”**
+Then click **Prove the HOLD**.
 
-## 1:16–1:42 | Show the remediation
+## 0:54–1:42 | Follow the evidence lineage — centerpiece
 
-**On screen:** Click **03 / ChangeProof remediation**, run the same order once more.
-
-**Say:**
-
-“The remediation keeps the Preferred cutoff at 18:00 and moves the CL schedule literal to 18:15. Functional behavior still passes, the source-level collision is removed, and the release workflow advances to the next gate: IBM i target validation.”
-
-**Expected result:** `FUNCTIONAL TEST = PASS`; release decision = `TARGET CHECK`, not production approval.
-
-## 1:42–2:08 | Inspect the IBM i source surface
-
-**On screen:** Scroll to **IronTerm evidence sessions**. Click through the three sessions.
+**On screen:** ChangeProof Review Workspace.
 
 **Say:**
 
-“These terminal views are bounded source-evidence replays, not a live IBM i session. Session one shows the preserved baseline CL literal at 18:00. Session two shows the actual submitted RPG rule — expedited order, Preferred class, conditional 18:00 cutoff. Session three shows the submitted CL remediation at `SCDTIME(181500)`.”
+“This is the part I care about. The warning is not a label I typed into the ERP. This workspace loads the actual preserved traceability JSON, Jest receipts, change request, submitted RPG and CL source, and the inference engine from the repository.”
 
-Give the right-side evidence rail a beat so `OBSERVED_SOURCE`, `INFERRED`, and `TARGET_VALIDATION_REQUIRED` are visible.
+Pause on **8/8 repository artifacts loaded** and **NO EVIDENCE → NO CHAIN**.
 
-## 2:08–2:31 | Show the evidence receipt
+Continue:
 
-**On screen:** Open the final Evidence Pack.
+“The chain starts with CHG-0042, then the baseline execution receipt, then this actual machine finding.”
 
-**Say:**
+Click **`inferred-fulmnt-batch-window-collision`**.
 
-“The preserved baseline has fourteen passing tests, two failures, and three intentionally skipped IBM i validations. After remediation, sixteen pass and zero fail. Every finding records whether it was executed locally, observed in source, or inferred.”
+“Here is its real evidence ID, artifact, line reference, basis, status, target, and raw machine record. The baseline engine recorded an inferred collision at `SCDTIME(180000)`.”
 
-## 2:31–2:46 | Make the validation boundary explicit
+Close the drawer and click **Inference engine**.
 
-**On screen:** Evidence model / IBM i validation boundary.
+“And here is the submitted collector code that produced that finding. It analyzes the CL symbols for `SCDTIME` and emits the collision when the requested 18:00 boundary equals the detected 180000 value.”
 
-**Say:**
+## 1:42–2:10 | Follow remediation and re-run
 
-“And ChangeProof does not turn static analysis into fake production evidence. It can observe that RPG and CL source changed, but it will not claim compilation, job submission, CL execution, or Db2 runtime behavior until validation occurs on IBM i.”
-
-## 2:46–2:55 | Close
-
-**On screen:** Final release question or hero.
+**On screen:** Continue down the lineage to **REMEDIATE** and **RE-RUN**.
 
 **Say:**
 
-“The requested change is not always the actual change. ChangeProof tells you what changed, what was proven, what was inferred, and what still needs the target before release.”
+“Now the same chain shows the submitted RPG rule, the CL remediation to `SCDTIME(181500)`, and the preserved post-change Jest receipt for the same Preferred-at-17:00 case. Sixteen tests pass and zero fail.”
+
+Click either the RPG or CL node briefly so the fetched source excerpt is visible.
+
+## 2:10–2:28 | Show what ChangeProof refuses to prove
+
+**On screen:** Final **RESIDUAL / IBM_I** node. Click it.
+
+**Say:**
+
+“Three checks remain deliberately pending because they require IBM i. ChangeProof can prove local execution and observe source. It will not claim RPG compilation, CL execution, job submission, or Db2 runtime behavior without the target.”
+
+## 2:28–2:42 | Bob role
+
+**On screen:** Scroll to the Bob section or briefly show the retained Bob task screenshot.
+
+**Say:**
+
+“IBM Bob 2.0 was the core build environment for planning, polyglot authoring, analyzers, tests, evidence generation, and remediation, consuming the full hackathon allocation.”
+
+## 2:42–2:55 | Close
+
+**On screen:** Return to the lineage or final release question.
+
+**Say:**
+
+“The requested change is not always the actual change. ChangeProof lets a reviewer ask why, follow the evidence all the way down, and see exactly where proof stops.”
 
 ---
 
-## Optional Bob receipt
-
-If the walkthrough is running fast, spend **5–8 seconds** on the Bob section or task-session screenshot after the hook:
-
-“IBM Bob 2.0 was the core build environment for planning, authoring, analysis, testing, evidence generation, and remediation, consuming the full hackathon allocation.”
-
-Do not let the Bob screenshot displace the working-product demo. The repository contains the official retained task-session summary in `bob_sessions/`.
-
 ## Recording notes
 
-- Do not run `npm run baseline` during the recording. The repository is intentionally in the final post-change source state; use the preserved baseline artifact.
-- The **Ticket applied literally** UI state is a browser scenario replay used to demonstrate the split between functional acceptance and release readiness. It is not another preserved source snapshot.
-- ORDERPRO is a synthetic browser simulation backed by the repository’s synthetic customer/inventory/order fixtures. It is not a live IBM i or SAP session.
-- The enterprise ERP/BASIS visual language is parody/inspiration only; no SAP assets or live SAP system are used.
-- IronTerm screens are bounded **source-evidence fixtures**, not live `WRKJOBSCDE` state and not a live TN5250 connection.
-- Session 02 displays RPG lines from the submitted `ORDPRC.rpgle`; Session 03 displays the submitted `FULMNT.clle` schedule literal.
-- Do not claim RPG compilation, CL execution, job submission, or Db2 for i runtime execution occurred locally.
-- The memorable moment is Step 2: **the order passes and the release still stops.** Give it a beat before moving on.
+- The **Review Workspace is the product centerpiece**. Spend more time there than in ORDERPRO.
+- Verify it says **8/8 repository artifacts loaded** before recording.
+- Click at least one machine finding and one source/remediation node so the evidence drawer is visibly demonstrated.
+- The workspace deliberately fails closed: if required evidence cannot be fetched or resolved, it does not render a canned lineage.
+- The baseline working source is historical. The current repository working tree is post-change. The viewer explicitly labels that distinction.
+- The original baseline inference stored the detected `SCDTIME(180000)` literal and cross-artifact conclusion in one INFERRED record. The viewer does not invent parent IDs; it reconstructs the review path from the preserved change request, machine finding, and test receipt.
+- ORDERPRO is synthetic and browser-based. It demonstrates the workload; it is not the evidence source.
+- IronTerm-style screens remain optional supporting inspection surfaces. Do not spend scarce video time on all three unless the run is comfortably under three minutes.
+- Do not run `npm run baseline` against the final source tree.
+- Do not claim live IBM i execution.
