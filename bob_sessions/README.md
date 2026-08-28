@@ -4,18 +4,20 @@ This directory contains IBM Bob evidence from the ChangeProof hackathon build.
 
 ## Required Submission Evidence
 
-The hackathon requires **actual screenshots of the Bob task-session consumption summary** for the tasks relevant to the submitted project. Add those PNG screenshots to this directory before publishing the final repository.
+The hackathon requires **actual screenshots of the Bob task-session consumption summary** for the tasks relevant to the submitted project.
 
-Suggested filenames:
+IBM Bob retained ChangeProof as a **single continuous task session** covering planning, implementation, testing, evidence generation, and remediation. The Bob IDE Tasks view shows one ChangeProof task; therefore the accompanying task-session summary represents the complete set of retained Bob task evidence for this submission.
+
+Use the session that actually exists in Bob. Do not fabricate or duplicate screenshots.
+
+Recommended filenames:
 
 ```text
-changeproof_task01_architecture_summary.png
-changeproof_task02_polyglot_build_summary.png
-changeproof_task03_analysis_testing_summary.png
-changeproof_task04_remediation_summary.png
+changeproof_task01_session_summary.png
+changeproof_task01_full_task_context.png
 ```
 
-Use the sessions that actually exist in Bob. Do not fabricate or duplicate screenshots.
+The session-summary image should show the official task details, including the `changeproof` workspace, Task ID, context usage, and Bobcoin consumption. The wider task-context image is optional supporting evidence showing the single retained task, planning/build history, and remediation activity.
 
 ## Supporting Historical Notes
 
@@ -28,4 +30,4 @@ For authoritative final results, use:
 - `evidence-pack/post-change/evidence-pack.html`
 - `evidence-pack/post-change/traceability.json`
 
-The Markdown notes do **not** replace the required Bob task-session screenshots.
+The Markdown notes do **not** replace the required Bob task-session screenshot.
