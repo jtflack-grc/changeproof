@@ -1,83 +1,94 @@
 # ChangeProof Final Submission Checklist
 
-## 1. Capture the Required IBM Bob Screenshots
+## 1. IBM Bob evidence
 
-IBM requires the actual Bob IDE **task-session consumption summary screenshots** in the public repository. The Markdown session notes already in `bob_sessions/` do not replace them.
+The retained Bob task-session evidence is already in `bob_sessions/`.
 
-For each relevant Bob task:
+Before submission:
 
-1. Open Bob IDE.
-2. In the chat interface, select **Tasks**.
-3. Select a task related to ChangeProof. Confirm the correct ChangeProof workspace is shown. If the work spans multiple workspaces, use **All**.
-4. Select the **task header** to display the task-session consumption summary.
-5. Take a screenshot. PNG is preferred for text clarity.
-6. Save it in `bob_sessions/` with a clear filename.
+- [ ] Confirm `changeproof_task01_session_summary.png` opens and remains readable.
+- [ ] Confirm `changeproof_task01_full_task_context.png` opens.
+- [ ] Confirm the repository still shows the Bob task/session evidence publicly.
+- [ ] Do not manufacture additional Bob sessions or screenshots.
 
-Suggested names:
+The submission wording should say the project consumed the **full 40-Bobcoin hackathon allocation**. The retained Bob UI may show the underlying accounting value separately.
+
+## 2. Repository and evidence gate
+
+- [ ] `node_modules/` is not committed.
+- [ ] No `.env`, API keys, passwords, tokens, employer/client data, or credentials are present.
+- [ ] ORDERPRO baseline evidence remains preserved under `evidence-pack/baseline/`.
+- [ ] ORDERPRO post-change evidence remains under `evidence-pack/post-change/`.
+- [ ] Current ORDERPRO source remains post-CHG-0042.
+- [ ] Do **not** run `npm run baseline` against the current ORDERPRO source tree.
+- [ ] Public repository is accessible without authentication.
+
+Authoritative ORDERPRO gate:
 
 ```text
-bob_sessions/changeproof_task01_architecture_summary.png
-bob_sessions/changeproof_task02_polyglot_build_summary.png
-bob_sessions/changeproof_task03_analysis_testing_summary.png
-bob_sessions/changeproof_task04_remediation_summary.png
+16 passed / 0 failed / 3 intentionally skipped IBM i checks
 ```
 
-Capture the meaningful sessions that actually exist. Do not manufacture or duplicate screenshots just to increase the count.
+The CI reuse-proof workflow must also be green. It verifies that:
 
-## 2. Repository Check
-
-Before publishing:
-
-- [ ] Add the real Bob PNG screenshots to `bob_sessions/`.
-- [ ] Confirm `node_modules/` is not present or committed.
-- [ ] Confirm no `.env`, API keys, passwords, tokens, or IBM Cloud credentials are present.
-- [ ] Keep `evidence-pack/baseline/evidence-pack.html` and `.md`.
-- [ ] Keep `evidence-pack/baseline/traceability.json`.
-- [ ] Keep `evidence-pack/post-change/evidence-pack.html` and `.md`.
-- [ ] Keep `evidence-pack/post-change/traceability.json`.
-- [ ] Keep the preserved baseline artifacts intact.
-- [ ] Leave the working source in the post-CHG-0042 state.
-- [ ] Make the GitHub repository publicly accessible before submission.
-
-Recommended final local checks if dependencies are installed:
-
-```bash
-npm test
-npm run post-change
+```text
+REPORT-GW baseline:     app 30 / proxy 45 / functional gap
+REPORT-GW literal:      app 60 / proxy 45 / scoped Jest PASS / INFERRED OPEN mismatch
+REPORT-GW post-change:  app 60 / proxy 75 / scoped Jest PASS / mismatch removed
 ```
 
-Expected final test state: **16 passed, 0 failed, 3 intentionally skipped IBM i validation-boundary tests.**
+- [ ] `.github/workflows/reuse-proof.yml` most recent run = success.
+- [ ] `examples/timeout-service/evidence-pack/` contains baseline, literal, and post-change generated receipts.
+- [ ] Generated REPORT-GW evidence was committed by `github-actions[bot]`, not manually fabricated.
 
-Do not run `npm run baseline` against the final working tree unless you first restore the pre-change source.
+## 3. Public Pages QA
 
-## 3. Record the Video
+Hard-refresh the live site before recording.
+
+- [ ] ORDERPRO loads and the default Hartwell / Preferred / Expedited / 17:00 scenario works.
+- [ ] Step 2 clearly reads **FUNCTIONAL TEST = PASS / RELEASE GATE = HOLD**.
+- [ ] **Prove the HOLD** reaches the ChangeProof Review Workspace.
+- [ ] Review Workspace says **8/8 repository artifacts loaded**.
+- [ ] Collision node opens the real `inferred-fulmnt-batch-window-collision` record.
+- [ ] Inference-engine node exposes the submitted collector implementation.
+- [ ] RPG and CL remediation nodes expose submitted source.
+- [ ] Residual node shows three IBM i target-only checks.
+- [ ] Reuse Proof says **9/9 generated artifacts loaded**.
+- [ ] REPORT-GW literal state shows app 60s / proxy 45s / scoped tests passing / `INFERRED / OPEN / LOCAL` mismatch.
+- [ ] REPORT-GW remediated state shows app 60s / proxy 75s and no mismatch.
+- [ ] IronTerm sessions remain labeled fixture/source-evidence replays rather than live TN5250 state.
+
+If either evidence-driven section fails closed, fix it before recording. Do not record around an evidence-load error.
+
+## 4. Record the video
+
+Use `DEMO.md` as the one-take script.
 
 - [ ] Maximum length: **3 minutes**.
-- [ ] Leave at least **90 seconds** for the solution working on screen.
-- [ ] Briefly state the problem.
-- [ ] Clearly show IBM Bob usage, ideally one real task-session summary screenshot.
-- [ ] Show the preserved baseline Evidence Pack.
-- [ ] Highlight the inferred 18:00 batch-window collision.
-- [ ] Show the post-change Evidence Pack and zero-failure result.
+- [ ] At least **90 seconds** visibly demonstrate the working solution.
+- [ ] Show the ORDERPRO split decision quickly; do not spend the video touring ERP chrome.
+- [ ] Spend the most time in the Review Workspace.
+- [ ] Open at least one machine finding and the inference-engine node.
+- [ ] Show the REPORT-GW Reuse Proof and its CI-generated machine record.
 - [ ] Explain the IBM i validation boundary.
-- [ ] Use the timed script in `DEMO.md`.
-- [ ] Host the video at a publicly accessible URL supported by the hackathon submission page.
+- [ ] Clearly show or state IBM Bob usage; briefly display the Bob section/task screenshot.
+- [ ] Do not claim live IBM i execution.
+- [ ] Host the finished video at a publicly accessible URL accepted by the submission form.
 
-## 4. Submission Form
+## 5. Submission form
 
-Use `SUBMISSION.md` as the source for the written fields.
+Use `SUBMISSION_FIELDS.txt` for direct copy/paste and `SUBMISSION.md` as the readable source.
 
 - [ ] Public video URL entered.
-- [ ] Problem and Solution statement entered, under 500 words.
+- [ ] Problem/Solution statement remains under 500 words.
 - [ ] IBM Bob usage statement entered.
 - [ ] Public repository URL entered.
 - [ ] Team member list is correct.
+- [ ] Live GitHub Pages experience is reachable.
 - [ ] Submit before **10:00 AM ET, August 30, 2026**.
 
-## 5. Use the AI Submission Advisor
+## 6. AI Submission Advisor
 
-After the first submission, review the confirmation email. IBM’s advisor may flag the video, written statements, Bob usage evidence, or repository completeness.
+After the first submission, review the confirmation/advisor feedback. If it identifies a meaningful issue, correct it and resubmit all required deliverables before the deadline. The most recent submission becomes the official one.
 
-If a useful issue is identified, correct it and resubmit **all** deliverables before the deadline. The most recent submission is the official one.
-
-Aim to make the first submission early enough to leave time for one revision cycle.
+Prefer the first real submission early enough to leave one clean revision cycle rather than using the deadline as the first end-to-end test.
