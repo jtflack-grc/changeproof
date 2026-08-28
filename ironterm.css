@@ -1,0 +1,91 @@
+/* ChangeProof bounded IronTerm evidence replay.
+   This is a static fixture viewer, not the GPL IronTerm client itself.
+   Screen semantics follow the LCL IBM i 7.4-backed screen definitions. */
+
+.ironterm-section{
+  max-width:none;
+  padding-left:max(28px,calc((100vw - var(--max))/2));
+  padding-right:max(28px,calc((100vw - var(--max))/2));
+  border-top:1px solid rgba(127,255,178,.08);
+  border-bottom:1px solid rgba(127,255,178,.08);
+  background:
+    linear-gradient(180deg,rgba(8,18,12,.42),rgba(3,8,6,.72)),
+    radial-gradient(circle at 72% 36%,rgba(56,232,129,.075),transparent 34%);
+}
+.ironterm-intro{display:grid;grid-template-columns:1.08fr .92fr;gap:5rem;align-items:end;margin-bottom:3.2rem}
+.ironterm-intro>p{color:var(--muted2);font-weight:300;margin:0;max-width:520px}
+.ironterm-intro .eyebrow{margin-bottom:1.35rem}
+
+.ironterm-tabs{display:flex;gap:.55rem;flex-wrap:wrap;margin-bottom:1.05rem}
+.ironterm-tab{
+  appearance:none;border:1px solid var(--line);background:rgba(5,10,8,.65);color:#789081;
+  padding:.66rem .85rem;font:500 .63rem var(--mono);letter-spacing:.09em;text-transform:uppercase;
+  cursor:pointer;transition:.18s ease;display:flex;align-items:center;gap:.55rem
+}
+.ironterm-tab span{color:#4e6858}
+.ironterm-tab:hover{border-color:var(--line-strong);color:var(--green)}
+.ironterm-tab[aria-selected="true"]{color:#031009;background:var(--green2);border-color:var(--green2);box-shadow:0 0 24px rgba(56,232,129,.11)}
+.ironterm-tab[aria-selected="true"] span{color:#0c6334}
+
+.ironterm-shell{
+  display:grid;grid-template-columns:minmax(0,1.58fr) minmax(285px,.72fr);min-height:585px;
+  border:1px solid rgba(127,255,178,.25);background:#020805;box-shadow:0 38px 110px rgba(0,0,0,.52);overflow:hidden
+}
+.ironterm-terminal{min-width:0;border-right:1px solid rgba(127,255,178,.16);background:#000;position:relative}
+.ironterm-toolbar{
+  height:46px;display:flex;align-items:center;justify-content:space-between;gap:1rem;padding:0 .95rem;
+  background:linear-gradient(#101713,#080e0a);border-bottom:1px solid #263229;color:#7d9183;font:500 .59rem var(--mono);letter-spacing:.07em
+}
+.ironterm-toolbar-left,.ironterm-toolbar-right{display:flex;align-items:center;gap:.7rem;white-space:nowrap}
+.ironterm-logo{color:#b8c9be;font-weight:600;letter-spacing:.04em}.ironterm-logo b{color:var(--green);font-weight:600}
+.ironterm-led{width:7px;height:7px;border-radius:50%;background:var(--green2);box-shadow:0 0 9px rgba(56,232,129,.7)}
+.ironterm-pill{border:1px solid #2a382e;padding:.2rem .38rem;color:#6f8375;background:#07100b}
+.ironterm-readonly{color:var(--amber);border-color:rgba(242,184,75,.28)}
+
+.terminal-bezel{padding:1.15rem 1.2rem 1rem;background:linear-gradient(145deg,#07100b,#020604);min-height:539px;display:flex;align-items:center;justify-content:center}
+.tn5250-screen{
+  width:100%;max-width:850px;aspect-ratio:80/26;min-height:445px;padding:1.05rem 1.15rem .75rem;
+  border:1px solid #173420;background:#00150a;position:relative;overflow:hidden;
+  box-shadow:inset 0 0 60px rgba(0,0,0,.8),inset 0 0 14px rgba(80,255,130,.045),0 0 24px rgba(56,232,129,.035);
+  color:#73ff9d;font:500 clamp(.56rem,1.02vw,.77rem)/1.42 var(--mono);text-shadow:0 0 5px rgba(93,255,143,.26)
+}
+.tn5250-screen:before{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(120,255,155,.018),rgba(120,255,155,.018) 1px,transparent 1px,transparent 3px);mix-blend-mode:screen}
+.tn5250-screen:after{content:"";position:absolute;inset:-40% -20%;pointer-events:none;background:radial-gradient(ellipse at center,rgba(82,255,128,.035),transparent 50%)}
+.screen-line{white-space:pre;min-height:1.42em;position:relative;z-index:1;overflow:hidden}
+.screen-line.header{color:#8dffae}.screen-line.hi{color:#d5ffd9}.screen-line.dim{color:#3d9a5a}.screen-line.amber{color:#f4c15d;text-shadow:0 0 5px rgba(244,193,93,.2)}
+.screen-line.reverse span{display:inline-block;background:#72ff9d;color:#00200b;text-shadow:none;padding:0 .12rem}
+.screen-line .field-label{color:#52c975}.screen-line .field-value{color:#bfffc9}.screen-line .risk-value{color:#f4c15d}.screen-line .changed-value{color:#a7ffbe}
+.screen-oia{position:absolute;left:0;right:0;bottom:0;height:22px;border-top:1px solid #164223;background:#001007;display:flex;align-items:center;justify-content:space-between;padding:0 .55rem;color:#3ca95b;font:500 .53rem var(--mono);letter-spacing:.025em;z-index:2}
+.screen-oia .ready{color:#7fff9d}.screen-oia .pos{color:#39794d}
+
+.evidence-rail{background:linear-gradient(180deg,#09120d,#060c09);padding:1.25rem 1.2rem 1.15rem;display:flex;flex-direction:column;min-width:0}
+.rail-top{display:flex;justify-content:space-between;gap:1rem;align-items:start;border-bottom:1px solid var(--line);padding-bottom:1rem;margin-bottom:.85rem}
+.rail-top p{margin:0;color:#607667;font:500 .57rem var(--mono);letter-spacing:.11em;text-transform:uppercase}
+.rail-top strong{display:block;color:var(--white);font:500 .86rem var(--mono);margin-top:.28rem;letter-spacing:-.01em}
+.rail-state{font:500 .55rem var(--mono);letter-spacing:.08em;padding:.26rem .4rem;border:1px solid rgba(242,184,75,.36);color:var(--amber);white-space:nowrap}
+.rail-state.resolved{color:var(--green);border-color:rgba(127,255,178,.36)}
+.rail-facts{display:grid;gap:.12rem;margin-bottom:.75rem}
+.rail-fact{display:grid;grid-template-columns:105px 1fr;gap:.6rem;padding:.48rem 0;border-bottom:1px solid rgba(127,255,178,.065);font:500 .61rem var(--mono)}
+.rail-fact span{color:#567061;text-transform:uppercase;letter-spacing:.06em}.rail-fact b{color:#c8d9cd;font-weight:500;overflow-wrap:anywhere}.rail-fact b.amber{color:var(--amber)}.rail-fact b.green{color:var(--green)}.rail-fact b.purple{color:var(--purple)}
+.rail-conclusion{border-left:2px solid var(--amber);background:rgba(242,184,75,.05);padding:.72rem .78rem;margin:.5rem 0 .8rem;color:#bdb999;font-size:.74rem;line-height:1.55}
+.rail-conclusion strong{color:var(--amber);font-weight:500}.rail-conclusion.resolved{border-left-color:var(--green2);background:rgba(56,232,129,.045);color:#aac0b1}.rail-conclusion.resolved strong{color:var(--green)}
+.rail-proof{margin-top:auto;display:grid;gap:.48rem}
+.rail-proof-row{display:flex;justify-content:space-between;gap:.8rem;align-items:center;color:#698171;font:500 .56rem var(--mono);text-transform:uppercase;letter-spacing:.05em}
+.rail-proof-row b{font-weight:500;color:#b3c5b8;text-transform:none;letter-spacing:0}.rail-proof-row b.obs{color:var(--blue)}.rail-proof-row b.inf{color:var(--amber)}.rail-proof-row b.target{color:var(--purple)}.rail-proof-row b.res{color:var(--green)}
+
+.ironterm-controls{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-top:1rem}
+.session-count{font:500 .6rem var(--mono);color:#617a69;letter-spacing:.08em;text-transform:uppercase}
+.session-nav{display:flex;gap:.55rem}.session-nav button{border:1px solid var(--line);background:transparent;color:#91aa9b;padding:.52rem .72rem;font:500 .6rem var(--mono);text-transform:uppercase;letter-spacing:.07em;cursor:pointer}.session-nav button:hover:not(:disabled){border-color:var(--green);color:var(--green)}.session-nav button:disabled{opacity:.28;cursor:not-allowed}
+.ironterm-note{display:flex;gap:.85rem;align-items:flex-start;margin-top:1.1rem;color:#5f7566;font-size:.67rem;max-width:980px}.ironterm-note b{font:500 .58rem var(--mono);color:#839b8a;letter-spacing:.08em;white-space:nowrap}.ironterm-note a{color:#829c89;text-underline-offset:3px}.ironterm-note a:hover{color:var(--green)}
+
+@media(max-width:980px){
+  .ironterm-intro{grid-template-columns:1fr;gap:1.4rem}
+  .ironterm-shell{grid-template-columns:1fr}.ironterm-terminal{border-right:0;border-bottom:1px solid var(--line)}
+  .evidence-rail{min-height:390px}.tn5250-screen{font-size:clamp(.5rem,1.55vw,.71rem);min-height:405px}
+}
+@media(max-width:680px){
+  .ironterm-section{padding-left:18px;padding-right:18px}.ironterm-tabs{display:grid;grid-template-columns:1fr}
+  .ironterm-tab{justify-content:flex-start}.terminal-bezel{padding:.65rem}.tn5250-screen{min-height:360px;padding:.75rem .7rem .65rem;font-size:clamp(.44rem,1.75vw,.6rem)}
+  .ironterm-toolbar-right .ironterm-pill:not(.ironterm-readonly){display:none}.evidence-rail{padding:1rem}.rail-fact{grid-template-columns:88px 1fr}
+  .ironterm-controls{align-items:flex-start;flex-direction:column}.ironterm-note{flex-direction:column;gap:.3rem}
+}
