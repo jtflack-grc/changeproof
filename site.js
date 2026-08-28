@@ -3,14 +3,14 @@
     if (document.querySelector(`link[href^="${href}"]`)) return;
     const link = document.createElement('link');
     link.rel = 'stylesheet';
-    link.href = `${href}?v=20260828-4`;
+    link.href = `${href}?v=20260828-5`;
     document.head.appendChild(link);
   };
 
   const loadScript = (src) => {
     if (document.querySelector(`script[src^="${src}"]`)) return;
     const script = document.createElement('script');
-    script.src = `${src}?v=20260828-4`;
+    script.src = `${src}?v=20260828-5`;
     document.head.appendChild(script);
   };
 
@@ -46,11 +46,39 @@
     });
   };
 
+  const normalizeExperience = () => {
+    const review = document.querySelector('#review');
+    const reuse = document.querySelector('#reuse-proof');
+    if (review && reuse && review.nextElementSibling !== reuse) {
+      review.insertAdjacentElement('afterend', reuse);
+    }
+
+    const reuseEyebrow = reuse?.querySelector('.reuse-head .eyebrow');
+    if (reuseEyebrow) reuseEyebrow.textContent = 'Cross-workload / Reuse proof';
+
+    const sessionEyebrow = document.querySelector('#sessions .ironterm-intro .eyebrow');
+    if (sessionEyebrow) sessionEyebrow.textContent = 'IBM i / Evidence sessions';
+
+    const discovered = document.querySelector('.thesis-card.active p');
+    if (discovered && discovered.textContent.includes('fulfillment batch begins')) {
+      discovered.textContent = 'The preserved CL schedule literal equals the new cutoff — a timing collision the ticket never mentions.';
+    }
+
+    const postProof = document.querySelector('.proof-panel.final .proof-list li:nth-child(2)');
+    if (postProof && postProof.textContent.includes('Batch moved to 18:15')) {
+      const marker = postProof.querySelector('.marker');
+      postProof.textContent = 'CL schedule literal moved to 18:15';
+      if (marker) postProof.prepend(marker);
+    }
+  };
+
   bindReveals();
+  normalizeExperience();
   const mutationObserver = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => mutation.addedNodes.forEach((node) => {
       if (node.nodeType === 1) bindReveals(node);
     }));
+    normalizeExperience();
   });
   mutationObserver.observe(document.body,{childList:true,subtree:true});
 
