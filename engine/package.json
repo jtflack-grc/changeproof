@@ -1,0 +1,17 @@
+{
+  "name": "changeproof-engine",
+  "version": "0.1.0",
+  "private": true,
+  "description": "ChangeProof static analysis and evidence collection engine",
+  "main": "runner.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "dependencies": {
+    "sql.js": "^1.12.0",
+    "glob": "^10.3.10"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}
