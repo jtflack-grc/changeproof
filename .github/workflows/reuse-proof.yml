@@ -14,6 +14,7 @@ on:
       - 'examples/timeout-service/CHANGE_REQUEST.md'
       - 'examples/timeout-service/changeproof.profile.js'
       - 'examples/timeout-service/inference.js'
+      - 'examples/timeout-service/jest.config.js'
       - 'examples/timeout-service/states/**'
       - 'package.json'
       - '.github/workflows/reuse-proof.yml'
@@ -48,6 +49,29 @@ jobs:
       - name: Preserve ORDERPRO test gate
         run: npm test
 
+      - name: Verify ORDERPRO evidence compatibility
+        run: |
+          npm run post-change
+          node - <<'NODE'
+          const fs = require('fs');
+          const trace = JSON.parse(fs.readFileSync('evidence-pack/post-change/traceability.json','utf8'));
+          const tests = JSON.parse(fs.readFileSync('evidence-pack/post-change/test-results.json','utf8'));
+          const resolved = trace.filter(f => f.status === 'RESOLVED').length;
+          const target = trace.filter(f => f.status === 'TARGET_VALIDATION_REQUIRED').length;
+          const open = trace.filter(f => f.status === 'OPEN').length;
+          if (trace.length !== 83) throw new Error(`ORDERPRO finding count changed: ${trace.length} !== 83`);
+          if (resolved !== 46 || target !== 37 || open !== 0) {
+            throw new Error(`ORDERPRO evidence semantics changed: resolved=${resolved}, target=${target}, open=${open}`);
+          }
+          if (trace.some(f => f.id === 'inferred-fulmnt-batch-window-collision')) {
+            throw new Error('ORDERPRO post-change evidence unexpectedly contains the baseline collision');
+          }
+          if (tests.numPassedTests !== 16 || tests.numFailedTests !== 0 || tests.numPendingTests !== 3) {
+            throw new Error(`ORDERPRO test receipt changed: ${tests.numPassedTests}/${tests.numFailedTests}/${tests.numPendingTests}`);
+          }
+          console.log('ORDERPRO compatibility verified: 83 findings, 46 resolved, 37 IBM_I target checks, tests 16/0/3.');
+          NODE
+
       - name: Generate independent reuse evidence
         run: npm run reuse-proof
 
@@ -59,6 +83,7 @@ jobs:
           const base = read('examples/timeout-service/evidence-pack/baseline/traceability.json');
           const literal = read('examples/timeout-service/evidence-pack/literal/traceability.json');
           const post = read('examples/timeout-service/evidence-pack/post-change/traceability.json');
+          const baselineTests = read('examples/timeout-service/evidence-pack/baseline/test-results.json');
           const literalTests = read('examples/timeout-service/evidence-pack/literal/test-results.json');
           const postTests = read('examples/timeout-service/evidence-pack/post-change/test-results.json');
 
@@ -73,22 +98,23 @@ jobs:
           if (base.some(f => f.id === 'inferred-upstream-timeout-ordering')) {
             throw new Error('baseline unexpectedly contains timeout mismatch');
           }
-          if (literalTests.numFailedTests !== 0 || postTests.numFailedTests !== 0) {
-            throw new Error('literal/remediated functional acceptance must pass');
+          if (baselineTests.numPassedTests !== 1 || baselineTests.numFailedTests !== 1) {
+            throw new Error(`baseline scoped receipt changed: ${baselineTests.numPassedTests}/${baselineTests.numFailedTests}`);
           }
-          if (literalTests.numPassedTests < 2 || postTests.numPassedTests < 2) {
-            throw new Error('scoped acceptance receipt is incomplete');
+          if (literalTests.numPassedTests !== 2 || literalTests.numFailedTests !== 0 || postTests.numPassedTests !== 2 || postTests.numFailedTests !== 0) {
+            throw new Error('literal/remediated scoped acceptance receipts changed');
           }
-          console.log('Reuse proof verified: literal functional PASS + inferred OPEN mismatch; remediation removes mismatch.');
+          console.log('Reuse proof verified: baseline 1/1; literal 2/0 + inferred OPEN mismatch; remediation 2/0 and mismatch removed.');
           NODE
 
-      - name: Commit generated evidence receipts
+      - name: Commit generated reuse evidence receipts
         run: |
+          git checkout -- evidence-pack/post-change
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add examples/timeout-service/evidence-pack
           if git diff --cached --quiet; then
-            echo 'Generated evidence is already current.'
+            echo 'Generated reuse evidence is already current.'
           else
             git commit -m 'Generate timeout-service reuse evidence [reuse-proof]'
             git push
