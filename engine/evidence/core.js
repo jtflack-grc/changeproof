@@ -20,7 +20,7 @@ function normalizeArtifactPath(value) {
 }
 
 function slugify(value) {
-  return String(value || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 56);
+  return String(value || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 40);
 }
 
 function keywordMatches(keyword, text) {
@@ -105,6 +105,13 @@ function normalizeTestPath(testPath, repoRoot) {
   return split.length > 1 ? split.pop() : normalized;
 }
 
+function mapArtifactPath(artifact, mapper, pass) {
+  const normalized = normalizeArtifactPath(artifact);
+  if (!mapper) return normalized;
+  const mapped = mapper({ artifact: normalized, pass });
+  return normalizeArtifactPath(mapped || normalized);
+}
+
 function parseJestResults(jsonPath, keywords, options = {}) {
   if (!jsonPath || !fs.existsSync(jsonPath)) return [];
   let raw;
@@ -112,10 +119,13 @@ function parseJestResults(jsonPath, keywords, options = {}) {
 
   const repoRoot = options.repoRoot || process.cwd();
   const pendingTarget = options.pendingValidationTarget || VALIDATION_TARGET.LOCAL;
+  const mapper = options.artifactPathMapper || null;
+  const pass = options.pass || 'baseline';
   const findings = [];
 
   (raw.testResults || []).forEach(suite => {
-    const rel = normalizeTestPath(suite.name || suite.testFilePath || '', repoRoot);
+    const sourceRel = normalizeTestPath(suite.name || suite.testFilePath || '', repoRoot);
+    const rel = mapArtifactPath(sourceRel, mapper, pass);
     const tests = suite.assertionResults || suite.testResults || [];
 
     tests.forEach((test, idx) => {
@@ -173,9 +183,9 @@ function sourceStatus(pass, validationTarget) {
 }
 
 /**
- * Profile-driven evidence collection. Profiles supply only discovery scope,
- * optional target resolution, and optional inference rules. The evidence
- * semantics and analyzer/test ingestion remain common.
+ * Workload-neutral evidence collection. Profiles supply discovery scope,
+ * optional canonical artifact mapping, optional target resolution and optional
+ * inference rules. Evidence semantics and analyzer/test ingestion remain common.
  */
 async function collectCore({
   crPath,
@@ -185,6 +195,7 @@ async function collectCore({
   pass = 'baseline',
   inferenceRules = [],
   validationTargetResolver = null,
+  artifactPathMapper = null,
   pendingValidationTarget = VALIDATION_TARGET.LOCAL
 }) {
   if (!Array.isArray(patterns) || patterns.length === 0) {
@@ -198,19 +209,20 @@ async function collectCore({
 
   for (const pattern of patterns) {
     const files = fs.globSync(pattern, { cwd: repoRoot });
-    for (const relFileRaw of files) {
-      const relFile = normalizeArtifactPath(relFileRaw);
-      if (seenFiles.has(relFile)) continue;
-      seenFiles.add(relFile);
+    for (const sourceRelRaw of files) {
+      const sourceRel = normalizeArtifactPath(sourceRelRaw);
+      if (seenFiles.has(sourceRel)) continue;
+      seenFiles.add(sourceRel);
 
-      const analyzer = analyzerFor(relFile);
+      const analyzer = analyzerFor(sourceRel);
       if (!analyzer) continue;
 
-      const absPath = path.join(repoRoot, relFile);
+      const relFile = mapArtifactPath(sourceRel, artifactPathMapper, pass);
+      const absPath = path.join(repoRoot, sourceRel);
       const symbols = analyzer.analyze(absPath);
       const artifactType = artifactTypeFor(relFile);
       const validationTarget = validationTargetResolver
-        ? validationTargetResolver({ artifact: relFile, artifactType, defaultTarget: defaultValidationTarget(artifactType) })
+        ? validationTargetResolver({ artifact: relFile, sourceArtifact: sourceRel, artifactType, defaultTarget: defaultValidationTarget(artifactType), pass })
         : defaultValidationTarget(artifactType);
 
       symbols.forEach(symbol => {
@@ -220,6 +232,7 @@ async function collectCore({
           lineRef: lineNumber ? `${relFile}:${lineNumber[1]}` : relFile,
           _artType: artifactType,
           _relFile: relFile,
+          _sourceFile: sourceRel,
           _validationTarget: validationTarget
         };
         allSymbols.push(normalized);
@@ -267,7 +280,12 @@ async function collectCore({
     else findings.push(produced);
   }
 
-  findings.push(...parseJestResults(testResultsPath, keywords, { repoRoot, pendingValidationTarget }));
+  findings.push(...parseJestResults(testResultsPath, keywords, {
+    repoRoot,
+    pendingValidationTarget,
+    artifactPathMapper,
+    pass
+  }));
   return { findings, symbols: allSymbols, keywords };
 }
 
