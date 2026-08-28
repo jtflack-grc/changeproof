@@ -1,6 +1,6 @@
 # ChangeProof Evidence Pack
 
-_Generated: 2026-08-28T23:12:38.146Z_
+_Generated: 2026-08-28T23:26:03.753Z_
 
 
 ---
@@ -345,10 +345,6 @@ orders.js    -->  CUSMAS        (customer class lookup)
 | Batch fulfillment — IBM_I validation boundary FULMNT completes within batch window after CHG-0042 | [TARGET_VALIDATION_REQUIRED] | [EXECUTED_LOCAL] |
 | Batch fulfillment — IBM_I validation boundary ORDPRC compiles cleanly after CUSCLS branch addition | [TARGET_VALIDATION_REQUIRED] | [EXECUTED_LOCAL] |
 | Batch fulfillment — IBM_I validation boundary SCDTIME(181500) takes effect in production job schedule | [TARGET_VALIDATION_REQUIRED] | [EXECUTED_LOCAL] |
-| Cutoff regression — CHG-0042 Standard customer expedited order at 15:00 is accepted | [RESOLVED] | [EXECUTED_LOCAL] |
-| Cutoff regression — CHG-0042 Standard customer expedited order at 17:00 is rejected | [RESOLVED] | [EXECUTED_LOCAL] |
-| Cutoff regression — CHG-0042 Preferred customer expedited order at 17:00 should be accepted (CHG-0042) | [RESOLVED] | [EXECUTED_LOCAL] |
-| Cutoff regression — CHG-0042 Preferred customer expedited order at 19:00 is rejected | [RESOLVED] | [EXECUTED_LOCAL] |
 | POST /orders accepts a valid standard order well before cutoff | [RESOLVED] | [EXECUTED_LOCAL] |
 | POST /orders rejects a request with missing required fields | [RESOLVED] | [EXECUTED_LOCAL] |
 | POST /orders rejects an expedited order submitted after cutoff (hour=17) | [RESOLVED] | [EXECUTED_LOCAL] |
@@ -356,6 +352,10 @@ orders.js    -->  CUSMAS        (customer class lookup)
 | POST /orders accepts Preferred customer expedited order at 17:00 (CHG-0042) | [RESOLVED] | [EXECUTED_LOCAL] |
 | POST /orders rejects Preferred customer expedited order at 19:00 (after 18:00 cutoff) | [RESOLVED] | [EXECUTED_LOCAL] |
 | GET /orders/:id returns 404 for an unknown order | [RESOLVED] | [EXECUTED_LOCAL] |
+| Cutoff regression — CHG-0042 Standard customer expedited order at 15:00 is accepted | [RESOLVED] | [EXECUTED_LOCAL] |
+| Cutoff regression — CHG-0042 Standard customer expedited order at 17:00 is rejected | [RESOLVED] | [EXECUTED_LOCAL] |
+| Cutoff regression — CHG-0042 Preferred customer expedited order at 17:00 should be accepted (CHG-0042) | [RESOLVED] | [EXECUTED_LOCAL] |
+| Cutoff regression — CHG-0042 Preferred customer expedited order at 19:00 is rejected | [RESOLVED] | [EXECUTED_LOCAL] |
 | Inventory allocation regression Order for in-stock item is accepted | [RESOLVED] | [EXECUTED_LOCAL] |
 | Inventory allocation regression Customer lookup returns correct class for Preferred customer | [RESOLVED] | [EXECUTED_LOCAL] |
 | Inventory allocation regression Inactive customer data is present in surrogate | [RESOLVED] | [EXECUTED_LOCAL] |
