@@ -29,31 +29,31 @@
       operationalStatus:'BASELINE', operationalNote:'CHG-0042 not yet applied.', operationalClass:'',
       releaseStatus:'NO-GO', releaseNote:'Functional acceptance not satisfied.', releaseClass:'',
       impactState:'BASELINE', impactEvidence:'OBSERVED_SOURCE',
-      insight:'The current system rejects Preferred expedited orders after 16:00. Separately, FULMNT is observed at 18:00 — an important downstream fact once CHG-0042 is considered.',
+      insight:'The current rule rejects Preferred expedited orders after 16:00. Separately, preserved CL source evidence contains SCDTIME(180000) — a fact that becomes material when CHG-0042 is considered.',
       tags:['OBSERVED_SOURCE','IBM_I']
     },
     requested: {
       title:'02 / Ticket applied literally',
-      subtitle:'The requested customer-facing rule is applied, but the downstream fulfillment schedule is unchanged.',
+      subtitle:'The requested customer-facing rule is applied, but the preserved CL schedule literal is unchanged.',
       preferred:'18:00', batch:'18:00',
       messageClass:'warning', messageTitle:'Functional success is not release approval.',
-      message:'The 17:00 Preferred order can now pass, but FULMNT still begins at 18:00. Change readiness is HOLD until that operational collision is remediated.',
-      operationalStatus:'HOLD', operationalNote:'18:00 cutoff intersects FULMNT @ 18:00.', operationalClass:'hold',
+      message:'The 17:00 Preferred order can now pass, but preserved FULMNT source evidence still contains SCDTIME(180000). Change readiness is HOLD until that source-level collision is remediated.',
+      operationalStatus:'HOLD', operationalNote:'18:00 cutoff intersects preserved SCDTIME(180000).', operationalClass:'hold',
       releaseStatus:'HOLD', releaseNote:'Do not release: downstream collision remains open.', releaseClass:'hold',
       impactState:'OPEN COLLISION', impactEvidence:'OBSERVED + INFERRED',
-      insight:'This is the key distinction: the acceptance criterion can pass while the release gate remains on HOLD. The ticket changed customer behavior but did not account for the 18:00 fulfillment boundary.',
+      insight:'This is the key distinction: the acceptance criterion can pass while the release gate remains on HOLD. The ticket changed customer behavior but did not account for the preserved 18:00 CL schedule literal.',
       tags:['EXECUTED_LOCAL','OBSERVED_SOURCE','INFERRED','OPEN','IBM_I']
     },
     remediated: {
       title:'03 / ChangeProof remediation',
-      subtitle:'Preferred cutoff remains 18:00; FULMNT moves to 18:15. Source remediation is ready for target validation.',
+      subtitle:'Preferred cutoff remains 18:00; submitted CL source moves the schedule literal to 18:15. Target validation is next.',
       preferred:'18:00', batch:'18:15',
       messageClass:'success', messageTitle:'Source-level collision remediated.',
-      message:'Functional behavior passes and FULMNT is moved beyond the new cutoff. The change may proceed to IBM i target validation; this is not yet production approval.',
-      operationalStatus:'SOURCE RESOLVED', operationalNote:'FULMNT moved to 18:15 in submitted source.', operationalClass:'pass',
+      message:'Functional behavior passes and submitted FULMNT source now contains SCDTIME(181500). The change may proceed to IBM i target validation; this is not yet production approval.',
+      operationalStatus:'SOURCE RESOLVED', operationalNote:'Submitted FULMNT source contains SCDTIME(181500).', operationalClass:'pass',
       releaseStatus:'TARGET CHECK', releaseNote:'Proceed to IBM i validation before release.', releaseClass:'ready',
       impactState:'REMEDIATED', impactEvidence:'TARGET_VALIDATION_REQUIRED',
-      insight:'ChangeProof can show local behavior passing and the source-level schedule collision removed. It still refuses to claim RPG compile, CL execution, or Db2 runtime proof without IBM i.',
+      insight:'ChangeProof can show local behavior passing and the source-level schedule collision removed. It still refuses to claim RPG compile, CL execution, job submission, or Db2 runtime proof without IBM i.',
       tags:['EXECUTED_LOCAL','OBSERVED_SOURCE','TARGET_VALIDATION_REQUIRED','IBM_I']
     }
   };
@@ -71,6 +71,7 @@
   const money = n => new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(n);
   const hhmmss = t => (t || '00:00').replace(':','') + '00';
   const minutes = t => { const [h,m] = t.split(':').map(Number); return h * 60 + m; };
+  const scheduleLiteral = t => `SCDTIME(${(t || '00:00').replace(':','')}00)`;
 
   function selectedCustomer(){ return customers.find(c => c.id === customerSelect.value) || customers[0]; }
   function selectedItem(){ return items.find(i => i.id === itemSelect.value) || items[0]; }
@@ -78,7 +79,7 @@
   function setStatus(message, kind='ok'){
     $('#status-message').textContent = message;
     const dot = $('.status-ok');
-    dot.textContent = kind === 'error' ? '●' : kind === 'warn' ? '●' : '●';
+    dot.textContent = '●';
     dot.style.color = kind === 'error' ? '#aa0808' : kind === 'warn' ? '#e9730c' : '#2e8b47';
   }
 
@@ -125,7 +126,7 @@
     const cutoff = c.cls === 'P' ? states[activeState].preferred : '16:00';
     const batch = states[activeState].batch;
     const assessment = activeState === 'requested' && c.cls === 'P' ? '<span class="status-chip target">COLLISION</span>' : activeState === 'remediated' ? '<span class="status-chip observed">SOURCE REMEDIATED</span>' : '<span class="status-chip neutral">BASELINE</span>';
-    $('#schedule-lines-body').innerHTML = `<tr><td>10</td><td>0001</td><td>2024-11-15</td><td>${Math.max(0,Number($('#quantity').value || 0))}</td><td>${cutoff}</td><td>${batch}</td><td>${assessment}</td></tr>`;
+    $('#schedule-lines-body').innerHTML = `<tr><td>10</td><td>0001</td><td>2024-11-15</td><td>${Math.max(0,Number($('#quantity').value || 0))}</td><td>${cutoff}</td><td>${scheduleLiteral(batch)}</td><td>${assessment}</td></tr>`;
   }
 
   function applyGate(el, cls){
@@ -141,7 +142,6 @@
     $('#gate-target-status').textContent = 'REQUIRED';
     $('#gate-target-note').textContent = 'RPG / CL / Db2 not executed here.';
     applyGate($('#gate-target'), '');
-
     $('#gate-release-status').textContent = s.releaseStatus;
     $('#gate-release-note').textContent = s.releaseNote;
     applyGate($('#gate-release'), s.releaseClass);
@@ -165,20 +165,20 @@
 
     $('#impact-state').textContent = s.impactState;
     $('#impact-rule').textContent = `${s.preferred} Preferred / 16:00 Standard`;
-    $('#impact-batch').textContent = `FULMNT @ ${s.batch}`;
+    $('#impact-batch').textContent = scheduleLiteral(s.batch);
     $('#impact-evidence').textContent = s.impactEvidence;
-    $('#schedule-time').innerHTML = `<b>${s.batch}</b>`;
+    $('#schedule-time').innerHTML = `<b>${scheduleLiteral(s.batch)}</b>`;
 
     const warning = $('#schedule-warning');
     if (activeState === 'remediated') {
       warning.classList.add('resolved');
-      warning.innerHTML = '<span>✓</span><p><b>Source remediation:</b> FULMNT now begins at 18:15, fifteen minutes after the Preferred cutoff. IBM i runtime confirmation is still required.</p>';
+      warning.innerHTML = '<span>✓</span><p><b>Source remediation:</b> submitted FULMNT source contains SCDTIME(181500), beyond the Preferred 18:00 cutoff. IBM i compile/submission/execution confirmation is still required.</p>';
     } else if (activeState === 'requested') {
       warning.classList.remove('resolved');
-      warning.innerHTML = '<span>!</span><p><b>Release hold:</b> Preferred cutoff and FULMNT both resolve to 18:00. The functional requirement can pass while this operational conflict remains open.</p>';
+      warning.innerHTML = '<span>!</span><p><b>Release hold:</b> the Preferred cutoff is 18:00 and preserved FULMNT CL evidence contains SCDTIME(180000). The functional requirement can pass while this inferred source-level collision remains open.</p>';
     } else {
       warning.classList.remove('resolved');
-      warning.innerHTML = '<span>!</span><p><b>Observed dependency:</b> FULMNT is already scheduled at 18:00. This becomes material when evaluating CHG-0042.</p>';
+      warning.innerHTML = '<span>!</span><p><b>Observed dependency:</b> preserved FULMNT CL source evidence contains SCDTIME(180000). This becomes material when evaluating CHG-0042.</p>';
     }
 
     $('#cp-insight-copy').textContent = s.insight;
@@ -205,9 +205,7 @@
       cutoff = c.cls === 'P' ? states[activeState].preferred : '16:00';
       if (minutes(time) > minutes(cutoff)) { accepted = false; detail = `Expedited cutoff exceeded. Effective cutoff for this customer is ${cutoff}.`; }
       else detail = `Expedited order accepted at ${time}; effective cutoff is ${cutoff}.`;
-    } else {
-      detail = 'Standard order is not subject to the expedited intraday cutoff.';
-    }
+    } else detail = 'Standard order is not subject to the expedited intraday cutoff.';
 
     return { accepted, detail, cutoff, customer:c, item, type, time, qty };
   }
@@ -244,24 +242,24 @@
       $('#release-state').textContent = 'HOLD';
       $('#release-icon').textContent = '!';
       $('#release-title').textContent = 'Functional PASS. Release HOLD.';
-      $('#release-detail').textContent = 'The customer-facing acceptance criterion is satisfied, but FULMNT still begins at the same 18:00 boundary.';
-      $('#release-rule').textContent = 'Do not release while the inferred batch-window collision remains OPEN.';
+      $('#release-detail').textContent = 'The customer-facing acceptance criterion is satisfied, but preserved FULMNT source evidence still contains the same 18:00 boundary.';
+      $('#release-rule').textContent = 'Do not release while the inferred source-level collision remains OPEN.';
       $('#gate-release-status').textContent = 'HOLD';
-      $('#gate-release-note').textContent = 'Acceptance passes; downstream collision remains open.';
+      $('#gate-release-note').textContent = 'Acceptance passes; downstream source collision remains open.';
       applyGate($('#gate-release'), 'hold');
-      $('#cp-insight-copy').textContent = 'The order test passed. The change did not. ChangeProof separates functional acceptance from release readiness and holds CHG-0042 because the 18:00 batch collision remains unresolved.';
+      $('#cp-insight-copy').textContent = 'The order test passed. The release did not advance. ChangeProof separates functional acceptance from change readiness and holds CHG-0042 because preserved SCDTIME(180000) evidence still collides with the requested 18:00 cutoff.';
       $('#cp-tags').innerHTML = '<span>EXECUTED_LOCAL</span><span>INFERRED</span><span>OPEN</span><span>IBM_I</span>';
     } else if (activeState === 'remediated') {
       release.className = 'decision-card release ready';
       $('#release-state').textContent = 'TARGET CHECK';
       $('#release-icon').textContent = '→';
       $('#release-title').textContent = 'Advance to IBM i validation';
-      $('#release-detail').textContent = 'Functional behavior passes and the source-level collision is remediated. Target execution remains outstanding.';
+      $('#release-detail').textContent = 'Functional behavior passes and submitted CL source contains SCDTIME(181500). Target execution remains outstanding.';
       $('#release-rule').textContent = 'Eligible for target validation; not yet approved for production release.';
       $('#gate-release-status').textContent = 'TARGET CHECK';
       $('#gate-release-note').textContent = 'Proceed to IBM i validation before release.';
       applyGate($('#gate-release'), 'ready');
-      $('#cp-insight-copy').textContent = 'Functional acceptance passes and the source schedule is moved to 18:15. ChangeProof now advances the change to IBM i target validation rather than declaring production success.';
+      $('#cp-insight-copy').textContent = 'Functional acceptance passes and submitted FULMNT source moves the schedule literal to 18:15. ChangeProof advances the change to IBM i target validation rather than declaring production success.';
       $('#cp-tags').innerHTML = '<span>EXECUTED_LOCAL</span><span>OBSERVED_SOURCE</span><span>TARGET_VALIDATION_REQUIRED</span><span>IBM_I</span>';
     } else {
       release.className = 'decision-card release neutral';
@@ -305,13 +303,13 @@
       release.className = 'decision-card release hold';
       $('#release-state').textContent = 'HOLD'; $('#release-icon').textContent = '!';
       $('#release-title').textContent = 'Release hold already identified';
-      $('#release-detail').textContent = 'FULMNT remains at 18:00. Functional acceptance may pass, but the operational collision is already open.';
+      $('#release-detail').textContent = 'Preserved FULMNT CL evidence remains at SCDTIME(180000). Functional acceptance may pass, but the inferred source-level collision is already open.';
       $('#release-rule').textContent = 'Functional PASS will not clear this release hold.';
     } else if (activeState === 'remediated') {
       release.className = 'decision-card release ready';
       $('#release-state').textContent = 'TARGET CHECK'; $('#release-icon').textContent = '→';
       $('#release-title').textContent = 'Target validation is the next gate';
-      $('#release-detail').textContent = 'The source-level collision is remediated; run the functional check, then validate RPG/CL/Db2 on IBM i.';
+      $('#release-detail').textContent = 'Submitted CL source contains SCDTIME(181500); run the functional check, then validate RPG/CL/Db2 on IBM i.';
       $('#release-rule').textContent = 'Source readiness is not production approval.';
     } else {
       release.className = 'decision-card release neutral';
@@ -340,12 +338,9 @@
       document.querySelector('.job-monitor').scrollIntoView({behavior:'smooth',block:'center'});
       setStatus('Transaction ZFULMNT_MON opened in current session');
     } else if (code === 'ZCHG_CTRL') {
-      $('#change-data').classList.add('active');
       switchObjectPanel('change-data');
       setStatus('Change package CHG-0042 opened');
-    } else {
-      setStatus(`Transaction ${code || '(blank)'} is not available in this synthetic workload`, 'warn');
-    }
+    } else setStatus(`Transaction ${code || '(blank)'} is not available in this synthetic workload`, 'warn');
   }
 
   $$('.scenario-tabs button').forEach(btn => btn.addEventListener('click', () => { activeState = btn.dataset.state; renderState(); }));
@@ -363,7 +358,6 @@
   $('#transaction-code').addEventListener('keydown', event => { if (event.key === 'Enter') { event.preventDefault(); executeTransaction(); } });
 
   if (new URLSearchParams(location.search).get('embed') === '1') document.body.classList.add('embedded');
-
   renderInventory();
   renderOrders();
   renderState();
