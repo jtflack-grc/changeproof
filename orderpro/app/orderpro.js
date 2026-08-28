@@ -6,108 +6,365 @@
     { id:'1000004', name:'Dunmore Retail Partners', address:'55 Market St, Dunmore PA 18512', cls:'S', credit:15000, status:'A' },
     { id:'1000005', name:'Elmridge Distribution Corp', address:'901 Warehouse Row, Elmridge KY 40601', cls:'S', credit:25000, status:'I' }
   ];
+
   const items = [
-    { id:'ITM0001', name:'Steel Hex Bolts M8x25mm', onHand:500, allocated:40, available:460, price:12.50 },
-    { id:'ITM0002', name:'Nylon Cable Ties 200mm', onHand:2000, allocated:150, available:1850, price:4.50 },
-    { id:'ITM0003', name:'Industrial Work Gloves L', onHand:300, allocated:20, available:280, price:18.00 },
-    { id:'ITM0004', name:'Safety Goggles Clear Lens', onHand:180, allocated:10, available:170, price:11.50 },
-    { id:'ITM0005', name:'Packing Tape 50mm x 100m', onHand:600, allocated:0, available:600, price:5.80 }
+    { id:'ITM0001', name:'Steel Hex Bolts M8x25mm', onHand:500, allocated:40, available:460, price:12.50, uom:'EA' },
+    { id:'ITM0002', name:'Nylon Cable Ties 200mm', onHand:2000, allocated:150, available:1850, price:4.50, uom:'EA' },
+    { id:'ITM0003', name:'Industrial Work Gloves L', onHand:300, allocated:20, available:280, price:18.00, uom:'PR' },
+    { id:'ITM0004', name:'Safety Goggles Clear Lens', onHand:180, allocated:10, available:170, price:11.50, uom:'EA' },
+    { id:'ITM0005', name:'Packing Tape 50mm x 100m', onHand:600, allocated:0, available:600, price:5.80, uom:'RL' }
   ];
+
   const orders = [
     ['2000010','1000005','S','S','15:00','O',210.00],['2000009','1000001','P','E','17:00','O',3200.00],['2000008','1000004','S','E','13:00','O',145.00],['2000007','1000004','S','S','09:00','F',980.00],['2000006','1000003','S','E','17:00','O',560.00],['2000005','1000003','S','E','15:00','O',320.00],['2000004','1000002','P','S','13:00','F',2100.75],['2000003','1000002','P','E','16:15','O',430.00],['2000002','1000001','P','E','15:00','O',875.50],['2000001','1000001','P','E','09:00','F',1250.00]
   ];
-  const states = {
-    baseline:{title:'Current production',subtitle:'Pre-change behavior with the existing 16:00 expedited cutoff.',preferred:'16:00',batch:'18:00',change:'BASELINE',changeNote:'Ticket not applied',warning:'CHG-0042 proposes an 18:00 Preferred cutoff while the existing FULMNT schedule is already 18:00. The ticket and schedule intersect even before code is changed.',tags:['OBSERVED_SOURCE','INFERRED','IBM_I']},
-    requested:{title:'Requested CHG-0042',subtitle:'Naive requested behavior: Preferred customers receive the 18:00 cutoff; batch remains untouched.',preferred:'18:00',batch:'18:00',change:'COLLISION',changeNote:'Requested behavior creates an operational overlap',warning:'The requested customer behavior works, but FULMNT still starts at 18:00. ChangeProof flags the schedule collision that the ticket never mentioned.',tags:['EXECUTED_LOCAL','INFERRED','OPEN','IBM_I']},
-    remediated:{title:'ChangeProof remediation',subtitle:'Preferred cutoff remains 18:00 and fulfillment moves to 18:15.',preferred:'18:00',batch:'18:15',change:'REVIEWABLE',changeNote:'Source remediated; target validation remains',warning:'The source-level collision is removed by moving FULMNT to 18:15. RPG, CL, and Db2 runtime behavior still require validation on IBM i.',tags:['EXECUTED_LOCAL','OBSERVED_SOURCE','TARGET_VALIDATION_REQUIRED','IBM_I']}
-  };
-  let activeState='baseline';
 
-  const $ = (s) => document.querySelector(s);
-  const customerSelect=$('#customer'); const itemSelect=$('#item');
-  customers.forEach(c=>customerSelect.add(new Option(`${c.id} — ${c.name}`,c.id)));
-  items.forEach(i=>itemSelect.add(new Option(`${i.id} — ${i.name}`,i.id)));
+  const states = {
+    baseline: {
+      title:'01 / Current production',
+      subtitle:'Pre-change behavior. Preferred and Standard expedited orders both stop at 16:00.',
+      preferred:'16:00', batch:'18:00',
+      messageClass:'info', messageTitle:'Baseline loaded.',
+      message:'Run the default Preferred expedited order at 17:00 to reproduce the requested behavior gap.',
+      operationalStatus:'BASELINE', operationalNote:'CHG-0042 not yet applied.', operationalClass:'',
+      releaseStatus:'NO-GO', releaseNote:'Functional acceptance not satisfied.', releaseClass:'',
+      impactState:'BASELINE', impactEvidence:'OBSERVED_SOURCE',
+      insight:'The current system rejects Preferred expedited orders after 16:00. Separately, FULMNT is observed at 18:00 — an important downstream fact once CHG-0042 is considered.',
+      tags:['OBSERVED_SOURCE','IBM_I']
+    },
+    requested: {
+      title:'02 / Ticket applied literally',
+      subtitle:'The requested customer-facing rule is applied, but the downstream fulfillment schedule is unchanged.',
+      preferred:'18:00', batch:'18:00',
+      messageClass:'warning', messageTitle:'Functional success is not release approval.',
+      message:'The 17:00 Preferred order can now pass, but FULMNT still begins at 18:00. Change readiness is HOLD until that operational collision is remediated.',
+      operationalStatus:'HOLD', operationalNote:'18:00 cutoff intersects FULMNT @ 18:00.', operationalClass:'hold',
+      releaseStatus:'HOLD', releaseNote:'Do not release: downstream collision remains open.', releaseClass:'hold',
+      impactState:'OPEN COLLISION', impactEvidence:'OBSERVED + INFERRED',
+      insight:'This is the key distinction: the acceptance criterion can pass while the release gate remains on HOLD. The ticket changed customer behavior but did not account for the 18:00 fulfillment boundary.',
+      tags:['EXECUTED_LOCAL','OBSERVED_SOURCE','INFERRED','OPEN','IBM_I']
+    },
+    remediated: {
+      title:'03 / ChangeProof remediation',
+      subtitle:'Preferred cutoff remains 18:00; FULMNT moves to 18:15. Source remediation is ready for target validation.',
+      preferred:'18:00', batch:'18:15',
+      messageClass:'success', messageTitle:'Source-level collision remediated.',
+      message:'Functional behavior passes and FULMNT is moved beyond the new cutoff. The change may proceed to IBM i target validation; this is not yet production approval.',
+      operationalStatus:'SOURCE RESOLVED', operationalNote:'FULMNT moved to 18:15 in submitted source.', operationalClass:'pass',
+      releaseStatus:'TARGET CHECK', releaseNote:'Proceed to IBM i validation before release.', releaseClass:'ready',
+      impactState:'REMEDIATED', impactEvidence:'TARGET_VALIDATION_REQUIRED',
+      insight:'ChangeProof can show local behavior passing and the source-level schedule collision removed. It still refuses to claim RPG compile, CL execution, or Db2 runtime proof without IBM i.',
+      tags:['EXECUTED_LOCAL','OBSERVED_SOURCE','TARGET_VALIDATION_REQUIRED','IBM_I']
+    }
+  };
+
+  let activeState = 'baseline';
+  let lastResult = null;
+  const $ = (selector) => document.querySelector(selector);
+  const $$ = (selector) => [...document.querySelectorAll(selector)];
+  const customerSelect = $('#customer');
+  const itemSelect = $('#item');
+
+  customers.forEach(c => customerSelect.add(new Option(`${c.id} — ${c.name}`, c.id)));
+  items.forEach(i => itemSelect.add(new Option(`${i.id} — ${i.name}`, i.id)));
 
   const money = n => new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(n);
-  const hhmmss = t => (t || '00:00').replace(':','')+'00';
-  const minutes = t => { const [h,m]=t.split(':').map(Number); return h*60+m; };
+  const hhmmss = t => (t || '00:00').replace(':','') + '00';
+  const minutes = t => { const [h,m] = t.split(':').map(Number); return h * 60 + m; };
+
+  function selectedCustomer(){ return customers.find(c => c.id === customerSelect.value) || customers[0]; }
+  function selectedItem(){ return items.find(i => i.id === itemSelect.value) || items[0]; }
+
+  function setStatus(message, kind='ok'){
+    $('#status-message').textContent = message;
+    const dot = $('.status-ok');
+    dot.textContent = kind === 'error' ? '●' : kind === 'warn' ? '●' : '●';
+    dot.style.color = kind === 'error' ? '#aa0808' : kind === 'warn' ? '#e9730c' : '#2e8b47';
+  }
 
   function renderCustomer(){
-    const c=customers.find(x=>x.id===customerSelect.value) || customers[0];
-    $('#customer-name').textContent=c.name; $('#customer-number').textContent=c.id;
-    $('#customer-class').textContent=c.cls; $('#customer-class-text').textContent=c.cls==='P'?'P — Preferred':'S — Standard';
-    $('#customer-credit').textContent=money(c.credit); $('#customer-status').textContent=c.status==='A'?'Active':'Inactive'; $('#customer-address').textContent=c.address;
-    const cutoff = c.cls==='P' ? states[activeState].preferred : '16:00';
-    $('#policy-text').textContent=`Expedited orders accepted through ${cutoff}`;
-    $('#result-class').textContent=c.cls;
+    const c = selectedCustomer();
+    $('#customer-name').textContent = c.name;
+    $('#customer-number').textContent = c.id;
+    $('#customer-class').textContent = c.cls;
+    $('#customer-class-text').textContent = c.cls === 'P' ? 'P — Preferred' : 'S — Standard';
+    $('#customer-credit').textContent = money(c.credit);
+    $('#customer-status').textContent = c.status === 'A' ? 'Active' : 'Inactive';
+    $('#customer-address').textContent = c.address;
+    const cutoff = c.cls === 'P' ? states[activeState].preferred : '16:00';
+    $('#policy-text').textContent = `Expedited orders accepted through ${cutoff}`;
+    $('#result-class').textContent = c.cls;
+    $('#partner-soldto').textContent = `${c.id} / ${c.name}`;
+    $('#partner-shipto').textContent = `${c.id} / ${c.address.split(',')[0]}`;
+    $('#partner-payer').textContent = `${c.id} / ${c.name}`;
+    renderItemOverview();
+    renderScheduleLines();
   }
 
   function renderInventory(){
-    $('#inventory-list').innerHTML=items.map(i=>`<div class="inventory-row"><div><b>${i.id}</b><small>${i.name}</small></div><div class="inventory-qty"><strong>${i.available.toLocaleString()}</strong><span>available</span></div></div>`).join('');
+    $('#inventory-list').innerHTML = items.map(i => `
+      <div class="inventory-row">
+        <div><b>${i.id}</b><small>${i.name}</small></div>
+        <div class="inventory-qty"><strong>${i.available.toLocaleString()}</strong><span>${i.uom} available</span></div>
+      </div>`).join('');
   }
 
   function renderOrders(){
-    $('#orders-body').innerHTML=orders.map(o=>`<tr><td><b>${o[0]}</b></td><td>${o[1]}</td><td class="class-${o[2]}">${o[2]}</td><td>${o[3]==='E'?'Expedited':'Standard'}</td><td>${o[4]}</td><td><span class="order-status ${o[5]}">${o[5]==='F'?'Fulfilled':'Open'}</span></td><td>${money(o[6])}</td></tr>`).join('');
+    $('#orders-body').innerHTML = orders.map(o => `
+      <tr><td><b>${o[0]}</b></td><td>${o[1]}</td><td class="class-${o[2]}">${o[2]}</td><td>${o[3] === 'E' ? 'Expedited' : 'Standard'}</td><td>${o[4]}</td><td><span class="order-status ${o[5]}">${o[5] === 'F' ? 'Fulfilled' : 'Open'}</span></td><td>${money(o[6])}</td></tr>`).join('');
+  }
+
+  function renderItemOverview(){
+    const item = selectedItem();
+    const qty = Math.max(0, Number($('#quantity').value || 0));
+    $('#item-overview-body').innerHTML = `<tr><td><b>10</b></td><td>${item.id}</td><td>${item.name}</td><td>${qty}</td><td>${item.uom}</td><td>P100</td><td>${money(item.price)}</td><td>${item.available.toLocaleString()} ${item.uom}</td></tr>`;
+  }
+
+  function renderScheduleLines(){
+    const c = selectedCustomer();
+    const cutoff = c.cls === 'P' ? states[activeState].preferred : '16:00';
+    const batch = states[activeState].batch;
+    const assessment = activeState === 'requested' && c.cls === 'P' ? '<span class="status-chip target">COLLISION</span>' : activeState === 'remediated' ? '<span class="status-chip observed">SOURCE REMEDIATED</span>' : '<span class="status-chip neutral">BASELINE</span>';
+    $('#schedule-lines-body').innerHTML = `<tr><td>10</td><td>0001</td><td>2024-11-15</td><td>${Math.max(0,Number($('#quantity').value || 0))}</td><td>${cutoff}</td><td>${batch}</td><td>${assessment}</td></tr>`;
+  }
+
+  function applyGate(el, cls){
+    el.classList.remove('pass','fail','hold','ready');
+    if (cls) el.classList.add(cls);
+  }
+
+  function renderStaticGates(){
+    const s = states[activeState];
+    $('#gate-operational-status').textContent = s.operationalStatus;
+    $('#gate-operational-note').textContent = s.operationalNote;
+    applyGate($('#gate-operational'), s.operationalClass);
+    $('#gate-target-status').textContent = 'REQUIRED';
+    $('#gate-target-note').textContent = 'RPG / CL / Db2 not executed here.';
+    applyGate($('#gate-target'), '');
+
+    $('#gate-release-status').textContent = s.releaseStatus;
+    $('#gate-release-note').textContent = s.releaseNote;
+    applyGate($('#gate-release'), s.releaseClass);
   }
 
   function renderState(){
-    const s=states[activeState];
-    $('#scenario-title').textContent=s.title; $('#scenario-subtitle').textContent=s.subtitle;
-    $('#kpi-cutoff').textContent=s.preferred; $('#kpi-cutoff-note').textContent=s.preferred==='16:00'?'Same as Standard':'Preferred only / Standard stays 16:00';
-    $('#kpi-batch').textContent=s.batch; $('#kpi-change').textContent=s.change; $('#kpi-change-note').textContent=s.changeNote;
-    $('#schedule-time').innerHTML=`<b>${s.batch}</b>`;
-    const sw=$('#schedule-warning');
-    if(activeState==='remediated'){
-      sw.classList.add('resolved'); sw.innerHTML='<span>✓</span><p><b>Collision removed in source:</b> FULMNT now starts 15 minutes after the Preferred order window closes.</p>';
+    const s = states[activeState];
+    lastResult = null;
+    $('#scenario-title').textContent = s.title;
+    $('#scenario-subtitle').textContent = s.subtitle;
+    $$('.scenario-tabs button').forEach(b => b.setAttribute('aria-selected', b.dataset.state === activeState ? 'true' : 'false'));
+
+    const message = $('#lifecycle-message');
+    message.className = `message-strip ${s.messageClass}`;
+    message.innerHTML = `<span class="message-icon">${s.messageClass === 'warning' ? '!' : s.messageClass === 'success' ? '✓' : 'i'}</span><div><b>${s.messageTitle}</b><p>${s.message}</p></div>`;
+
+    $('#gate-functional-status').textContent = 'NOT TESTED';
+    $('#gate-functional-note').textContent = 'Submit the default order.';
+    applyGate($('#gate-functional'), '');
+    renderStaticGates();
+
+    $('#impact-state').textContent = s.impactState;
+    $('#impact-rule').textContent = `${s.preferred} Preferred / 16:00 Standard`;
+    $('#impact-batch').textContent = `FULMNT @ ${s.batch}`;
+    $('#impact-evidence').textContent = s.impactEvidence;
+    $('#schedule-time').innerHTML = `<b>${s.batch}</b>`;
+
+    const warning = $('#schedule-warning');
+    if (activeState === 'remediated') {
+      warning.classList.add('resolved');
+      warning.innerHTML = '<span>✓</span><p><b>Source remediation:</b> FULMNT now begins at 18:15, fifteen minutes after the Preferred cutoff. IBM i runtime confirmation is still required.</p>';
+    } else if (activeState === 'requested') {
+      warning.classList.remove('resolved');
+      warning.innerHTML = '<span>!</span><p><b>Release hold:</b> Preferred cutoff and FULMNT both resolve to 18:00. The functional requirement can pass while this operational conflict remains open.</p>';
     } else {
-      sw.classList.remove('resolved'); sw.innerHTML='<span>!</span><p><b>Change intersection:</b> Proposed Preferred cutoff and FULMNT both resolve to 18:00.</p>';
+      warning.classList.remove('resolved');
+      warning.innerHTML = '<span>!</span><p><b>Observed dependency:</b> FULMNT is already scheduled at 18:00. This becomes material when evaluating CHG-0042.</p>';
     }
-    $('#cp-insight-copy').textContent=s.warning;
-    $('#cp-tags').innerHTML=s.tags.map(t=>`<span>${t}</span>`).join('');
-    document.querySelectorAll('.scenario-tabs button').forEach(b=>b.setAttribute('aria-selected',b.dataset.state===activeState?'true':'false'));
-    renderCustomer(); resetResult(false);
+
+    $('#cp-insight-copy').textContent = s.insight;
+    $('#cp-tags').innerHTML = s.tags.map(t => `<span>${t}</span>`).join('');
+    renderCustomer();
+    resetDecision(false);
+    setStatus(`${s.title} loaded`);
   }
 
-  function validateOrder(){
-    const c=customers.find(x=>x.id===customerSelect.value); const item=items.find(x=>x.id===itemSelect.value);
-    const type=$('#order-type').value; const time=$('#order-time').value; const qty=Number($('#quantity').value||0);
-    let accepted=true; let detail='Order passed local business-rule validation.';
-    if(c.status!=='A'){accepted=false;detail='Customer account is inactive.';}
-    else if(qty<=0){accepted=false;detail='Quantity must be greater than zero.';}
-    else if(qty>item.available){accepted=false;detail=`Requested quantity exceeds ${item.available} units available.`;}
-    else if(type==='E'){
-      const cutoff=(c.cls==='P' && activeState!=='baseline')?'18:00':'16:00';
-      if(minutes(time)>minutes(cutoff)){accepted=false;detail=`Expedited cutoff exceeded. Effective cutoff for this customer is ${cutoff}.`;}
-      else detail=`Expedited order accepted at ${time}; effective cutoff is ${cutoff}.`;
-    } else detail='Standard order is not subject to the expedited intraday cutoff.';
+  function evaluateOrder(){
+    const c = selectedCustomer();
+    const item = selectedItem();
+    const type = $('#order-type').value;
+    const time = $('#order-time').value;
+    const qty = Number($('#quantity').value || 0);
+    let accepted = true;
+    let detail = 'Order passed local business-rule validation.';
+    let cutoff = 'N/A';
 
-    const card=$('#result-card'); card.className=`result-card ${accepted?'success':'error'}`;
-    $('.result-icon').textContent=accepted?'✓':'×'; $('#result-title').textContent=accepted?'ORDER ACCEPTED':'ORDER REJECTED'; $('#result-detail').textContent=detail;
-    $('#result-type').textContent=type; $('#result-class').textContent=c.cls; $('#result-time').textContent=hhmmss(time);
-
-    if(accepted && activeState==='requested'){
-      $('#cp-insight-copy').textContent='The customer-facing change now passes locally, but that success creates a second question: FULMNT still begins at 18:00. Passing the acceptance criterion does not prove the operational change is safe.';
-      $('#cp-tags').innerHTML='<span>EXECUTED_LOCAL</span><span>INFERRED</span><span>OPEN</span><span>IBM_I</span>';
+    if (c.status !== 'A') { accepted = false; detail = 'Customer account is inactive.'; }
+    else if (qty <= 0) { accepted = false; detail = 'Order quantity must be greater than zero.'; }
+    else if (qty > item.available) { accepted = false; detail = `Requested quantity exceeds ${item.available} ${item.uom} available.`; }
+    else if (type === 'E') {
+      cutoff = c.cls === 'P' ? states[activeState].preferred : '16:00';
+      if (minutes(time) > minutes(cutoff)) { accepted = false; detail = `Expedited cutoff exceeded. Effective cutoff for this customer is ${cutoff}.`; }
+      else detail = `Expedited order accepted at ${time}; effective cutoff is ${cutoff}.`;
+    } else {
+      detail = 'Standard order is not subject to the expedited intraday cutoff.';
     }
-    if(accepted && activeState==='remediated'){
-      $('#cp-insight-copy').textContent='Local behavior is proven and the source schedule is moved to 18:15. ChangeProof still refuses to claim RPG compile, CL execution, or Db2 runtime validation without the IBM i target.';
-      $('#cp-tags').innerHTML='<span>EXECUTED_LOCAL</span><span>OBSERVED_SOURCE</span><span>TARGET_VALIDATION_REQUIRED</span>';
+
+    return { accepted, detail, cutoff, customer:c, item, type, time, qty };
+  }
+
+  function renderDecision(result, simulation=false){
+    lastResult = result;
+    const functional = $('#functional-result');
+    functional.className = `decision-card functional ${result.accepted ? 'success' : 'error'}`;
+    $('#functional-state').textContent = result.accepted ? 'PASS' : 'FAIL';
+    $('#functional-icon').textContent = result.accepted ? '✓' : '×';
+    $('#result-title').textContent = result.accepted ? 'Order acceptance check passed' : 'Order acceptance check failed';
+    $('#result-detail').textContent = result.detail;
+    $('#result-type').textContent = result.type;
+    $('#result-class').textContent = result.customer.cls;
+    $('#result-time').textContent = hhmmss(result.time);
+
+    $('#gate-functional-status').textContent = result.accepted ? 'PASS' : 'FAIL';
+    $('#gate-functional-note').textContent = result.accepted ? 'Entered order satisfies current local rule.' : result.detail;
+    applyGate($('#gate-functional'), result.accepted ? 'pass' : 'fail');
+
+    const release = $('#release-result');
+    if (!result.accepted) {
+      release.className = 'decision-card release error';
+      $('#release-state').textContent = 'BLOCKED';
+      $('#release-icon').textContent = '×';
+      $('#release-title').textContent = 'Release gate blocked';
+      $('#release-detail').textContent = 'The functional test failed, so the change cannot advance.';
+      $('#release-rule').textContent = 'Functional acceptance must pass before release review.';
+      $('#gate-release-status').textContent = 'NO-GO';
+      $('#gate-release-note').textContent = 'Functional acceptance failed.';
+      applyGate($('#gate-release'), 'fail');
+    } else if (activeState === 'requested') {
+      release.className = 'decision-card release hold';
+      $('#release-state').textContent = 'HOLD';
+      $('#release-icon').textContent = '!';
+      $('#release-title').textContent = 'Functional PASS. Release HOLD.';
+      $('#release-detail').textContent = 'The customer-facing acceptance criterion is satisfied, but FULMNT still begins at the same 18:00 boundary.';
+      $('#release-rule').textContent = 'Do not release while the inferred batch-window collision remains OPEN.';
+      $('#gate-release-status').textContent = 'HOLD';
+      $('#gate-release-note').textContent = 'Acceptance passes; downstream collision remains open.';
+      applyGate($('#gate-release'), 'hold');
+      $('#cp-insight-copy').textContent = 'The order test passed. The change did not. ChangeProof separates functional acceptance from release readiness and holds CHG-0042 because the 18:00 batch collision remains unresolved.';
+      $('#cp-tags').innerHTML = '<span>EXECUTED_LOCAL</span><span>INFERRED</span><span>OPEN</span><span>IBM_I</span>';
+    } else if (activeState === 'remediated') {
+      release.className = 'decision-card release ready';
+      $('#release-state').textContent = 'TARGET CHECK';
+      $('#release-icon').textContent = '→';
+      $('#release-title').textContent = 'Advance to IBM i validation';
+      $('#release-detail').textContent = 'Functional behavior passes and the source-level collision is remediated. Target execution remains outstanding.';
+      $('#release-rule').textContent = 'Eligible for target validation; not yet approved for production release.';
+      $('#gate-release-status').textContent = 'TARGET CHECK';
+      $('#gate-release-note').textContent = 'Proceed to IBM i validation before release.';
+      applyGate($('#gate-release'), 'ready');
+      $('#cp-insight-copy').textContent = 'Functional acceptance passes and the source schedule is moved to 18:15. ChangeProof now advances the change to IBM i target validation rather than declaring production success.';
+      $('#cp-tags').innerHTML = '<span>EXECUTED_LOCAL</span><span>OBSERVED_SOURCE</span><span>TARGET_VALIDATION_REQUIRED</span><span>IBM_I</span>';
+    } else {
+      release.className = 'decision-card release neutral';
+      $('#release-state').textContent = 'NO-GO';
+      $('#release-icon').textContent = '■';
+      $('#release-title').textContent = 'CHG-0042 not implemented';
+      $('#release-detail').textContent = 'This order passes the current production rule, but the requested change has not been applied.';
+      $('#release-rule').textContent = 'Baseline behavior is not evidence that CHG-0042 is complete.';
+      $('#gate-release-status').textContent = 'NO-GO';
+      $('#gate-release-note').textContent = 'CHG-0042 remains unapplied.';
+      applyGate($('#gate-release'), '');
+    }
+
+    renderItemOverview();
+    renderScheduleLines();
+    setStatus(`${simulation ? 'Simulation' : 'Order check'} ${result.accepted ? 'completed successfully' : 'returned an error'}`, result.accepted ? 'ok' : 'error');
+  }
+
+  function resetDecision(resetForm=true){
+    if (resetForm) {
+      customerSelect.value = '1000001';
+      $('#order-type').value = 'E';
+      $('#order-time').value = '17:00';
+      itemSelect.value = 'ITM0001';
+      $('#quantity').value = '10';
+      renderCustomer();
+    }
+    lastResult = null;
+    const functional = $('#functional-result');
+    functional.className = 'decision-card functional neutral';
+    $('#functional-state').textContent = 'NOT RUN';
+    $('#functional-icon').textContent = '?';
+    $('#result-title').textContent = 'Order check not executed';
+    $('#result-detail').textContent = 'Default test case: Preferred customer, expedited order, 17:00.';
+    $('#result-type').textContent = $('#order-type').value;
+    $('#result-class').textContent = selectedCustomer().cls;
+    $('#result-time').textContent = hhmmss($('#order-time').value);
+
+    const release = $('#release-result');
+    if (activeState === 'requested') {
+      release.className = 'decision-card release hold';
+      $('#release-state').textContent = 'HOLD'; $('#release-icon').textContent = '!';
+      $('#release-title').textContent = 'Release hold already identified';
+      $('#release-detail').textContent = 'FULMNT remains at 18:00. Functional acceptance may pass, but the operational collision is already open.';
+      $('#release-rule').textContent = 'Functional PASS will not clear this release hold.';
+    } else if (activeState === 'remediated') {
+      release.className = 'decision-card release ready';
+      $('#release-state').textContent = 'TARGET CHECK'; $('#release-icon').textContent = '→';
+      $('#release-title').textContent = 'Target validation is the next gate';
+      $('#release-detail').textContent = 'The source-level collision is remediated; run the functional check, then validate RPG/CL/Db2 on IBM i.';
+      $('#release-rule').textContent = 'Source readiness is not production approval.';
+    } else {
+      release.className = 'decision-card release neutral';
+      $('#release-state').textContent = 'NO-GO'; $('#release-icon').textContent = '■';
+      $('#release-title').textContent = 'Not eligible for release';
+      $('#release-detail').textContent = 'The requested functional behavior has not been implemented.';
+      $('#release-rule').textContent = 'Functional acceptance must pass before release review.';
+    }
+    renderItemOverview();
+    renderScheduleLines();
+  }
+
+  function switchObjectPanel(panelId){
+    $$('.object-tabs button').forEach(btn => btn.classList.toggle('active', btn.dataset.panel === panelId));
+    $$('.object-content').forEach(panel => panel.classList.toggle('active', panel.id === panelId));
+    setStatus(`View changed to ${panelId.replace('-',' ')}`);
+  }
+
+  function executeTransaction(){
+    const code = ($('#transaction-code').value || '').trim().toUpperCase();
+    if (['ZORD_ENTRY','/NZORD_ENTRY'].includes(code)) {
+      $('#transaction-code').value = 'ZORD_ENTRY';
+      switchObjectPanel('order-data');
+      setStatus('Transaction ZORD_ENTRY loaded');
+    } else if (code === 'ZFULMNT_MON') {
+      document.querySelector('.job-monitor').scrollIntoView({behavior:'smooth',block:'center'});
+      setStatus('Transaction ZFULMNT_MON opened in current session');
+    } else if (code === 'ZCHG_CTRL') {
+      $('#change-data').classList.add('active');
+      switchObjectPanel('change-data');
+      setStatus('Change package CHG-0042 opened');
+    } else {
+      setStatus(`Transaction ${code || '(blank)'} is not available in this synthetic workload`, 'warn');
     }
   }
 
-  function resetResult(resetForm=true){
-    if(resetForm){customerSelect.value='1000001';$('#order-type').value='E';$('#order-time').value='17:00';itemSelect.value='ITM0001';$('#quantity').value='10';renderCustomer();}
-    const card=$('#result-card');card.className='result-card neutral';$('.result-icon').textContent='?';$('#result-title').textContent='Ready to validate';$('#result-detail').textContent='The default scenario uses a Preferred customer submitting an expedited order at 17:00.';
-    $('#result-type').textContent=$('#order-type').value;$('#result-class').textContent=(customers.find(x=>x.id===customerSelect.value)||customers[0]).cls;$('#result-time').textContent=hhmmss($('#order-time').value);
-    $('#cp-insight-copy').textContent=states[activeState].warning;$('#cp-tags').innerHTML=states[activeState].tags.map(t=>`<span>${t}</span>`).join('');
-  }
+  $$('.scenario-tabs button').forEach(btn => btn.addEventListener('click', () => { activeState = btn.dataset.state; renderState(); }));
+  $$('.object-tabs button').forEach(btn => btn.addEventListener('click', () => switchObjectPanel(btn.dataset.panel)));
+  $$('.master-tabs button').forEach(btn => btn.addEventListener('click', () => { $$('.master-tabs button').forEach(x => x.classList.remove('active')); btn.classList.add('active'); }));
+  customerSelect.addEventListener('change', () => { renderCustomer(); resetDecision(false); });
+  itemSelect.addEventListener('change', () => { renderItemOverview(); resetDecision(false); });
+  $('#quantity').addEventListener('input', () => { renderItemOverview(); renderScheduleLines(); resetDecision(false); });
+  $('#order-type').addEventListener('change', () => resetDecision(false));
+  $('#order-time').addEventListener('change', () => { renderScheduleLines(); resetDecision(false); });
+  $('#order-form').addEventListener('submit', event => { event.preventDefault(); renderDecision(evaluateOrder(), false); });
+  $('#simulate-order').addEventListener('click', () => renderDecision(evaluateOrder(), true));
+  $('#reset-order').addEventListener('click', () => resetDecision(true));
+  $('#execute-transaction').addEventListener('click', executeTransaction);
+  $('#transaction-code').addEventListener('keydown', event => { if (event.key === 'Enter') { event.preventDefault(); executeTransaction(); } });
 
-  document.querySelectorAll('.scenario-tabs button').forEach(b=>b.addEventListener('click',()=>{activeState=b.dataset.state;renderState();}));
-  customerSelect.addEventListener('change',()=>{renderCustomer();resetResult(false);});
-  $('#order-form').addEventListener('submit',e=>{e.preventDefault();validateOrder();});
-  $('#reset-order').addEventListener('click',()=>resetResult(true));
-  ['#order-type','#order-time','#quantity','#item'].forEach(sel=>$(sel).addEventListener('change',()=>resetResult(false)));
+  if (new URLSearchParams(location.search).get('embed') === '1') document.body.classList.add('embedded');
 
-  if(new URLSearchParams(location.search).get('embed')==='1') document.body.classList.add('embedded');
-  renderInventory();renderOrders();renderState();
+  renderInventory();
+  renderOrders();
+  renderState();
 })();
