@@ -2,74 +2,90 @@
 
 **Target runtime:** 2:45 to 2:55  
 **Requirement:** Keep at least 90 seconds on the working solution itself.  
-**Recording setup:** Have the baseline and post-change HTML Evidence Packs open in two browser tabs. Also have one Bob task-session summary screenshot ready to show briefly.
+**Recording setup:** Open the live ChangeProof GitHub Pages experience, the final Evidence Pack, and the Bob task-session summary screenshot in separate tabs.
 
-## 0:00-0:20 | Hook and problem
+## 0:00-0:18 | Hook
 
-**On screen:** Title, then `CHANGE_REQUEST.md`.
-
-**Say:**
-
-“AI can write the change. ChangeProof asks whether the change deserves to ship. This is ORDERPRO, a fictional brownfield IBM i order system with RPGLE, CL, Db2/DDS, and a Node API. The ticket looks simple: let Preferred customers place expedited orders until 6 PM instead of 4 PM. The hard part is proving what that change actually touches.”
-
-## 0:20-0:35 | IBM Bob role
-
-**On screen:** One real Bob task-session summary screenshot, then a quick view of the repository tree.
+**On screen:** ChangeProof GitHub Pages hero and ORDERPRO change-control console.
 
 **Say:**
 
-“I used IBM Bob 2.0 as the core build environment for the project: planning the workflow, authoring the polyglot sample application, building the analyzers and tests, generating the Evidence Packs, and iterating on remediation. The project used the full 40-Bobcoin hackathon allocation.”
+“AI can write the change. ChangeProof asks whether the change deserves to ship. This is ORDERPRO, a fictional brownfield IBM i order system with RPGLE, CL, Db2/DDS, and a Node API. The ticket looks simple: Preferred customers get two more hours for expedited orders. The problem is proving what that request actually changes.”
 
-## 0:35-1:20 | Baseline evidence
+## 0:18-0:32 | IBM Bob role
 
-**On screen:** `evidence-pack/baseline/evidence-pack.html`, starting at Executive Summary and Blast Radius.
-
-**Say:**
-
-“Here is the preserved baseline before CHG-0042. ChangeProof executes local tests, analyzes the source and documentation, and correlates findings to the change request. Fourteen tests pass, two intentionally fail, and three IBM i-only validations are skipped. The human view shows 12 primary blast-radius items, backed by 65 machine-readable evidence findings.”
-
-“Each item tells the reviewer how it was established: `EXECUTED_LOCAL`, `OBSERVED_SOURCE`, or `INFERRED`, plus whether final validation is local or requires IBM i.”
-
-## 1:20-1:50 | The hidden consequence
-
-**On screen:** Highlight the baseline `SCDTIME(180000)` inferred finding in the Blast Radius or Static Analysis section.
+**On screen:** Briefly show the real Bob task-session summary screenshot with the `changeproof` workspace and 40.12 Bobcoins, then return immediately to the live site.
 
 **Say:**
 
-“This is the finding that matters most. The change ticket never mentions batch processing, but ChangeProof sees that the CL fulfillment job is scheduled for 18:00, exactly when the new Preferred-order window closes. It infers a potential batch-window collision. That is the requested change revealing a downstream operational change the ticket never described.”
+“IBM Bob 2.0 was the core build environment: planning, polyglot authoring, analyzers, tests, evidence generation, and iterative remediation. This single retained task consumed the full hackathon Bob allocation.”
 
-## 1:50-2:30 | Post-change proof
+## 0:32-1:05 | Session 01 — discover the hidden consequence
 
-**On screen:** Switch to `evidence-pack/post-change/evidence-pack.html`. Show Executive Summary, then test results/diff.
-
-**Say:**
-
-“After remediation, the API and RPG rules differentiate Preferred and Standard customers, the stale customer-class documentation is corrected, regression tests are added, and the batch moves to 18:15.”
-
-“The post-change run has 16 passing tests, zero failures, and the same three intentionally skipped IBM i validations. Forty-six findings are resolved locally. Thirty-seven remain `TARGET_VALIDATION_REQUIRED` because RPG, CL, and Db2 behavior still need confirmation on an actual IBM i.”
-
-## 2:30-2:48 | Why the validation boundary matters
-
-**On screen:** IBM i Validation Boundary section.
+**On screen:** Scroll to **IronTerm evidence sessions**, Session 01 / Discover collision.
 
 **Say:**
 
-“ChangeProof does not turn static analysis into fake production evidence. It can observe that RPG and CL source changed, but it will not claim those programs compiled or ran correctly on IBM i until target validation actually occurs. A real adapter can replace the local surrogate without changing the evidence model.”
+“ChangeProof inspects the brownfield surface, not just the modern API. Here the IBM i job-schedule fixture shows fulfillment starting at 18:00.”
 
-## 2:48-2:58 | Close
+“The change request extends Preferred expedited ordering to that same 18:00 boundary. ChangeProof correlates those two observations and produces an `INFERRED` finding: a potential batch-window collision that the ticket never mentioned.”
 
-**On screen:** Post-change Executive Summary or title card.
+Pause briefly on the right-side evidence rail so `OBSERVED_SOURCE`, `INFERRED`, `OPEN`, and `IBM_I` are visible.
+
+## 1:05-1:32 | Session 02 — trace the real RPG rule
+
+**On screen:** Click **02 / Trace business rule**.
 
 **Say:**
 
-“The requested change is not always the actual change. ChangeProof gives maintainers and reviewers a traceable answer to what changed, what was proven, what was inferred, and what still has to be validated before release.”
+“The rule is also not a blind 160000-to-180000 replacement. This fixture replays the actual submitted RPG source. The procedure checks order type, customer class, and order time. Preferred customers get 18:00; Standard customers remain at 16:00.”
+
+“That means a simplistic change could easily alter behavior for the wrong customers. ChangeProof keeps the source observation separate from whether the RPG has actually compiled and executed on IBM i.”
+
+## 1:32-1:58 | Session 03 — verify the remediation without lying
+
+**On screen:** Click **03 / Verify remediation**.
+
+**Say:**
+
+“After remediation, the fulfillment schedule is visibly moved to 18:15, beyond the new order cutoff. ChangeProof can mark the source remediation as resolved while still leaving runtime status as `TARGET_VALIDATION_REQUIRED`.”
+
+“That distinction is intentional. A source edit is evidence of a source edit. It is not evidence that CL or RPG ran successfully on the target.”
+
+## 1:58-2:28 | Before → after results
+
+**On screen:** Scroll to the Before → After panels, then open the final Evidence Pack.
+
+**Say:**
+
+“The preserved baseline has 14 passing tests, 2 intentional failures, and 3 IBM i validation-boundary skips. After the change: 16 passing, zero failures, and the same three target-only validations.”
+
+“The human-facing report stays concise, while `traceability.json` retains the complete machine-readable evidence trail.”
+
+## 2:28-2:46 | Evidence model
+
+**On screen:** Show the three evidence-model cards or the corresponding section of the final Evidence Pack.
+
+**Say:**
+
+“Every finding answers three separate questions: how do we know, where is remediation now, and where must final validation occur? That prevents static analysis from turning into fake production assurance.”
+
+## 2:46-2:56 | Close
+
+**On screen:** Final ChangeProof call-to-action panel.
+
+**Say:**
+
+“The requested change is not always the actual change. ChangeProof gives the reviewer a traceable answer to what changed, what was proven, what was inferred, and what still needs the target before release.”
 
 ---
 
 ## Recording Notes
 
-- Do not run `npm run baseline` during the recording. The repository is intentionally in the post-change state; use the preserved baseline HTML.
-- If you want one live command, run `npm run post-change` before recording or briefly show the successful console output, then return to the HTML report.
-- Keep the Bob screenshot segment short. The judges need to see Bob usage clearly, but the working ChangeProof solution should dominate the video.
-- Do not spend time explaining every finding. The 18:00 batch collision is the memorable example.
-- Avoid claiming live IBM i execution. The `IBM_I` validation boundary is a feature of the project, not a limitation to hide.
+- Use the live GitHub Pages site as the primary visual spine. It is substantially easier to understand than narrating the repository tree.
+- The IronTerm section is a **static fixture replay**, clearly labeled as such. Do not describe it as a live TN5250 connection.
+- Session 02 displays RPG lines copied from the submitted `ORDPRC.rpgle`; it is not invented terminal output.
+- Do not run `npm run baseline` during recording. The repository is intentionally in the post-change state; use the preserved baseline artifacts.
+- Keep the Bob screenshot segment short. Bob usage must be visible, but the working ChangeProof experience should dominate the video.
+- Do not spend time explaining every finding. The 18:00 collision is the memorable example.
+- Avoid claiming live IBM i execution. The `IBM_I` validation boundary is a feature, not a limitation to hide.
