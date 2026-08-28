@@ -1,6 +1,6 @@
 # ChangeProof Evidence Pack
 
-_Generated: 2026-08-28T16:40:18.360Z_
+_Generated: 2026-08-28T23:10:18.604Z_
 
 
 ---
@@ -58,32 +58,32 @@ Keywords: cutoff, preferred, expedited, 1600, 1800, CUSCLS, ORDTYP, P, E, batch,
 
 ## 2. Executive Summary
 
-**Total findings:** 83
+**Total findings:** 86
 
 | evidenceBasis | count |
 |---|---|
-| OBSERVED_SOURCE | 62 |
+| OBSERVED_SOURCE | 65 |
 | EXECUTED_LOCAL | 21 |
 
 | status | count |
 |---|---|
-| TARGET_VALIDATION_REQUIRED | 37 |
-| RESOLVED | 46 |
+| TARGET_VALIDATION_REQUIRED | 30 |
+| RESOLVED | 56 |
 
 | validationTarget | count |
 |---|---|
-| IBM_I | 37 |
-| LOCAL | 46 |
+| IBM_I | 30 |
+| LOCAL | 56 |
 
 ---
 
 ## 3. Blast Radius
 
-_83 total findings — showing primary representative per artifact. Full set in `traceability.json`._
+_86 total findings — showing primary representative per artifact. Full set in `traceability.json`._
 
 | Artifact | Symbol | evidenceBasis | status | validationTarget |
 |---|---|---|---|---|
-| `orderpro/rpgle/ORDPRC.rpgle` | comment | [OBSERVED_SOURCE] | [TARGET_VALIDATION_REQUIRED] | [IBM_I] |
+| `orderpro/rpgle/ORDPRC.rpgle` | CUSCLS | [OBSERVED_SOURCE] | [TARGET_VALIDATION_REQUIRED] | [IBM_I] |
 | `orderpro/clle/FULMNT.clle` | ORDERPRO/FULMNT | [OBSERVED_SOURCE] | [TARGET_VALIDATION_REQUIRED] | [IBM_I] |
 | `orderpro/dds/CUSMAS.dds` | CUSCLS | [OBSERVED_SOURCE] | [RESOLVED] | [LOCAL] |
 | `orderpro/dds/ORDHED.dds` | ORDTYP | [OBSERVED_SOURCE] | [RESOLVED] | [LOCAL] |
@@ -113,54 +113,33 @@ orders.js    -->  CUSMAS        (customer class lookup)
 
 ### orderpro/rpgle/ORDPRC.rpgle
 
-- **comment** — comment 'comment' = Handles order cutoff validation and inventory allocation. — keywords: cutoff
+- **comment** — comment 'comment' = Validates cutoff windows and allocates inventory for incoming orders. — keywords: cutoff
   - [OBSERVED_SOURCE] [TARGET_VALIDATION_REQUIRED] [IBM_I]
-  - `orderpro/rpgle/ORDPRC.rpgle:5`
-- **comment** — comment 'comment' = Cutoff per CHG-0042 (supersedes spec ORD-001 dated 2019-03-15) — keywords: cutoff
+  - `orderpro/rpgle/ORDPRC.rpgle:8`
+- **CUSCLS** — variable 'CUSCLS' — keywords: CUSCLS
   - [OBSERVED_SOURCE] [TARGET_VALIDATION_REQUIRED] [IBM_I]
-  - `orderpro/rpgle/ORDPRC.rpgle:7`
-- **comment** — comment 'comment' = Prototype: Check Order Cutoff — keywords: cutoff
+  - `orderpro/rpgle/ORDPRC.rpgle:12`
+- **ORDTYP** — variable 'ORDTYP' — keywords: ORDTYP
   - [OBSERVED_SOURCE] [TARGET_VALIDATION_REQUIRED] [IBM_I]
   - `orderpro/rpgle/ORDPRC.rpgle:13`
-- **comment** — comment 'comment' = Procedure: CHKORDCTF - Check Order Cutoff Time — keywords: cutoff
+- **comment** — comment 'comment' = CHKORDCTF - Validate expedited order cutoff window — keywords: cutoff, expedited
   - [OBSERVED_SOURCE] [TARGET_VALIDATION_REQUIRED] [IBM_I]
-  - `orderpro/rpgle/ORDPRC.rpgle:27`
-- **comment** — comment 'comment' = Returns *OFF if the cutoff time has passed. — keywords: cutoff
+  - `orderpro/rpgle/ORDPRC.rpgle:42`
+- **comment** — comment 'comment' = CHG-0042: Preferred customers have an extended expedited cutoff of 18:00. — keywords: cutoff, preferred, expedited
   - [OBSERVED_SOURCE] [TARGET_VALIDATION_REQUIRED] [IBM_I]
-  - `orderpro/rpgle/ORDPRC.rpgle:29`
-- **comment** — comment 'comment' = Cutoff rules (CHG-0042): — keywords: cutoff
+  - `orderpro/rpgle/ORDPRC.rpgle:44`
+- **comment** — comment 'comment' = Standard customers retain the existing 16:00 cutoff. — keywords: cutoff
   - [OBSERVED_SOURCE] [TARGET_VALIDATION_REQUIRED] [IBM_I]
-  - `orderpro/rpgle/ORDPRC.rpgle:31`
-- **comment** — comment 'comment' = Preferred customers (CUSCLS = 'P'): expedited cutoff = 18:00:00 — keywords: cutoff, preferred, expedited, CUSCLS, P
+  - `orderpro/rpgle/ORDPRC.rpgle:45`
+- **CUTOFF** — variable 'CUTOFF' = 160000 — keywords: cutoff
   - [OBSERVED_SOURCE] [TARGET_VALIDATION_REQUIRED] [IBM_I]
-  - `orderpro/rpgle/ORDPRC.rpgle:32`
-- **comment** — comment 'comment' = Standard customers  (CUSCLS = 'S'): expedited cutoff = 16:00:00 — keywords: cutoff, expedited, CUSCLS
+  - `orderpro/rpgle/ORDPRC.rpgle:54`
+- **comment** — comment 'comment' = Non-expedited orders are not subject to this intraday cutoff. — keywords: cutoff, expedited
   - [OBSERVED_SOURCE] [TARGET_VALIDATION_REQUIRED] [IBM_I]
-  - `orderpro/rpgle/ORDPRC.rpgle:33`
-- **comment** — comment 'comment' = Standard orders: no intraday cutoff restriction. — keywords: cutoff
-  - [OBSERVED_SOURCE] [TARGET_VALIDATION_REQUIRED] [IBM_I]
-  - `orderpro/rpgle/ORDPRC.rpgle:34`
-- **comment** — comment 'comment' = Only expedited orders are subject to the cutoff window — keywords: cutoff, expedited
-  - [OBSERVED_SOURCE] [TARGET_VALIDATION_REQUIRED] [IBM_I]
-  - `orderpro/rpgle/ORDPRC.rpgle:46`
-- **e** — condition literal 'e' = 'e' — keywords: E
-  - [OBSERVED_SOURCE] [TARGET_VALIDATION_REQUIRED] [IBM_I]
-  - `orderpro/rpgle/ORDPRC.rpgle:47`
-- **comment** — comment 'comment' = CHG-0042: Preferred customers have extended cutoff of 18:00:00 — keywords: cutoff, preferred
-  - [OBSERVED_SOURCE] [TARGET_VALIDATION_REQUIRED] [IBM_I]
-  - `orderpro/rpgle/ORDPRC.rpgle:48`
+  - `orderpro/rpgle/ORDPRC.rpgle:56`
 - **p** — condition literal 'p' = 'p' — keywords: P
   - [OBSERVED_SOURCE] [TARGET_VALIDATION_REQUIRED] [IBM_I]
-  - `orderpro/rpgle/ORDPRC.rpgle:49`
-- **comment** — comment 'comment' = Preferred customer cutoff: 18:00:00 — keywords: cutoff, preferred
-  - [OBSERVED_SOURCE] [TARGET_VALIDATION_REQUIRED] [IBM_I]
-  - `orderpro/rpgle/ORDPRC.rpgle:50`
-- **comment** — comment 'comment' = Standard customer cutoff: 16:00:00 — keywords: cutoff
-  - [OBSERVED_SOURCE] [TARGET_VALIDATION_REQUIRED] [IBM_I]
-  - `orderpro/rpgle/ORDPRC.rpgle:52`
-- **comment** — comment 'comment' = Cutoff exceeded - order rejected — keywords: cutoff
-  - [OBSERVED_SOURCE] [TARGET_VALIDATION_REQUIRED] [IBM_I]
-  - `orderpro/rpgle/ORDPRC.rpgle:58`
+  - `orderpro/rpgle/ORDPRC.rpgle:61`
 
 ### orderpro/clle/FULMNT.clle
 
@@ -220,13 +199,13 @@ orders.js    -->  CUSMAS        (customer class lookup)
 
 - **CUSCLS** — column 'CUSCLS' = CHAR — keywords: CUSCLS
   - [OBSERVED_SOURCE] [TARGET_VALIDATION_REQUIRED] [IBM_I]
-  - `orderpro/sql/db2/CUSMAS.sql:11`
+  - `orderpro/sql/db2/CUSMAS.sql:12`
 - **CUSCLS** — column 'CUSCLS' = TEXT — keywords: preferred, CUSCLS
   - [OBSERVED_SOURCE] [TARGET_VALIDATION_REQUIRED] [IBM_I]
-  - `orderpro/sql/db2/CUSMAS.sql:24`
+  - `orderpro/sql/db2/CUSMAS.sql:25`
 - **comment** — comment 'comment' = CUSCLS label updated per CHG-0042: P=Preferred replaces legacy B=Business designation. — keywords: preferred, CUSCLS
   - [OBSERVED_SOURCE] [TARGET_VALIDATION_REQUIRED] [IBM_I]
-  - `orderpro/sql/db2/CUSMAS.sql:28`
+  - `orderpro/sql/db2/CUSMAS.sql:29`
 
 ### orderpro/sql/db2/ORDHED.sql
 
@@ -278,25 +257,43 @@ orders.js    -->  CUSMAS        (customer class lookup)
 - **Customer Class | Expedited Cutoff | Notes |** — list item 'Customer Class | Expedited Cutoff | Notes |' = | Customer Class | Expedited Cutoff | Notes | — keywords: cutoff, expedited
   - [OBSERVED_SOURCE] [RESOLVED] [LOCAL]
   - `orderpro/docs/operations-guide.md:52`
-- **6:00 PM** — time expression '6:00 PM' = 6:00 PM — keywords: preferred
+- **----------------|-----------------|-------|** — list item '----------------|-----------------|-------|' = |----------------|-----------------|-------| — keywords: cutoff
+  - [OBSERVED_SOURCE] [RESOLVED] [LOCAL]
+  - `orderpro/docs/operations-guide.md:53`
+- **4:00 PM** — time expression '4:00 PM' = 4:00 PM — keywords: cutoff
+  - [OBSERVED_SOURCE] [RESOLVED] [LOCAL]
+  - `orderpro/docs/operations-guide.md:54`
+- **6:00 PM** — time expression '6:00 PM' = 6:00 PM — keywords: cutoff, preferred
   - [OBSERVED_SOURCE] [RESOLVED] [LOCAL]
   - `orderpro/docs/operations-guide.md:55`
-- **0042** — time expression '0042' = 0042 — keywords: preferred, expedited, CUSCLS, P
+- **0042** — time expression '0042' = 0042 — keywords: cutoff, preferred, expedited, CUSCLS, P
   - [OBSERVED_SOURCE] [RESOLVED] [LOCAL]
   - `orderpro/docs/operations-guide.md:57`
-- **> and the batch fulfillment schedule.** — sentence '> and the batch fulfillment schedule.' = > and the batch fulfillment schedule. — keywords: batch, fulfillment, schedule
+- **6:00 PM** — time expression '6:00 PM' = 6:00 PM — keywords: cutoff
+  - [OBSERVED_SOURCE] [RESOLVED] [LOCAL]
+  - `orderpro/docs/operations-guide.md:58`
+- **> Customer Experience and applies to the IBM i ORDPRC program, the API facade,** — sentence '> Customer Experience and applies to the IBM i ORDPRC program, the API facade,' = > Customer Experience and applies to the IBM i ORDPRC program, the API facade, — keywords: cutoff
+  - [OBSERVED_SOURCE] [RESOLVED] [LOCAL]
+  - `orderpro/docs/operations-guide.md:59`
+- **> and the batch fulfillment schedule.** — sentence '> and the batch fulfillment schedule.' = > and the batch fulfillment schedule. — keywords: cutoff, batch, fulfillment, schedule
   - [OBSERVED_SOURCE] [RESOLVED] [LOCAL]
   - `orderpro/docs/operations-guide.md:60`
+- **--** — list item '--' = --- — keywords: cutoff
+  - [OBSERVED_SOURCE] [RESOLVED] [LOCAL]
+  - `orderpro/docs/operations-guide.md:62`
 - **5. Batch Processing** — heading '5. Batch Processing' = ## — keywords: batch
   - [OBSERVED_SOURCE] [RESOLVED] [LOCAL]
   - `orderpro/docs/operations-guide.md:64`
 - **The end-of-day fulfillment batch job (`FULMNT`) runs automatically at** — sentence 'The end-of-day fulfillment batch job (`FULMNT`) runs automatically at' = The end-of-day fulfillment batch job (`FULMNT`) runs automatically at — keywords: batch, fulfillment
   - [OBSERVED_SOURCE] [RESOLVED] [LOCAL]
   - `orderpro/docs/operations-guide.md:66`
+- **18:15** — time expression '18:15' = 18:15 — keywords: batch
+  - [OBSERVED_SOURCE] [RESOLVED] [LOCAL]
+  - `orderpro/docs/operations-guide.md:67`
 - **0042** — time expression '0042' = 0042 — keywords: batch, schedule
   - [OBSERVED_SOURCE] [RESOLVED] [LOCAL]
   - `orderpro/docs/operations-guide.md:69`
-- **18:00** — time expression '18:00' = 18:00 — keywords: preferred, expedited
+- **18:00** — time expression '18:00' = 18:00 — keywords: preferred, expedited, batch
   - [OBSERVED_SOURCE] [RESOLVED] [LOCAL]
   - `orderpro/docs/operations-guide.md:70`
 - **> in the queue before the batch run begins.** — sentence '> in the queue before the batch run begins.' = > in the queue before the batch run begins. — keywords: batch
@@ -305,9 +302,21 @@ orders.js    -->  CUSMAS        (customer class lookup)
 - **The batch job reads all open expedited orders from `ORDHED` and calls the** — sentence 'The batch job reads all open expedited orders from `ORDHED` and calls the' = The batch job reads all open expedited orders from `ORDHED` and calls the — keywords: expedited, batch
   - [OBSERVED_SOURCE] [RESOLVED] [LOCAL]
   - `orderpro/docs/operations-guide.md:73`
-- **18:15 ** — time expression '18:15 ' = 18:15  — keywords: schedule, SCDTIME
+- **`ORDPRC` program to perform inventory allocation and status updates.** — sentence '`ORDPRC` program to perform inventory allocation and status updates.' = `ORDPRC` program to perform inventory allocation and status updates. — keywords: batch
+  - [OBSERVED_SOURCE] [RESOLVED] [LOCAL]
+  - `orderpro/docs/operations-guide.md:74`
+- ***Job name:** `FULMNT`** — list item '*Job name:** `FULMNT`' = **Job name:** `FULMNT` — keywords: batch
+  - [OBSERVED_SOURCE] [RESOLVED] [LOCAL]
+  - `orderpro/docs/operations-guide.md:76`
+- ***Job description:** `ORDERPRO/ORDJBD`** — list item '*Job description:** `ORDERPRO/ORDJBD`' = **Job description:** `ORDERPRO/ORDJBD` — keywords: batch
+  - [OBSERVED_SOURCE] [RESOLVED] [LOCAL]
+  - `orderpro/docs/operations-guide.md:77`
+- **18:15 ** — time expression '18:15 ' = 18:15  — keywords: batch, schedule, SCDTIME
   - [OBSERVED_SOURCE] [RESOLVED] [LOCAL]
   - `orderpro/docs/operations-guide.md:78`
+- **--** — list item '--' = --- — keywords: batch
+  - [OBSERVED_SOURCE] [RESOLVED] [LOCAL]
+  - `orderpro/docs/operations-guide.md:80`
 - **4001** — time expression '4001' = 4001 — keywords: cutoff
   - [OBSERVED_SOURCE] [RESOLVED] [LOCAL]
   - `orderpro/docs/operations-guide.md:98`
@@ -333,6 +342,9 @@ orders.js    -->  CUSMAS        (customer class lookup)
 
 | Test | Status | evidenceBasis |
 |---|---|---|
+| Batch fulfillment — IBM_I validation boundary FULMNT completes within batch window after CHG-0042 | [TARGET_VALIDATION_REQUIRED] | [EXECUTED_LOCAL] |
+| Batch fulfillment — IBM_I validation boundary ORDPRC compiles cleanly after CUSCLS branch addition | [TARGET_VALIDATION_REQUIRED] | [EXECUTED_LOCAL] |
+| Batch fulfillment — IBM_I validation boundary SCDTIME(181500) takes effect in production job schedule | [TARGET_VALIDATION_REQUIRED] | [EXECUTED_LOCAL] |
 | POST /orders accepts a valid standard order well before cutoff | [RESOLVED] | [EXECUTED_LOCAL] |
 | POST /orders rejects a request with missing required fields | [RESOLVED] | [EXECUTED_LOCAL] |
 | POST /orders rejects an expedited order submitted after cutoff (hour=17) | [RESOLVED] | [EXECUTED_LOCAL] |
@@ -344,14 +356,11 @@ orders.js    -->  CUSMAS        (customer class lookup)
 | Cutoff regression — CHG-0042 Standard customer expedited order at 17:00 is rejected | [RESOLVED] | [EXECUTED_LOCAL] |
 | Cutoff regression — CHG-0042 Preferred customer expedited order at 17:00 should be accepted (CHG-0042) | [RESOLVED] | [EXECUTED_LOCAL] |
 | Cutoff regression — CHG-0042 Preferred customer expedited order at 19:00 is rejected | [RESOLVED] | [EXECUTED_LOCAL] |
-| Batch fulfillment — IBM_I validation boundary FULMNT completes within batch window after CHG-0042 | [TARGET_VALIDATION_REQUIRED] | [EXECUTED_LOCAL] |
-| Batch fulfillment — IBM_I validation boundary ORDPRC compiles cleanly after CUSCLS branch addition | [TARGET_VALIDATION_REQUIRED] | [EXECUTED_LOCAL] |
-| Batch fulfillment — IBM_I validation boundary SCDTIME(181500) takes effect in production job schedule | [TARGET_VALIDATION_REQUIRED] | [EXECUTED_LOCAL] |
-| GET /customers/:id returns customer data for a known Preferred customer | [RESOLVED] | [EXECUTED_LOCAL] |
-| GET /customers/:id returns 404 for an unknown customer | [RESOLVED] | [EXECUTED_LOCAL] |
 | Inventory allocation regression Order for in-stock item is accepted | [RESOLVED] | [EXECUTED_LOCAL] |
 | Inventory allocation regression Customer lookup returns correct class for Preferred customer | [RESOLVED] | [EXECUTED_LOCAL] |
 | Inventory allocation regression Inactive customer data is present in surrogate | [RESOLVED] | [EXECUTED_LOCAL] |
+| GET /customers/:id returns customer data for a known Preferred customer | [RESOLVED] | [EXECUTED_LOCAL] |
+| GET /customers/:id returns 404 for an unknown customer | [RESOLVED] | [EXECUTED_LOCAL] |
 
 ---
 
@@ -390,26 +399,46 @@ _No test gaps identified._
   - `orderpro/docs/operations-guide.md:50`
 - [OBSERVED_SOURCE] **Customer Class | Expedited Cutoff | Notes |** — list item 'Customer Class | Expedited Cutoff | Notes |' = | Customer Class | Expedited Cutoff | Notes | — keywords: cutoff, expedited
   - `orderpro/docs/operations-guide.md:52`
-- [OBSERVED_SOURCE] **6:00 PM** — time expression '6:00 PM' = 6:00 PM — keywords: preferred
+- [OBSERVED_SOURCE] **----------------|-----------------|-------|** — list item '----------------|-----------------|-------|' = |----------------|-----------------|-------| — keywords: cutoff
+  - `orderpro/docs/operations-guide.md:53`
+- [OBSERVED_SOURCE] **4:00 PM** — time expression '4:00 PM' = 4:00 PM — keywords: cutoff
+  - `orderpro/docs/operations-guide.md:54`
+- [OBSERVED_SOURCE] **6:00 PM** — time expression '6:00 PM' = 6:00 PM — keywords: cutoff, preferred
   - `orderpro/docs/operations-guide.md:55`
-- [OBSERVED_SOURCE] **0042** — time expression '0042' = 0042 — keywords: preferred, expedited, CUSCLS, P
+- [OBSERVED_SOURCE] **0042** — time expression '0042' = 0042 — keywords: cutoff, preferred, expedited, CUSCLS, P
   - `orderpro/docs/operations-guide.md:57`
-- [OBSERVED_SOURCE] **> and the batch fulfillment schedule.** — sentence '> and the batch fulfillment schedule.' = > and the batch fulfillment schedule. — keywords: batch, fulfillment, schedule
+- [OBSERVED_SOURCE] **6:00 PM** — time expression '6:00 PM' = 6:00 PM — keywords: cutoff
+  - `orderpro/docs/operations-guide.md:58`
+- [OBSERVED_SOURCE] **> Customer Experience and applies to the IBM i ORDPRC program, the API facade,** — sentence '> Customer Experience and applies to the IBM i ORDPRC program, the API facade,' = > Customer Experience and applies to the IBM i ORDPRC program, the API facade, — keywords: cutoff
+  - `orderpro/docs/operations-guide.md:59`
+- [OBSERVED_SOURCE] **> and the batch fulfillment schedule.** — sentence '> and the batch fulfillment schedule.' = > and the batch fulfillment schedule. — keywords: cutoff, batch, fulfillment, schedule
   - `orderpro/docs/operations-guide.md:60`
+- [OBSERVED_SOURCE] **--** — list item '--' = --- — keywords: cutoff
+  - `orderpro/docs/operations-guide.md:62`
 - [OBSERVED_SOURCE] **5. Batch Processing** — heading '5. Batch Processing' = ## — keywords: batch
   - `orderpro/docs/operations-guide.md:64`
 - [OBSERVED_SOURCE] **The end-of-day fulfillment batch job (`FULMNT`) runs automatically at** — sentence 'The end-of-day fulfillment batch job (`FULMNT`) runs automatically at' = The end-of-day fulfillment batch job (`FULMNT`) runs automatically at — keywords: batch, fulfillment
   - `orderpro/docs/operations-guide.md:66`
+- [OBSERVED_SOURCE] **18:15** — time expression '18:15' = 18:15 — keywords: batch
+  - `orderpro/docs/operations-guide.md:67`
 - [OBSERVED_SOURCE] **0042** — time expression '0042' = 0042 — keywords: batch, schedule
   - `orderpro/docs/operations-guide.md:69`
-- [OBSERVED_SOURCE] **18:00** — time expression '18:00' = 18:00 — keywords: preferred, expedited
+- [OBSERVED_SOURCE] **18:00** — time expression '18:00' = 18:00 — keywords: preferred, expedited, batch
   - `orderpro/docs/operations-guide.md:70`
 - [OBSERVED_SOURCE] **> in the queue before the batch run begins.** — sentence '> in the queue before the batch run begins.' = > in the queue before the batch run begins. — keywords: batch
   - `orderpro/docs/operations-guide.md:71`
 - [OBSERVED_SOURCE] **The batch job reads all open expedited orders from `ORDHED` and calls the** — sentence 'The batch job reads all open expedited orders from `ORDHED` and calls the' = The batch job reads all open expedited orders from `ORDHED` and calls the — keywords: expedited, batch
   - `orderpro/docs/operations-guide.md:73`
-- [OBSERVED_SOURCE] **18:15 ** — time expression '18:15 ' = 18:15  — keywords: schedule, SCDTIME
+- [OBSERVED_SOURCE] **`ORDPRC` program to perform inventory allocation and status updates.** — sentence '`ORDPRC` program to perform inventory allocation and status updates.' = `ORDPRC` program to perform inventory allocation and status updates. — keywords: batch
+  - `orderpro/docs/operations-guide.md:74`
+- [OBSERVED_SOURCE] ***Job name:** `FULMNT`** — list item '*Job name:** `FULMNT`' = **Job name:** `FULMNT` — keywords: batch
+  - `orderpro/docs/operations-guide.md:76`
+- [OBSERVED_SOURCE] ***Job description:** `ORDERPRO/ORDJBD`** — list item '*Job description:** `ORDERPRO/ORDJBD`' = **Job description:** `ORDERPRO/ORDJBD` — keywords: batch
+  - `orderpro/docs/operations-guide.md:77`
+- [OBSERVED_SOURCE] **18:15 ** — time expression '18:15 ' = 18:15  — keywords: batch, schedule, SCDTIME
   - `orderpro/docs/operations-guide.md:78`
+- [OBSERVED_SOURCE] **--** — list item '--' = --- — keywords: batch
+  - `orderpro/docs/operations-guide.md:80`
 - [OBSERVED_SOURCE] **4001** — time expression '4001' = 4001 — keywords: cutoff
   - `orderpro/docs/operations-guide.md:98`
 
@@ -419,22 +448,15 @@ _No test gaps identified._
 
 Conservative implementation options: `idb-connector` (ODBC), `itoolkit`/XMLSERVICE, SSH + CRTBNDRPG, `QSYS2.QCMDEXC` via ODBC.
 
-- `orderpro/rpgle/ORDPRC.rpgle` — **comment**: comment 'comment' = Handles order cutoff validation and inventory allocation. — keywords: cutoff
-- `orderpro/rpgle/ORDPRC.rpgle` — **comment**: comment 'comment' = Cutoff per CHG-0042 (supersedes spec ORD-001 dated 2019-03-15) — keywords: cutoff
-- `orderpro/rpgle/ORDPRC.rpgle` — **comment**: comment 'comment' = Prototype: Check Order Cutoff — keywords: cutoff
-- `orderpro/rpgle/ORDPRC.rpgle` — **comment**: comment 'comment' = Procedure: CHKORDCTF - Check Order Cutoff Time — keywords: cutoff
-- `orderpro/rpgle/ORDPRC.rpgle` — **comment**: comment 'comment' = Returns *OFF if the cutoff time has passed. — keywords: cutoff
-- `orderpro/rpgle/ORDPRC.rpgle` — **comment**: comment 'comment' = Cutoff rules (CHG-0042): — keywords: cutoff
-- `orderpro/rpgle/ORDPRC.rpgle` — **comment**: comment 'comment' = Preferred customers (CUSCLS = 'P'): expedited cutoff = 18:00:00 — keywords: cutoff, preferred, expedited, CUSCLS, P
-- `orderpro/rpgle/ORDPRC.rpgle` — **comment**: comment 'comment' = Standard customers  (CUSCLS = 'S'): expedited cutoff = 16:00:00 — keywords: cutoff, expedited, CUSCLS
-- `orderpro/rpgle/ORDPRC.rpgle` — **comment**: comment 'comment' = Standard orders: no intraday cutoff restriction. — keywords: cutoff
-- `orderpro/rpgle/ORDPRC.rpgle` — **comment**: comment 'comment' = Only expedited orders are subject to the cutoff window — keywords: cutoff, expedited
-- `orderpro/rpgle/ORDPRC.rpgle` — **e**: condition literal 'e' = 'e' — keywords: E
-- `orderpro/rpgle/ORDPRC.rpgle` — **comment**: comment 'comment' = CHG-0042: Preferred customers have extended cutoff of 18:00:00 — keywords: cutoff, preferred
+- `orderpro/rpgle/ORDPRC.rpgle` — **comment**: comment 'comment' = Validates cutoff windows and allocates inventory for incoming orders. — keywords: cutoff
+- `orderpro/rpgle/ORDPRC.rpgle` — **CUSCLS**: variable 'CUSCLS' — keywords: CUSCLS
+- `orderpro/rpgle/ORDPRC.rpgle` — **ORDTYP**: variable 'ORDTYP' — keywords: ORDTYP
+- `orderpro/rpgle/ORDPRC.rpgle` — **comment**: comment 'comment' = CHKORDCTF - Validate expedited order cutoff window — keywords: cutoff, expedited
+- `orderpro/rpgle/ORDPRC.rpgle` — **comment**: comment 'comment' = CHG-0042: Preferred customers have an extended expedited cutoff of 18:00. — keywords: cutoff, preferred, expedited
+- `orderpro/rpgle/ORDPRC.rpgle` — **comment**: comment 'comment' = Standard customers retain the existing 16:00 cutoff. — keywords: cutoff
+- `orderpro/rpgle/ORDPRC.rpgle` — **CUTOFF**: variable 'CUTOFF' = 160000 — keywords: cutoff
+- `orderpro/rpgle/ORDPRC.rpgle` — **comment**: comment 'comment' = Non-expedited orders are not subject to this intraday cutoff. — keywords: cutoff, expedited
 - `orderpro/rpgle/ORDPRC.rpgle` — **p**: condition literal 'p' = 'p' — keywords: P
-- `orderpro/rpgle/ORDPRC.rpgle` — **comment**: comment 'comment' = Preferred customer cutoff: 18:00:00 — keywords: cutoff, preferred
-- `orderpro/rpgle/ORDPRC.rpgle` — **comment**: comment 'comment' = Standard customer cutoff: 16:00:00 — keywords: cutoff
-- `orderpro/rpgle/ORDPRC.rpgle` — **comment**: comment 'comment' = Cutoff exceeded - order rejected — keywords: cutoff
 - `orderpro/clle/FULMNT.clle` — **comment**: comment 'comment' = FULMNT - Fulfillment Batch Job — keywords: batch, fulfillment
 - `orderpro/clle/FULMNT.clle` — **comment**: comment 'comment' = Processes open expedited orders at end of business day. — keywords: expedited
 - `orderpro/clle/FULMNT.clle` — **comment**: comment 'comment' = CHG-0042: Batch rescheduled to 18:15 to avoid collision with — keywords: batch
@@ -492,7 +514,7 @@ Conservative implementation options: `idb-connector` (ODBC), `itoolkit`/XMLSERVI
 | Resolved | 39 |
 | Persisted (still open) | 0 |
 | Target validation required | 26 |
-| New findings | 23 |
+| New findings | 29 |
 
 **Resolved:**
 - ✅ `orderpro/dds/CUSMAS.dds` — CUSCLS
@@ -536,15 +558,15 @@ Conservative implementation options: `idb-connector` (ODBC), `itoolkit`/XMLSERVI
 - ✅ `api/tests/customers.test.js` — GET /customers/:id returns 404 for an unknown customer
 
 **Target validation required (IBM_I):**
-- 🟠 `orderpro/rpgle/ORDPRC.rpgle` — comment: comment 'comment' = Handles order cutoff validation and inventory allocation. — keywords: cutoff
-- 🟠 `orderpro/rpgle/ORDPRC.rpgle` — comment: comment 'comment' = Cutoff per CHG-0042 (supersedes spec ORD-001 dated 2019-03-15) — keywords: cutoff
-- 🟠 `orderpro/rpgle/ORDPRC.rpgle` — comment: comment 'comment' = Prototype: Check Order Cutoff — keywords: cutoff
-- 🟠 `orderpro/rpgle/ORDPRC.rpgle` — comment: comment 'comment' = Procedure: CHKORDCTF - Check Order Cutoff Time — keywords: cutoff
-- 🟠 `orderpro/rpgle/ORDPRC.rpgle` — comment: comment 'comment' = Returns *OFF if the cutoff time has passed. — keywords: cutoff
-- 🟠 `orderpro/rpgle/ORDPRC.rpgle` — comment: comment 'comment' = Cutoff rules (CHG-0042): — keywords: cutoff
-- 🟠 `orderpro/rpgle/ORDPRC.rpgle` — comment: comment 'comment' = Preferred customers (CUSCLS = 'P'): expedited cutoff = 18:00:00 — keywords: cutoff, preferred, expedited, CUSCLS, P
+- 🟠 `orderpro/rpgle/ORDPRC.rpgle` — comment: comment 'comment' = Validates cutoff windows and allocates inventory for incoming orders. — keywords: cutoff
+- 🟠 `orderpro/rpgle/ORDPRC.rpgle` — comment: comment 'comment' = CHKORDCTF - Validate expedited order cutoff window — keywords: cutoff, expedited
+- 🟠 `orderpro/rpgle/ORDPRC.rpgle` — comment: comment 'comment' = CHG-0042: Preferred customers have an extended expedited cutoff of 18:00. — keywords: cutoff, preferred, expedited
+- 🟠 `orderpro/rpgle/ORDPRC.rpgle` — comment: comment 'comment' = Standard customers retain the existing 16:00 cutoff. — keywords: cutoff
+- 🟠 `orderpro/rpgle/ORDPRC.rpgle` — comment: comment 'comment' = Non-expedited orders are not subject to this intraday cutoff. — keywords: cutoff, expedited
+- 🟠 `orderpro/rpgle/ORDPRC.rpgle` — comment: comment 'comment' = Expedited cutoff = 16:00:00 for all customer classes. — keywords: cutoff, expedited
+- 🟠 `orderpro/rpgle/ORDPRC.rpgle` — comment: comment 'comment' = Only expedited orders are subject to the cutoff window — keywords: cutoff, expedited
 - 🟠 `orderpro/rpgle/ORDPRC.rpgle` — e: condition literal 'e' = 'e' — keywords: E
-- 🟠 `orderpro/rpgle/ORDPRC.rpgle` — comment: comment 'comment' = Standard customers  (CUSCLS = 'S'): expedited cutoff = 16:00:00 — keywords: cutoff, expedited, CUSCLS
+- 🟠 `orderpro/rpgle/ORDPRC.rpgle` — comment: comment 'comment' = Cutoff exceeded - order rejected — keywords: cutoff
 - 🟠 `orderpro/clle/FULMNT.clle` — comment: comment 'comment' = FULMNT - Fulfillment Batch Job — keywords: batch, fulfillment
 - 🟠 `orderpro/clle/FULMNT.clle` — comment: comment 'comment' = Processes open expedited orders at end of business day. — keywords: expedited
 - 🟠 `orderpro/clle/FULMNT.clle` — comment: comment 'comment' = CHG-0042: Batch rescheduled to 18:15 to avoid collision with — keywords: batch
