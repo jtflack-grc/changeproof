@@ -1,0 +1,17 @@
+{
+  "profile": "timeout-service",
+  "pass": "baseline",
+  "findingCount": 8,
+  "byEvidenceBasis": {
+    "OBSERVED_SOURCE": 6,
+    "EXECUTED_LOCAL": 2
+  },
+  "byStatus": {
+    "OPEN": 7,
+    "RESOLVED": 1
+  },
+  "byValidationTarget": {
+    "LOCAL": 8
+  },
+  "diff": null
+}

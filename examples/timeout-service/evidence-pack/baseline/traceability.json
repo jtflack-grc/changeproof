@@ -1,0 +1,133 @@
+[
+  {
+    "id": "nodejs-src-service-js-request-timeout-seconds-0",
+    "artifact": "src/service.js",
+    "artifactType": "NODEJS",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "OPEN",
+    "validationTarget": "LOCAL",
+    "symbol": "REQUEST_TIMEOUT_SECONDS",
+    "finding": "numeric literal 'REQUEST_TIMEOUT_SECONDS' = 30 — keywords: 30",
+    "lineRef": "src/service.js:3",
+    "keywords": [
+      "30"
+    ],
+    "relevanceScore": 1
+  },
+  {
+    "id": "doc-docs-runbook-md-request-handling-1",
+    "artifact": "docs/runbook.md",
+    "artifactType": "DOC",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "OPEN",
+    "validationTarget": "LOCAL",
+    "symbol": "Request handling",
+    "finding": "heading 'Request handling' = ## — keywords: request",
+    "lineRef": "docs/runbook.md:3",
+    "keywords": [
+      "request"
+    ],
+    "relevanceScore": 1
+  },
+  {
+    "id": "doc-docs-runbook-md-application-request-timeout-30-seconds--2",
+    "artifact": "docs/runbook.md",
+    "artifactType": "DOC",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "OPEN",
+    "validationTarget": "LOCAL",
+    "symbol": "Application request timeout: 30 seconds.",
+    "finding": "list item 'Application request timeout: 30 seconds.' = - Application request timeout: 30 seconds. — keywords: timeout, request, 30, seconds",
+    "lineRef": "docs/runbook.md:5",
+    "keywords": [
+      "timeout",
+      "request",
+      "30",
+      "seconds"
+    ],
+    "relevanceScore": 4
+  },
+  {
+    "id": "doc-docs-runbook-md-edge-proxy-read-timeout-45-seconds--4",
+    "artifact": "docs/runbook.md",
+    "artifactType": "DOC",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "OPEN",
+    "validationTarget": "LOCAL",
+    "symbol": "Edge proxy read timeout: 45 seconds.",
+    "finding": "list item 'Edge proxy read timeout: 45 seconds.' = - Edge proxy read timeout: 45 seconds. — keywords: timeout, request, seconds",
+    "lineRef": "docs/runbook.md:6",
+    "keywords": [
+      "timeout",
+      "request",
+      "seconds"
+    ],
+    "relevanceScore": 3
+  },
+  {
+    "id": "doc-docs-runbook-md-retry-count-1--6",
+    "artifact": "docs/runbook.md",
+    "artifactType": "DOC",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "OPEN",
+    "validationTarget": "LOCAL",
+    "symbol": "Retry count: 1.",
+    "finding": "list item 'Retry count: 1.' = - Retry count: 1. — keywords: request",
+    "lineRef": "docs/runbook.md:7",
+    "keywords": [
+      "request"
+    ],
+    "relevanceScore": 1
+  },
+  {
+    "id": "doc-docs-runbook-md-the-edge-proxy-terminates-connections-th-8",
+    "artifact": "docs/runbook.md",
+    "artifactType": "DOC",
+    "evidenceBasis": "OBSERVED_SOURCE",
+    "status": "OPEN",
+    "validationTarget": "LOCAL",
+    "symbol": "The edge proxy terminates connections that remain open beyond its read timeout.",
+    "finding": "sentence 'The edge proxy terminates connections that remain open beyond its read timeout.' = The edge proxy terminates connections that remain open beyond its read timeout. — keywords: timeout, request",
+    "lineRef": "docs/runbook.md:9",
+    "keywords": [
+      "timeout",
+      "request"
+    ],
+    "relevanceScore": 2
+  },
+  {
+    "id": "test-tests-timeout-test-js-chg-web-017-timeout-acceptance-applicati-0",
+    "artifact": "tests/timeout.test.js",
+    "artifactType": "TEST",
+    "evidenceBasis": "EXECUTED_LOCAL",
+    "status": "OPEN",
+    "validationTarget": "LOCAL",
+    "symbol": "CHG-WEB-017 timeout acceptance application request timeout is 60 seconds",
+    "finding": "FAILING test — expected behaviour not yet implemented: CHG-WEB-017 timeout acceptance application request timeout is 60 seconds",
+    "lineRef": "tests/timeout.test.js:?",
+    "keywords": [
+      "timeout",
+      "request",
+      "30",
+      "60",
+      "seconds"
+    ],
+    "relevanceScore": 5
+  },
+  {
+    "id": "test-tests-timeout-test-js-chg-web-017-timeout-acceptance-existing--1",
+    "artifact": "tests/timeout.test.js",
+    "artifactType": "TEST",
+    "evidenceBasis": "EXECUTED_LOCAL",
+    "status": "RESOLVED",
+    "validationTarget": "LOCAL",
+    "symbol": "CHG-WEB-017 timeout acceptance existing gateway behavior remains unchanged apart from timeout",
+    "finding": "PASSING test: CHG-WEB-017 timeout acceptance existing gateway behavior remains unchanged apart from timeout",
+    "lineRef": "tests/timeout.test.js:?",
+    "keywords": [
+      "timeout",
+      "gateway"
+    ],
+    "relevanceScore": 2
+  }
+]
