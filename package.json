@@ -1,0 +1,22 @@
+{
+  "name": "changeproof",
+  "version": "0.1.0",
+  "private": true,
+  "description": "ChangeProof — auditable change-management lifecycle for polyglot IBM i brownfield applications",
+  "workspaces": [
+    "api",
+    "engine"
+  ],
+  "scripts": {
+    "test": "jest --config jest.config.js",
+    "baseline": "node engine/runner.js --cr CHANGE_REQUEST.md --pass baseline",
+    "post-change": "node engine/runner.js --cr CHANGE_REQUEST.md --pass post-change",
+    "install:all": "npm install"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  },
+  "dependencies": {
+    "sql.js": "^1.14.2"
+  }
+}
