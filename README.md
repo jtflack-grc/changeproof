@@ -3,7 +3,10 @@
 **AI can write the change. ChangeProof proves what deserves to ship.**
 
 > **[Open the live ChangeProof experience →](https://jtflack-grc.github.io/changeproof/)**  
-> Judge-facing walkthrough of the CHG-0042 scenario, before/after evidence, IBM i validation boundary, and Bob usage.
+> Judge-facing walkthrough of the CHG-0042 scenario, interactive ORDERPRO workload, before/after evidence, IBM i validation boundary, and Bob usage.
+>
+> **[Launch ORDERPRO directly →](https://jtflack-grc.github.io/changeproof/orderpro/app/)**  
+> Synthetic enterprise order-management work center used to reproduce the change lifecycle.
 
 ChangeProof is a proof-of-concept built for the **IBM TechXchange 2026 Pre-conference Dev Day Hackathon**. It demonstrates a complete, auditable change-management lifecycle for a fictional polyglot IBM i brownfield application named **ORDERPRO**.
 
@@ -11,13 +14,23 @@ The scenario begins with a deceptively simple request:
 
 > **CHG-0042:** Preferred customers (`CUSCLS = 'P'`) may submit expedited orders until 6:00 PM instead of the standard 4:00 PM cutoff.
 
-That one-line request crosses a Node.js API, RPGLE business logic, CL scheduling, DDS/Db2 definitions, tests, and operational documentation. ChangeProof uses static analysis, local execution, document inspection, and evidence correlation to show what is affected, what was actually validated, what is inferred, and what still requires IBM i target validation.
+That one-line request crosses a Node.js API, RPGLE business logic, CL scheduling, DDS/Db2 definitions, tests, operational documentation, and the browser-visible ORDERPRO work center. ChangeProof uses static analysis, local execution, document inspection, and evidence correlation to show what is affected, what was actually validated, what is inferred, and what still requires IBM i target validation.
 
 The central design principle is simple:
 
 > **The requested change is not necessarily the actual change.**
 
 In the preserved pre-change baseline, ChangeProof discovers an operational consequence not stated in CHG-0042: the fulfillment batch is scheduled for exactly 18:00, the same time as the new Preferred-customer cutoff. That creates a potential batch-window collision. The remediation therefore moves the batch to 18:15 while updating the application behavior, RPGLE logic, customer-class documentation, and regression coverage.
+
+## Interactive scenario
+
+The GitHub Pages experience embeds a synthetic ORDERPRO work center with three explicit lifecycle states:
+
+1. **Current production** — Preferred expedited orders still use the 16:00 cutoff; FULMNT is scheduled for 18:00.
+2. **Requested CHG-0042** — a scenario replay of the ticket implemented literally: Preferred orders are accepted through 18:00 while the batch remains at 18:00, exposing the collision.
+3. **ChangeProof remediation** — Preferred cutoff remains 18:00, Standard remains 16:00, and FULMNT moves to 18:15 while IBM i runtime validation remains outstanding.
+
+The middle state exists to demonstrate a core point: **passing the stated acceptance criterion is not the same as proving the change is safe to ship.** It is a browser scenario replay, not another preserved source snapshot.
 
 ## Demo results
 
@@ -59,6 +72,7 @@ An RPGLE source edit can therefore be directly observed without being falsely pr
 api/                  Node.js/Express API facade and API tests
 engine/               ChangeProof analyzers, evidence model, diff, reporter, CLI
 orderpro/             Fictional IBM i brownfield workload
+  app/                 Browser-visible synthetic ORDERPRO work center
   rpgle/               RPGLE business logic
   clle/                CL batch workflow
   dds/                 DDS definitions
@@ -101,6 +115,8 @@ npm run post-change
 
 SQLite exists only to make a portion of the workflow executable during the hackathon. The surrogate schema explicitly states that it is **not equivalent to Db2 for i runtime semantics**.
 
+The browser-visible ORDERPRO work center is likewise a synthetic interaction layer over repository fixture data and business-rule states. It is not a live IBM i session and does not replace the evidence engine.
+
 Real IBM i integration is isolated behind a transport-independent adapter contract. Documented production paths include:
 
 - Db2 access through ODBC / IBM i Node connectivity
@@ -117,6 +133,7 @@ The retained Bob task-session summary and full task-context screenshots are incl
 
 ## Hackathon artifacts
 
+- `orderpro/app/` — interactive synthetic ORDERPRO workload
 - `evidence-pack/baseline/evidence-pack.html` — preserved before-state report
 - `evidence-pack/post-change/evidence-pack.html` — final after-state report
 - `evidence-pack/*/traceability.json` — machine-readable evidence
