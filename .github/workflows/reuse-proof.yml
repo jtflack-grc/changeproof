@@ -16,6 +16,12 @@ on:
       - 'examples/timeout-service/inference.js'
       - 'examples/timeout-service/jest.config.js'
       - 'examples/timeout-service/states/**'
+      - 'site.js'
+      - 'orderpro-preview.js'
+      - 'review-workspace.js'
+      - 'reuse-proof.js'
+      - 'ironterm-experience.js'
+      - 'orderpro/app/orderpro.js'
       - 'package.json'
       - '.github/workflows/reuse-proof.yml'
 
@@ -45,6 +51,12 @@ jobs:
           node --check engine/reporters/profile-pack.js
           node --check examples/timeout-service/inference.js
           node --check examples/timeout-service/changeproof.profile.js
+          node --check site.js
+          node --check orderpro-preview.js
+          node --check review-workspace.js
+          node --check reuse-proof.js
+          node --check ironterm-experience.js
+          node --check orderpro/app/orderpro.js
 
       - name: Preserve ORDERPRO test gate
         run: npm test
