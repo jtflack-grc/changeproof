@@ -2,7 +2,7 @@
   "name": "changeproof",
   "version": "0.1.0",
   "private": true,
-  "description": "ChangeProof — auditable change-management lifecycle for polyglot IBM i brownfield applications",
+  "description": "ChangeProof — auditable evidence and release-review workflows for brownfield and modern application changes",
   "workspaces": [
     "api",
     "engine"
@@ -11,6 +11,7 @@
     "test": "jest --config jest.config.js",
     "baseline": "node engine/runner.js --cr CHANGE_REQUEST.md --pass baseline",
     "post-change": "node engine/runner.js --cr CHANGE_REQUEST.md --pass post-change",
+    "reuse-proof": "node engine/profile-runner.js --profile examples/timeout-service/changeproof.profile.js --pass baseline && node engine/profile-runner.js --profile examples/timeout-service/changeproof.profile.js --pass literal && node engine/profile-runner.js --profile examples/timeout-service/changeproof.profile.js --pass post-change",
     "install:all": "npm install"
   },
   "devDependencies": {
