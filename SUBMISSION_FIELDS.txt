@@ -1,0 +1,28 @@
+CHANGEProof — PROBLEM AND SOLUTION STATEMENT
+
+Brownfield application changes are rarely as small as the ticket makes them look. A developer may be asked to change one business rule, but the real work is discovering duplicated logic, downstream jobs, stale documentation, missing tests, data dependencies, and validation that can only happen on the target platform. AI can make code changes faster, but faster code generation can make review and release confidence the new bottleneck.
+
+ChangeProof is an evidence-producing maintenance workflow built around a fictional IBM i order system called ORDERPRO. Its target users are developers maintaining unfamiliar applications and the reviewers responsible for deciding whether those changes are safe to release.
+
+The demonstration starts with CHG-0042: “Preferred customers may submit expedited orders until 6:00 PM instead of the standard 4:00 PM cutoff.” ORDERPRO is deliberately polyglot: RPGLE contains core order logic, CL schedules fulfillment, DDS and Db2 define data, a Node.js API fronts the application, and operational Markdown describes how the system is supposed to work.
+
+ChangeProof analyzes those artifacts, executes the tests and local data checks that can be run, correlates findings to the change request, and produces a human-readable HTML/Markdown Evidence Pack plus machine-readable traceability JSON. Every finding records three separate facts: how it was established (EXECUTED_LOCAL, OBSERVED_SOURCE, or INFERRED), its remediation status, and whether final validation can occur locally or requires IBM i.
+
+The baseline run does more than find the obvious 4 PM constants. It discovers that the CL fulfillment job is scheduled at exactly 18:00, the new Preferred-customer cutoff. That downstream timing collision is not stated in the ticket. The remediation therefore changes the API and RPG rules, corrects stale DDS/Db2 and operational documentation, adds regression coverage, and moves fulfillment to 18:15.
+
+The preserved baseline contains 14 passing tests, 2 intentional failures, and 3 IBM i validation-boundary skips. After remediation, 16 tests pass with zero failures; the three IBM i-only checks remain intentionally unclaimed. ChangeProof marks locally proven work as resolved while RPG, CL, and Db2 runtime claims remain TARGET_VALIDATION_REQUIRED until they are actually validated on IBM i.
+
+The result is not another code-generation assistant. It is a review workflow that helps a maintainer answer four release questions: What changed? What did we actually prove? What did we infer? What still requires target validation?
+
+
+CHANGEProof — IBM BOB USAGE STATEMENT
+
+IBM Bob 2.0 was the core development environment used to create ChangeProof. Bob was first used in planning mode to turn the hackathon theme into a bounded end-to-end maintenance workflow and define the ORDERPRO scenario, evidence model, adapter boundary, baseline/post-change lifecycle, and implementation plan.
+
+Bob then performed the substantive build work in the IDE. It scaffolded the repository; authored the polyglot sample application across Node.js, RPGLE, CLLE, DDS, Db2 for i DDL, SQLite surrogate data, and Markdown documentation; created the transport-independent IBM i adapter contract; built the six static/document analyzers; implemented evidence collection, reporting, and baseline/post-change comparison; and authored the Jest and cross-artifact regression tests.
+
+Bob was also used iteratively to inspect generated evidence and remediate implementation defects. That included reducing noisy lexical matches, repairing CL continuation-line analysis so SCDTIME(180000) could be extracted, surfacing the inferred 18:00 batch-window collision, preserving the intentional baseline failures as evidence, restoring the post-change state, and improving the human-readable Blast Radius.
+
+The project consumed the full hackathon allocation of 40 Bobcoins. Actual IBM Bob task-session consumption-summary screenshots are included in the repository’s bob_sessions/ directory as required. The existing Markdown files in that directory are supporting historical session notes.
+
+The final result demonstrates Bob being used across planning, polyglot development, testing, document understanding, code analysis, evidence generation, and iterative remediation rather than only as a code-completion tool.
