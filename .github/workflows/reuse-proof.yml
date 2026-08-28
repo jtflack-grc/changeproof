@@ -111,25 +111,37 @@ jobs:
           console.log('Reuse proof verified: baseline 1/1; literal 2/0 + inferred OPEN mismatch; remediation 2/0 and mismatch removed.');
           NODE
 
-      - name: Refresh Pages asset revision
+      - name: Harden Pages delivery
         run: |
           python - <<'PY'
           from pathlib import Path
-          path = Path('index.html')
-          text = path.read_text(encoding='utf-8')
-          text = text.replace('site.css?v=20260828-1', 'site.css?v=20260828-6')
-          text = text.replace('site.js?v=20260828-1', 'site.js?v=20260828-6')
-          path.write_text(text, encoding='utf-8')
+
+          html = Path('index.html')
+          text = html.read_text(encoding='utf-8')
+          lines = text.splitlines()
+          lines = [line for line in lines if 'fonts.googleapis.com' not in line and 'fonts.gstatic.com' not in line]
+          text = '\n'.join(lines) + '\n'
+          for old in ('20260828-1','20260828-6'):
+              text = text.replace(f'site.css?v={old}', 'site.css?v=20260828-7')
+              text = text.replace(f'site.js?v={old}', 'site.js?v=20260828-7')
+          html.write_text(text, encoding='utf-8')
+
+          css = Path('site.css')
+          css_text = css.read_text(encoding='utf-8')
+          marker = '/* BLOCKER-SAFE PROGRESSIVE ENHANCEMENT */'
+          if marker not in css_text:
+              css_text += '''\n\n/* BLOCKER-SAFE PROGRESSIVE ENHANCEMENT */\nhtml:not(.js-enabled) .reveal{opacity:1!important;transform:none!important}\n.module-load-warning{position:sticky;top:0;z-index:100;padding:.65rem 1rem;background:#2b2108;color:#f7d887;border-bottom:1px solid rgba(242,184,75,.45);font:600 .72rem ui-monospace,SFMono-Regular,Consolas,monospace;text-align:center}\n'''
+          css.write_text(css_text, encoding='utf-8')
           PY
 
       - name: Commit generated evidence receipts
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add evidence-pack/post-change examples/timeout-service/evidence-pack index.html
+          git add evidence-pack/post-change examples/timeout-service/evidence-pack index.html site.css
           if git diff --cached --quiet; then
             echo 'Generated evidence and Pages shell are already current.'
           else
-            git commit -m 'Refresh evidence and Pages shell [evidence-freeze]'
+            git commit -m 'Refresh evidence and blocker-safe Pages shell [evidence-freeze]'
             git push
           fi
