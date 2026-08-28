@@ -23,6 +23,7 @@ const ARTIFACT_TYPE = Object.freeze({
   DDS   : 'DDS',
   DB2SQL: 'DB2SQL',
   NODEJS: 'NODEJS',
+  CONFIG: 'CONFIG',
   DOC   : 'DOC',
   TEST  : 'TEST'
 });
