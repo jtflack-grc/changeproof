@@ -3,225 +3,330 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#0a6ed1" />
+  <meta name="theme-color" content="#0a4f7a" />
   <meta name="description" content="ORDERPRO synthetic enterprise order-management scenario used by ChangeProof." />
-  <title>ORDERPRO | Enterprise Order Management</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=72:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="orderpro.css?v=20260828-1" />
+  <title>ORDERPRO | Enterprise Order Processing Workbench</title>
+  <link rel="stylesheet" href="orderpro.css?v=20260828-2" />
 </head>
 <body>
-  <header class="shellbar">
-    <div class="shell-left">
-      <a class="product-mark" href="../../" aria-label="Return to ChangeProof">OP</a>
-      <div class="product-copy">
-        <strong>ORDERPRO</strong>
-        <span>Enterprise Order Management</span>
+  <header class="erp-shell">
+    <div class="menu-strip">
+      <a class="erp-wordmark" href="../../" aria-label="Return to ChangeProof">
+        <span class="wordmark-icon">OP</span>
+        <span><b>ORDERPRO</b><small>Enterprise Business Suite</small></span>
+      </a>
+      <nav class="menu-links" aria-label="Application menu">
+        <button>System</button><button>Order</button><button>Customer</button><button>Logistics</button><button>Environment</button><button>Help</button>
+      </nav>
+      <div class="shell-context">
+        <span><small>System</small><b>ORP</b></span>
+        <span><small>Client</small><b>100</b></span>
+        <span><small>User</small><b>ORDERADM</b></span>
+        <span class="live-system"><i></i><b>PROD</b></span>
       </div>
-      <span class="edition">ECC-ish / v8.4</span>
     </div>
-    <div class="shell-right">
-      <span class="system-pill"><i></i> ORDERPRO-PROD</span>
-      <span class="shell-user">ORDERADM</span>
-      <a href="../../#sessions" class="cp-link">ChangeProof ↗</a>
+
+    <div class="command-strip">
+      <div class="command-icons" aria-hidden="true">
+        <span>◀</span><span>▶</span><span>↻</span><span>□</span>
+      </div>
+      <label class="transaction-box">Transaction
+        <input id="transaction-code" value="ZORD_ENTRY" aria-label="Transaction code" />
+      </label>
+      <button class="execute-button" id="execute-transaction" type="button">Execute</button>
+      <div class="command-actions">
+        <button type="button">Save</button><button type="button">Print</button><button type="button">Find</button><button type="button">New session</button>
+      </div>
+      <a class="cp-shell-link" href="../../#sessions">ChangeProof evidence ↗</a>
     </div>
   </header>
 
+  <div class="system-ribbon">
+    <span>ORP / 100</span><i></i><span>ORDERADM</span><i></i><span>EN</span><i></i><span>Host ORP01</span><i></i><span>IBM i integration: ORDERPRO</span><i></i><span>Session 1</span>
+  </div>
+
   <div class="workspace">
-    <aside class="side-nav" aria-label="ORDERPRO navigation">
-      <div class="nav-title">Work Centers</div>
-      <button class="nav-item active"><span>▣</span> Order Entry</button>
-      <button class="nav-item"><span>◫</span> Customers</button>
-      <button class="nav-item"><span>▦</span> Inventory</button>
-      <button class="nav-item"><span>◷</span> Fulfillment</button>
-      <button class="nav-item"><span>▤</span> Reports</button>
-      <div class="nav-title nav-spacer">System</div>
-      <button class="nav-item"><span>⚙</span> Administration</button>
-      <div class="nav-bottom">
-        <small>IBM i backend</small>
-        <b>ORDERPRO</b>
-        <span>Synthetic scenario</span>
+    <aside class="navigator" aria-label="ORDERPRO transaction navigation">
+      <div class="nav-search"><span>⌕</span><input placeholder="Search transactions" aria-label="Search transactions" /></div>
+      <div class="tree-title">Favorites</div>
+      <button class="tree-row active"><span>★</span><b>ZORD_ENTRY</b><small>Create sales order</small></button>
+      <button class="tree-row"><span>☆</span><b>ZCUS_DISP</b><small>Customer master</small></button>
+      <button class="tree-row"><span>☆</span><b>ZINV_OVW</b><small>Inventory overview</small></button>
+      <button class="tree-row"><span>☆</span><b>ZFULMNT_MON</b><small>Fulfillment monitor</small></button>
+
+      <div class="tree-title">Sales & Distribution</div>
+      <div class="tree-group"><span>▾</span><b>Order Management</b></div>
+      <button class="tree-child active">Create Order</button>
+      <button class="tree-child">Change Order</button>
+      <button class="tree-child">Display Order</button>
+      <div class="tree-group"><span>▾</span><b>Master Data</b></div>
+      <button class="tree-child">Customers</button>
+      <button class="tree-child">Materials</button>
+
+      <div class="tree-title">Logistics Execution</div>
+      <div class="tree-group"><span>▾</span><b>Background Processing</b></div>
+      <button class="tree-child">Job Schedule</button>
+      <button class="tree-child">Batch Monitor</button>
+
+      <div class="tree-title">System</div>
+      <button class="tree-row"><span>◫</span><b>ZSYS_OVW</b><small>System overview</small></button>
+      <button class="tree-row"><span>⚙</span><b>ZCHG_CTRL</b><small>Change package</small></button>
+
+      <div class="navigator-footer">
+        <span>Application server</span><b>ORP01</b>
+        <small>Legacy adapter / IBM i</small>
+        <code>ORDERPRO</code>
       </div>
     </aside>
 
     <main class="main" id="main">
-      <div class="page-head">
+      <section class="transaction-head">
         <div>
-          <p class="breadcrumb">Home / Sales & Distribution / Order Processing</p>
-          <h1>Order Entry Work Center</h1>
-          <p class="subtitle">Create and validate customer orders against ORDERPRO business rules.</p>
+          <p class="breadcrumb">Sales & Distribution › Order Management › Create Order</p>
+          <div class="transaction-title-line"><span class="tcode">ZORD_ENTRY</span><h1>Create Sales Order</h1></div>
+          <p class="subtitle">Synthetic ORDERPRO transaction surface backed by the same customer, inventory, order, RPGLE, CLLE, DDS, and Db2 scenario used by ChangeProof.</p>
         </div>
-        <div class="change-badge">
-          <span>Change under review</span>
-          <b>CHG-0042</b>
-          <small>Expedited cutoff extension</small>
+        <div class="object-meta">
+          <div><span>Change package</span><b>CHG-0042</b></div>
+          <div><span>Release train</span><b>ORDERPRO / R84</b></div>
+          <div><span>Backend target</span><b>IBM i</b></div>
         </div>
-      </div>
+      </section>
 
-      <section class="scenario-bar" aria-label="Scenario state">
-        <div class="scenario-copy">
-          <span>Scenario state</span>
-          <strong id="scenario-title">Current production</strong>
-          <small id="scenario-subtitle">Pre-change behavior with the existing 16:00 expedited cutoff.</small>
+      <section class="lifecycle-panel" aria-label="CHG-0042 lifecycle state">
+        <div class="lifecycle-copy">
+          <span>Change simulation</span>
+          <strong id="scenario-title">01 / Current production</strong>
+          <p id="scenario-subtitle">Pre-change behavior. Preferred and Standard expedited orders both stop at 16:00.</p>
         </div>
         <div class="scenario-tabs" role="tablist" aria-label="Change lifecycle state">
-          <button role="tab" aria-selected="true" data-state="baseline"><span>01</span> Current production</button>
-          <button role="tab" aria-selected="false" data-state="requested"><span>02</span> Requested CHG-0042</button>
-          <button role="tab" aria-selected="false" data-state="remediated"><span>03</span> ChangeProof remediation</button>
+          <button role="tab" aria-selected="true" data-state="baseline">
+            <span>01</span><b>Current production</b><small>Functional test expected to fail</small>
+          </button>
+          <button role="tab" aria-selected="false" data-state="requested">
+            <span>02</span><b>Ticket applied literally</b><small>Function passes / release held</small>
+          </button>
+          <button role="tab" aria-selected="false" data-state="remediated">
+            <span>03</span><b>ChangeProof remediation</b><small>Function passes / target check next</small>
+          </button>
         </div>
       </section>
 
-      <section class="kpi-row" aria-label="Operational summary">
-        <article class="kpi">
-          <span>Preferred expedited cutoff</span>
-          <strong id="kpi-cutoff">16:00</strong>
-          <small id="kpi-cutoff-note">Same as Standard</small>
-        </article>
-        <article class="kpi">
-          <span>FULMNT batch</span>
-          <strong id="kpi-batch">18:00</strong>
-          <small id="kpi-batch-note">Daily / enabled</small>
-        </article>
-        <article class="kpi">
-          <span>Change status</span>
-          <strong id="kpi-change">BASELINE</strong>
-          <small id="kpi-change-note">Ticket not applied</small>
-        </article>
-        <article class="kpi target-kpi">
-          <span>IBM i runtime validation</span>
-          <strong>REQUIRED</strong>
-          <small>Source observation ≠ target proof</small>
-        </article>
-      </section>
-
-      <div class="primary-grid">
-        <section class="card entry-card">
-          <div class="card-head">
-            <div><span class="eyebrow">Sales order</span><h2>New Order</h2></div>
-            <span class="doc-number">Draft / unsaved</span>
-          </div>
-          <form id="order-form">
-            <div class="form-grid">
-              <label class="span-2">Customer
-                <select id="customer"></select>
-              </label>
-              <label>Order type
-                <select id="order-type">
-                  <option value="E" selected>Expedited</option>
-                  <option value="S">Standard</option>
-                </select>
-              </label>
-              <label>Order time
-                <input id="order-time" type="time" value="17:00" step="60" />
-              </label>
-              <label class="span-2">Item
-                <select id="item"></select>
-              </label>
-              <label>Quantity
-                <input id="quantity" type="number" min="1" value="10" />
-              </label>
-              <label>Requested ship date
-                <input type="date" value="2024-11-15" />
-              </label>
-            </div>
-            <div class="form-actions">
-              <button class="secondary" type="button" id="reset-order">Reset</button>
-              <button class="primary" type="submit">Validate & Submit Order</button>
-            </div>
-          </form>
-        </section>
-
-        <aside class="card customer-card">
-          <div class="card-head compact">
-            <div><span class="eyebrow">Business partner</span><h2>Customer Context</h2></div>
-            <span class="class-chip" id="customer-class">P</span>
-          </div>
-          <dl class="customer-data">
-            <div><dt>Customer</dt><dd id="customer-name"></dd></div>
-            <div><dt>Account</dt><dd id="customer-number"></dd></div>
-            <div><dt>Class</dt><dd id="customer-class-text"></dd></div>
-            <div><dt>Credit limit</dt><dd id="customer-credit"></dd></div>
-            <div><dt>Status</dt><dd id="customer-status"></dd></div>
-            <div><dt>Address</dt><dd id="customer-address"></dd></div>
-          </dl>
-          <div class="policy-box">
-            <span>Effective expedited policy</span>
-            <strong id="policy-text">Orders accepted through 16:00</strong>
-          </div>
-        </aside>
+      <div class="message-strip info" id="lifecycle-message" role="status">
+        <span class="message-icon">i</span>
+        <div><b>Baseline loaded.</b><p>Run the default Preferred expedited order at 17:00 to reproduce the requested behavior gap.</p></div>
       </div>
 
-      <section class="result-zone" id="result-zone" aria-live="polite">
-        <div class="result-card neutral" id="result-card">
-          <div class="result-icon">?</div>
-          <div>
-            <span>Order validation</span>
-            <strong id="result-title">Ready to validate</strong>
-            <p id="result-detail">The default scenario uses a Preferred customer submitting an expedited order at 17:00.</p>
-          </div>
-          <div class="result-meta">
-            <span>ORDTYP <b id="result-type">E</b></span>
-            <span>CUSCLS <b id="result-class">P</b></span>
-            <span>ORDTIM <b id="result-time">170000</b></span>
+      <section class="gate-matrix" aria-label="Change readiness gates">
+        <article class="gate" id="gate-functional">
+          <span>Gate 1</span><b>Functional acceptance</b><strong id="gate-functional-status">NOT TESTED</strong><small id="gate-functional-note">Submit the default order.</small>
+        </article>
+        <article class="gate" id="gate-operational">
+          <span>Gate 2</span><b>Operational change safety</b><strong id="gate-operational-status">BASELINE</strong><small id="gate-operational-note">CHG-0042 not yet applied.</small>
+        </article>
+        <article class="gate target" id="gate-target">
+          <span>Gate 3</span><b>IBM i target validation</b><strong id="gate-target-status">REQUIRED</strong><small id="gate-target-note">RPG / CL / Db2 not executed here.</small>
+        </article>
+        <article class="gate release" id="gate-release">
+          <span>Release decision</span><b>Change readiness</b><strong id="gate-release-status">NO-GO</strong><small id="gate-release-note">Functional acceptance not satisfied.</small>
+        </article>
+      </section>
+
+      <section class="object-shell">
+        <div class="object-toolbar">
+          <button type="button" class="toolbar-primary">Check</button>
+          <button type="button">Hold</button>
+          <button type="button">Incompletion log</button>
+          <button type="button">Document flow</button>
+          <button type="button">Environment</button>
+          <span class="toolbar-spacer"></span>
+          <span>Sales org <b>1000</b></span><span>Channel <b>10</b></span><span>Division <b>00</b></span>
+        </div>
+        <div class="object-tabs" role="tablist" aria-label="Order object sections">
+          <button class="active" data-panel="order-data" type="button">Order</button>
+          <button data-panel="item-data" type="button">Item overview</button>
+          <button data-panel="schedule-data" type="button">Schedule lines</button>
+          <button data-panel="partner-data" type="button">Partners</button>
+          <button data-panel="change-data" type="button">Change impact</button>
+        </div>
+
+        <div class="object-content active" id="order-data">
+          <div class="primary-grid">
+            <section class="erp-card entry-card">
+              <div class="card-head">
+                <div><span class="eyebrow">Header data</span><h2>Order Entry</h2></div>
+                <div class="header-status"><span>Document</span><b>DRAFT</b></div>
+              </div>
+              <form id="order-form">
+                <fieldset>
+                  <legend>Business data</legend>
+                  <div class="form-grid">
+                    <label class="span-2">Sold-to party
+                      <select id="customer"></select>
+                    </label>
+                    <label>Document type
+                      <select id="order-type"><option value="E" selected>ZEXP — Expedited</option><option value="S">ZSTD — Standard</option></select>
+                    </label>
+                    <label>Order time
+                      <input id="order-time" type="time" value="17:00" step="60" />
+                    </label>
+                    <label>Customer PO
+                      <input value="WEB-CHG0042-01" />
+                    </label>
+                    <label>Requested ship date
+                      <input type="date" value="2024-11-15" />
+                    </label>
+                  </div>
+                </fieldset>
+
+                <fieldset>
+                  <legend>Item 10</legend>
+                  <div class="form-grid item-form">
+                    <label class="span-2">Material
+                      <select id="item"></select>
+                    </label>
+                    <label>Order quantity
+                      <input id="quantity" type="number" min="1" value="10" />
+                    </label>
+                    <label>Plant
+                      <input value="P100" readonly />
+                    </label>
+                  </div>
+                </fieldset>
+
+                <div class="form-actions">
+                  <button class="secondary" type="button" id="reset-order">Reset</button>
+                  <button class="secondary" type="button" id="simulate-order">Simulate</button>
+                  <button class="primary" type="submit">Check Order</button>
+                </div>
+              </form>
+            </section>
+
+            <aside class="erp-card customer-card">
+              <div class="card-head compact">
+                <div><span class="eyebrow">Business partner</span><h2>Customer Master</h2></div>
+                <span class="class-chip" id="customer-class">P</span>
+              </div>
+              <div class="master-tabs"><button class="active">General</button><button>Sales area</button><button>Credit</button></div>
+              <dl class="customer-data">
+                <div><dt>Name</dt><dd id="customer-name"></dd></div>
+                <div><dt>Account</dt><dd id="customer-number"></dd></div>
+                <div><dt>Class</dt><dd id="customer-class-text"></dd></div>
+                <div><dt>Credit limit</dt><dd id="customer-credit"></dd></div>
+                <div><dt>Account status</dt><dd id="customer-status"></dd></div>
+                <div><dt>Address</dt><dd id="customer-address"></dd></div>
+              </dl>
+              <div class="policy-box">
+                <span>Effective expedited rule</span>
+                <strong id="policy-text">Orders accepted through 16:00</strong>
+              </div>
+            </aside>
           </div>
         </div>
-        <aside class="cp-insight" id="cp-insight">
-          <div class="cp-insight-head"><span class="cp-dot"></span><b>ChangeProof observation</b></div>
-          <p id="cp-insight-copy">CHG-0042 proposes an 18:00 Preferred cutoff while the existing FULMNT schedule is already 18:00. The ticket and schedule intersect even before code is changed.</p>
-          <div class="cp-tags" id="cp-tags">
-            <span>OBSERVED_SOURCE</span><span>INFERRED</span><span>IBM_I</span>
+
+        <div class="object-content" id="item-data">
+          <section class="erp-card tab-card">
+            <div class="card-head compact"><div><span class="eyebrow">Item overview</span><h2>Sales Order Items</h2></div><span class="table-count">1 item</span></div>
+            <div class="table-scroll"><table class="alv"><thead><tr><th>Itm</th><th>Material</th><th>Description</th><th>Order qty</th><th>UoM</th><th>Plant</th><th>Net price</th><th>ATP available</th></tr></thead><tbody id="item-overview-body"></tbody></table></div>
+          </section>
+        </div>
+
+        <div class="object-content" id="schedule-data">
+          <section class="erp-card tab-card">
+            <div class="card-head compact"><div><span class="eyebrow">Schedule lines</span><h2>Availability / Fulfillment Timing</h2></div><span class="table-count">1 schedule line</span></div>
+            <div class="table-scroll"><table class="alv"><thead><tr><th>Itm</th><th>Line</th><th>Req. date</th><th>Confirmed qty</th><th>Order cutoff</th><th>FULMNT batch</th><th>Assessment</th></tr></thead><tbody id="schedule-lines-body"></tbody></table></div>
+          </section>
+        </div>
+
+        <div class="object-content" id="partner-data">
+          <section class="erp-card tab-card partner-panel">
+            <div class="card-head compact"><div><span class="eyebrow">Partner functions</span><h2>Order Partners</h2></div></div>
+            <div class="partner-grid"><div><span>SP</span><b id="partner-soldto"></b><small>Sold-to party</small></div><div><span>SH</span><b id="partner-shipto"></b><small>Ship-to party</small></div><div><span>PY</span><b id="partner-payer"></b><small>Payer</small></div><div><span>RE</span><b>ORDERADM</b><small>Responsible user</small></div></div>
+          </section>
+        </div>
+
+        <div class="object-content" id="change-data">
+          <section class="erp-card tab-card change-impact-panel">
+            <div class="card-head compact"><div><span class="eyebrow">Change package CHG-0042</span><h2>Cross-surface Impact</h2></div><span class="impact-state" id="impact-state">BASELINE</span></div>
+            <div class="impact-grid">
+              <div><span>Customer rule</span><b id="impact-rule">16:00</b><small>Preferred expedited cutoff</small></div>
+              <div><span>RPGLE</span><b>ORDPRC / CHKORDCTF</b><small>Business-rule implementation</small></div>
+              <div><span>CLLE</span><b id="impact-batch">FULMNT @ 18:00</b><small>Downstream batch schedule</small></div>
+              <div><span>Evidence</span><b id="impact-evidence">OBSERVED_SOURCE</b><small>ChangeProof classification</small></div>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section class="decision-zone" id="result-zone" aria-live="polite">
+        <article class="decision-card functional neutral" id="functional-result">
+          <div class="decision-head"><span>FUNCTIONAL TEST</span><strong id="functional-state">NOT RUN</strong></div>
+          <div class="decision-body">
+            <div class="decision-icon" id="functional-icon">?</div>
+            <div><h2 id="result-title">Order check not executed</h2><p id="result-detail">Default test case: Preferred customer, expedited order, 17:00.</p></div>
           </div>
+          <div class="result-meta"><span>ORDTYP <b id="result-type">E</b></span><span>CUSCLS <b id="result-class">P</b></span><span>ORDTIM <b id="result-time">170000</b></span></div>
+        </article>
+
+        <article class="decision-card release neutral" id="release-result">
+          <div class="decision-head"><span>RELEASE GATE</span><strong id="release-state">NO-GO</strong></div>
+          <div class="decision-body">
+            <div class="decision-icon" id="release-icon">■</div>
+            <div><h2 id="release-title">Not eligible for release</h2><p id="release-detail">The requested functional behavior has not been satisfied.</p></div>
+          </div>
+          <div class="release-rule"><span>Rule</span><b id="release-rule">Functional acceptance must pass before release review.</b></div>
+        </article>
+
+        <aside class="cp-insight" id="cp-insight">
+          <div class="cp-insight-head"><span class="cp-dot"></span><b>ChangeProof interpretation</b></div>
+          <p id="cp-insight-copy">CHG-0042 proposes an 18:00 Preferred cutoff while FULMNT is already scheduled at 18:00.</p>
+          <div class="cp-tags" id="cp-tags"><span>OBSERVED_SOURCE</span><span>INFERRED</span><span>IBM_I</span></div>
           <a href="../../#sessions">Inspect evidence sessions →</a>
         </aside>
       </section>
 
+      <section class="erp-card job-monitor">
+        <div class="card-head compact">
+          <div><span class="eyebrow">ZFULMNT_MON / background processing</span><h2>Fulfillment Job Monitor</h2></div>
+          <div class="alv-tools"><button>Filter</button><button>Sort</button><button>Layout</button><button>Export</button></div>
+        </div>
+        <div class="table-scroll">
+          <table class="alv"><thead><tr><th>Job entry</th><th>Subsystem</th><th>User</th><th>Frequency</th><th>Next run</th><th>Program / command</th><th>Source state</th><th>Target status</th></tr></thead>
+          <tbody>
+            <tr class="focus-row"><td><b>FULMNT</b></td><td>QBATCH</td><td>ORDERADM</td><td>*DAILY</td><td id="schedule-time"><b>18:00</b></td><td>CALL PGM(ORDERPRO/ORDPRC)</td><td><span class="status-chip observed">OBSERVED</span></td><td><span class="status-chip target">VALIDATION REQ.</span></td></tr>
+            <tr><td>ORDCLOSE</td><td>QBATCH</td><td>ORDERADM</td><td>*DAILY</td><td>23:30</td><td>CALL PGM(ORDERPRO/ORDCLOSE)</td><td><span class="status-chip neutral">REFERENCE</span></td><td><span class="status-chip neutral">NOT IN SCOPE</span></td></tr>
+            <tr><td>INVRECON</td><td>QBATCH</td><td>INVADMIN</td><td>*DAILY</td><td>02:00</td><td>CALL PGM(ORDERPRO/INVRECON)</td><td><span class="status-chip neutral">REFERENCE</span></td><td><span class="status-chip neutral">NOT IN SCOPE</span></td></tr>
+          </tbody></table>
+        </div>
+        <div class="schedule-warning" id="schedule-warning"><span>!</span><p><b>Change intersection:</b> CHG-0042 proposes an 18:00 Preferred cutoff while FULMNT begins at 18:00.</p></div>
+      </section>
+
       <div class="ops-grid">
-        <section class="card schedule-card">
-          <div class="card-head compact">
-            <div><span class="eyebrow">Background processing</span><h2>Fulfillment Schedule</h2></div>
-            <span class="enabled">● ENABLED</span>
-          </div>
-          <table>
-            <thead><tr><th>Job</th><th>Frequency</th><th>Scheduled</th><th>Program</th><th>Status</th></tr></thead>
-            <tbody>
-              <tr class="focus-row"><td><b>FULMNT</b></td><td>Daily</td><td id="schedule-time"><b>18:00</b></td><td>ORDERPRO/ORDPRC</td><td><span class="table-chip">Enabled</span></td></tr>
-              <tr><td>ORDCLOSE</td><td>Daily</td><td>23:30</td><td>ORDERPRO/ORDCLOSE</td><td><span class="table-chip">Enabled</span></td></tr>
-              <tr><td>INVRECON</td><td>Daily</td><td>02:00</td><td>ORDERPRO/INVRECON</td><td><span class="table-chip">Enabled</span></td></tr>
-            </tbody>
-          </table>
-          <div class="schedule-warning" id="schedule-warning"><span>!</span><p><b>Change intersection:</b> Proposed Preferred cutoff and FULMNT both resolve to 18:00.</p></div>
+        <section class="erp-card inventory-card">
+          <div class="card-head compact"><div><span class="eyebrow">ZINV_OVW / Plant P100</span><h2>Inventory Overview</h2></div><span class="asof">Local surrogate</span></div>
+          <div id="inventory-list" class="inventory-list"></div>
         </section>
 
-        <section class="card inventory-card">
-          <div class="card-head compact">
-            <div><span class="eyebrow">Warehouse 01</span><h2>Inventory Snapshot</h2></div>
-            <span class="asof">Local surrogate</span>
-          </div>
-          <div id="inventory-list" class="inventory-list"></div>
+        <section class="erp-card system-card">
+          <div class="card-head compact"><div><span class="eyebrow">System context</span><h2>Legacy Integration</h2></div><span class="adapter-ready">● READY</span></div>
+          <dl class="system-data"><div><dt>Application</dt><dd>ORDERPRO</dd></div><div><dt>Backend</dt><dd>IBM i target</dd></div><div><dt>Local adapter</dt><dd>SQLite surrogate</dd></div><div><dt>RPG program</dt><dd>ORDPRC</dd></div><div><dt>CL batch</dt><dd>FULMNT</dd></div><div><dt>Runtime proof</dt><dd class="needs-target">TARGET VALIDATION REQUIRED</dd></div></dl>
         </section>
       </div>
 
-      <section class="card orders-card">
-        <div class="card-head compact">
-          <div><span class="eyebrow">Order history</span><h2>Recent Orders</h2></div>
-          <span class="asof">Synthetic data / 10 records</span>
-        </div>
-        <div class="table-scroll">
-          <table>
-            <thead><tr><th>Order</th><th>Customer</th><th>Class</th><th>Type</th><th>Time</th><th>Status</th><th>Total</th></tr></thead>
-            <tbody id="orders-body"></tbody>
-          </table>
-        </div>
+      <section class="erp-card orders-card">
+        <div class="card-head compact"><div><span class="eyebrow">List report</span><h2>Recent Orders</h2></div><div class="alv-tools"><button>Filter</button><button>Sort</button><button>Subtotal</button><button>Export</button></div></div>
+        <div class="table-scroll"><table class="alv"><thead><tr><th>Order</th><th>Customer</th><th>Class</th><th>Type</th><th>Time</th><th>Status</th><th>Net value</th></tr></thead><tbody id="orders-body"></tbody></table></div>
       </section>
 
-      <footer class="app-footer">
-        <span>ORDERPRO Enterprise Order Management · synthetic hackathon workload</span>
-        <span>Local UI simulation · not connected to a live IBM i</span>
-      </footer>
+      <div class="disclaimer-strip">Synthetic hackathon workload. Enterprise ERP/BASIS visual conventions are parodied for scenario realism; no SAP assets, logos, proprietary fonts, or live SAP system are used.</div>
     </main>
   </div>
 
-  <script src="orderpro.js?v=20260828-1"></script>
+  <footer class="gui-statusbar">
+    <div><span class="status-ok">●</span><b id="status-message">Ready</b></div>
+    <div><span>ORP</span><span>100</span><span>ORDERADM</span><span>EN</span><span>ORP01</span><span>IBM i / ORDERPRO</span><span>INS</span></div>
+  </footer>
+
+  <script src="orderpro.js?v=20260828-2"></script>
 </body>
 </html>
