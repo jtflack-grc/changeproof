@@ -1,124 +1,120 @@
 # ChangeProof: Three-Minute Demo Script
 
-**Target runtime:** 2:45 to 2:55  
+**Target runtime:** 2:48 to 2:58  
 **Recording style:** One continuous screen + camera take. No editing required.  
 **Requirement:** Keep at least 90 seconds on the working solution itself.
 
 ## Before recording
 
-Open the live ChangeProof page and hard-refresh it. Scroll through once so the embedded ORDERPRO workbench and ChangeProof Review Workspace have loaded. The Review Workspace should show **8/8 repository artifacts loaded**. If it does not, do not record until that is fixed.
+Open the live ChangeProof page and hard-refresh it. Scroll through once so all dynamic sections have loaded.
 
-Use the default ORDERPRO test throughout:
+Do **not** record unless:
 
-- Customer: `1000001 — Hartwell Manufacturing Ltd`
-- Class: Preferred (`P`)
-- Order type: Expedited (`E`)
-- Time: `17:00`
-- Item: `ITM0001`
-- Quantity: `10`
+- Review Workspace says **8/8 repository artifacts loaded**.
+- Reuse Proof says **9/9 generated artifacts loaded**.
+- ORDERPRO defaults are Hartwell / Preferred / Expedited / 17:00.
 
-The memorable moment is not merely the fake ERP. It is the transition from **FUNCTIONAL TEST = PASS / RELEASE GATE = HOLD** into the evidence lineage that proves why.
+The video has two proof moments:
 
-## 0:00–0:14 | Hook
+1. ORDERPRO functional PASS → release HOLD → reviewable evidence lineage.
+2. REPORT-GW uses the same core on a completely different workload and independently reproduces the same class of “acceptance passed, consequence still open” problem.
 
-**On screen:** ChangeProof hero, then move to ORDERPRO.
+## 0:00–0:13 | Hook
+
+**On screen:** ChangeProof hero, then move directly to ORDERPRO.
 
 **Say:**
 
 “AI can write the change. ChangeProof asks whether the change deserves to ship. This is ORDERPRO, a fictional brownfield IBM i system. The ticket sounds tiny: Preferred customers get until 6 PM instead of 4 PM for expedited orders.”
 
-## 0:14–0:34 | Reproduce the gap
+## 0:13–0:35 | Show the split decision
 
-**On screen:** ORDERPRO / Current production. Run **Check Order** with the defaults.
-
-**Say:**
-
-“In the preserved baseline, this Preferred customer at 5 PM fails the requested behavior. That is the obvious part.”
-
-**Expected visual:** functional FAIL / release NO-GO.
-
-## 0:34–0:54 | Implement the ticket literally
-
-**On screen:** Select **02 / Ticket applied literally** and run the same order.
+**On screen:** ORDERPRO. Start on **Current production**, run the default order, then select **Ticket applied literally** and run the exact same order again.
 
 **Say:**
 
-“Apply the ticket literally and the exact same order passes. The acceptance criterion is satisfied. But ChangeProof still holds the release because preserved CL evidence contains `SCDTIME(180000)`, the same new boundary.”
+“At 5 PM, the baseline rejects this Preferred expedited order. Apply the ticket literally and the exact same acceptance check passes. But release still stops: preserved CL evidence contains `SCDTIME(180000)`, the same new boundary.”
 
 Pause on:
 
 - `FUNCTIONAL TEST = PASS`
 - `RELEASE GATE = HOLD`
 
-Then click **Prove the HOLD**.
+Click **Prove the HOLD**.
 
-## 0:54–1:42 | Follow the evidence lineage — centerpiece
+## 0:35–1:25 | Follow the actual evidence — centerpiece
 
 **On screen:** ChangeProof Review Workspace.
 
 **Say:**
 
-“This is the part I care about. The warning is not a label I typed into the ERP. This workspace loads the actual preserved traceability JSON, Jest receipts, change request, submitted RPG and CL source, and the inference engine from the repository.”
+“This is ChangeProof itself. The warning is not hard-coded into the fake ERP. The workspace loads eight actual repository artifacts: preserved traceability, Jest receipts, the ticket, submitted RPG and CL, and the inference implementation. If those artifacts cannot be resolved, the chain does not render.”
 
 Pause on **8/8 repository artifacts loaded** and **NO EVIDENCE → NO CHAIN**.
 
-Continue:
-
-“The chain starts with CHG-0042, then the baseline execution receipt, then this actual machine finding.”
-
 Click **`inferred-fulmnt-batch-window-collision`**.
 
-“Here is its real evidence ID, artifact, line reference, basis, status, target, and raw machine record. The baseline engine recorded an inferred collision at `SCDTIME(180000)`.”
+“This is the preserved machine finding: evidence ID, artifact, line reference, basis, status, target, and raw record.”
 
-Close the drawer and click **Inference engine**.
+Close it and click **Inference engine**.
 
-“And here is the submitted collector code that produced that finding. It analyzes the CL symbols for `SCDTIME` and emits the collision when the requested 18:00 boundary equals the detected 180000 value.”
+“And this is the submitted code that created it. The collector sees the CL `SCDTIME` value and correlates it with the requested 18:00 boundary.”
 
-## 1:42–2:10 | Follow remediation and re-run
+Continue down to remediation/re-run.
 
-**On screen:** Continue down the lineage to **REMEDIATE** and **RE-RUN**.
+“The submitted RPG keeps Preferred at 18:00 and Standard at 16:00; CL moves to `SCDTIME(181500)`. The same targeted test then passes.”
 
-**Say:**
+## 1:25–1:42 | Show where proof stops
 
-“Now the same chain shows the submitted RPG rule, the CL remediation to `SCDTIME(181500)`, and the preserved post-change Jest receipt for the same Preferred-at-17:00 case. Sixteen tests pass and zero fail.”
-
-Click either the RPG or CL node briefly so the fetched source excerpt is visible.
-
-## 2:10–2:28 | Show what ChangeProof refuses to prove
-
-**On screen:** Final **RESIDUAL / IBM_I** node. Click it.
+**On screen:** **RESIDUAL / IBM_I** node.
 
 **Say:**
 
-“Three checks remain deliberately pending because they require IBM i. ChangeProof can prove local execution and observe source. It will not claim RPG compilation, CL execution, job submission, or Db2 runtime behavior without the target.”
+“Three checks remain pending because they require IBM i. Source observation is not runtime proof, so ChangeProof does not claim compilation, CL execution, job submission, or Db2 behavior that never ran.”
 
-## 2:28–2:42 | Bob role
+## 1:42–2:18 | Prove it is reusable
 
-**On screen:** Scroll to the Bob section or briefly show the retained Bob task screenshot.
+**On screen:** Scroll to **Reuse Proof / ORDERPRO is not the product**.
+
+**Say:**
+
+“And this is the answer to ‘did you just build a detector for your own synthetic problem?’ REPORT-GW is a second workload with no RPG, CL, Db2, 5250, or IBM i adapter. It uses the same evidence core.”
+
+Pause on the architecture and three states.
+
+“The ticket changes an application timeout from 30 to 60 seconds. In the literal state, both scoped Jest tests pass — but the same core emits this independent `INFERRED / OPEN / LOCAL` finding because the upstream proxy is still 45 seconds. Move the proxy to 75, rerun, and the finding disappears.”
+
+Point to **9/9 generated artifacts loaded** and the machine record.
+
+“These receipts were generated and verified by GitHub Actions and committed by the Actions bot. The page is rendering those receipts, not a canned second example.”
+
+## 2:18–2:32 | Bob role
+
+**On screen:** Bob section or retained Bob task-session screenshot.
 
 **Say:**
 
 “IBM Bob 2.0 was the core build environment for planning, polyglot authoring, analyzers, tests, evidence generation, and remediation, consuming the full hackathon allocation.”
 
-## 2:42–2:55 | Close
+## 2:32–2:55 | Close
 
-**On screen:** Return to the lineage or final release question.
+**On screen:** Return to the Review Workspace final release question or hero.
 
 **Say:**
 
-“The requested change is not always the actual change. ChangeProof lets a reviewer ask why, follow the evidence all the way down, and see exactly where proof stops.”
+“ORDERPRO is synthetic and REPORT-GW is synthetic because the demonstration needs to be safe and reproducible. The evidence machinery is reusable and falsifiable. Change the source, tests, config, or inference rule and the evidence changes. ChangeProof tells a reviewer what changed, what was proven, what was inferred, and exactly where proof stops.”
 
 ---
 
 ## Recording notes
 
-- The **Review Workspace is the product centerpiece**. Spend more time there than in ORDERPRO.
-- Verify it says **8/8 repository artifacts loaded** before recording.
-- Click at least one machine finding and one source/remediation node so the evidence drawer is visibly demonstrated.
-- The workspace deliberately fails closed: if required evidence cannot be fetched or resolved, it does not render a canned lineage.
-- The baseline working source is historical. The current repository working tree is post-change. The viewer explicitly labels that distinction.
-- The original baseline inference stored the detected `SCDTIME(180000)` literal and cross-artifact conclusion in one INFERRED record. The viewer does not invent parent IDs; it reconstructs the review path from the preserved change request, machine finding, and test receipt.
-- ORDERPRO is synthetic and browser-based. It demonstrates the workload; it is not the evidence source.
-- IronTerm-style screens remain optional supporting inspection surfaces. Do not spend scarce video time on all three unless the run is comfortably under three minutes.
-- Do not run `npm run baseline` against the final source tree.
+- **Review Workspace is the product centerpiece.** ORDERPRO only establishes the problem.
+- The Reuse Proof is essential now. Give it roughly 30–35 seconds.
+- Verify **8/8** Review Workspace artifacts and **9/9** Reuse Proof artifacts before recording.
+- Click at least one real machine finding and the inference-engine node.
+- You do not need to show all three IronTerm sessions in the final video. They are optional supporting inspection surfaces on the public page.
+- The ORDERPRO baseline source is historical; current working source is post-change. The viewer preserves that distinction.
+- The original ORDERPRO baseline inference stored the detected `SCDTIME(180000)` literal and cross-artifact conclusion in one INFERRED record. The viewer does not invent parent IDs.
+- REPORT-GW uses immutable baseline/literal/post-change fixture states and canonical artifact names before diffing.
+- Do not run `npm run baseline` against the current ORDERPRO source tree.
 - Do not claim live IBM i execution.
