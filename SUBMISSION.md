@@ -2,21 +2,21 @@
 
 ## Problem and Solution Statement
 
-**Word count: approximately 390 words. Limit: 500 words.**
+**Word count: approximately 440 words. Limit: 500 words.**
 
-Brownfield application changes are rarely as small as the ticket makes them look. A developer may be asked to change one business rule, but the real work is discovering duplicated logic, downstream jobs, stale documentation, missing tests, data dependencies, and validation that can only happen on the target platform. AI can make code changes faster, but faster code generation can make review and release confidence the new bottleneck.
+Brownfield application changes are rarely as small as the ticket makes them look. A developer may be asked to change one business rule, but the real work is discovering duplicated logic, downstream processing, stale documentation, missing tests, data dependencies, and validation that can only happen on the target platform. AI can make code changes faster, but faster code generation can make review and release confidence the new bottleneck.
 
-**ChangeProof** is an evidence-producing maintenance workflow built around a fictional IBM i order system called ORDERPRO. Its target users are developers maintaining unfamiliar applications and the reviewers responsible for deciding whether those changes are safe to release.
+**ChangeProof** is an evidence-producing maintenance workflow built around a fictional IBM i order system called ORDERPRO. Its target users are developers maintaining unfamiliar applications and the reviewers responsible for deciding whether those changes are ready to advance toward release.
 
-The demonstration starts with CHG-0042: “Preferred customers may submit expedited orders until 6:00 PM instead of the standard 4:00 PM cutoff.” ORDERPRO is deliberately polyglot: RPGLE contains core order logic, CL schedules fulfillment, DDS and Db2 define data, a Node.js API fronts the application, and operational Markdown describes how the system is supposed to work.
+The demonstration starts with CHG-0042: “Preferred customers may submit expedited orders until 6:00 PM instead of the standard 4:00 PM cutoff.” ORDERPRO is deliberately polyglot: RPGLE contains core order logic, CL handles fulfillment scheduling, DDS and Db2 define data, a Node.js API fronts the application, and operational Markdown describes expected behavior.
 
-ChangeProof analyzes those artifacts, executes the tests and local data checks that can be run, correlates findings to the change request, and produces a human-readable HTML/Markdown Evidence Pack plus machine-readable traceability JSON. Every finding records three separate facts: how it was established (`EXECUTED_LOCAL`, `OBSERVED_SOURCE`, or `INFERRED`), its remediation status, and whether final validation can occur locally or requires IBM i.
+The public demo includes an interactive enterprise-style ORDERPRO workbench. In current production, a Preferred expedited order at 5 PM fails. Apply the ticket literally and that exact order passes locally — but ChangeProof keeps the **release gate on HOLD** because preserved CL source evidence contains `SCDTIME(180000)`, exactly the new customer cutoff. The functional acceptance criterion is satisfied while the broader change is still not ready to ship. The remediated source moves fulfillment to `SCDTIME(181500)`, after which the workflow advances to IBM i target validation rather than declaring production success.
 
-The baseline run does more than find the obvious 4 PM constants. It discovers that the CL fulfillment job is scheduled at exactly 18:00, the new Preferred-customer cutoff. That downstream timing collision is not stated in the ticket. The remediation therefore changes the API and RPG rules, corrects stale DDS/Db2 and operational documentation, adds regression coverage, and moves fulfillment to 18:15.
+ChangeProof analyzes source and documentation, executes the tests and local data checks that can actually run, correlates findings to the change request, and produces a human-readable HTML/Markdown Evidence Pack plus machine-readable traceability JSON. Every finding records three separate facts: how it was established (`EXECUTED_LOCAL`, `OBSERVED_SOURCE`, or `INFERRED`), its remediation status, and whether final validation can occur locally or requires IBM i.
 
-The preserved baseline contains 14 passing tests, 2 intentional failures, and 3 IBM i validation-boundary skips. After remediation, 16 tests pass with zero failures; the three IBM i-only checks remain intentionally unclaimed. ChangeProof marks locally proven work as resolved while RPG, CL, and Db2 runtime claims remain `TARGET_VALIDATION_REQUIRED` until they are actually validated on IBM i.
+The preserved baseline contains 14 passing tests, 2 intentional failures, and 3 IBM i validation-boundary skips. After remediation, 16 tests pass with zero failures; the three IBM i-only checks remain intentionally unclaimed. ChangeProof can observe RPGLE and CLLE source changes without pretending those programs compiled, jobs were submitted, or Db2 behavior executed successfully on IBM i.
 
-The result is not another code-generation assistant. It is a review workflow that helps a maintainer answer four release questions: **What changed? What did we actually prove? What did we infer? What still requires target validation?**
+The result is not another code-generation assistant. It is a review workflow that separates **functional acceptance, operational change safety, and target validation** so maintainers can answer four release questions: **What changed? What did we actually prove? What did we infer? What still requires the target?**
 
 ## IBM Bob Usage Statement
 
