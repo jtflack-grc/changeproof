@@ -1,0 +1,10 @@
+     A                                      UNIQUE
+     A          R ORDHEDR                   TEXT('Order Header Record')
+     A            ORDNUM         7  0       TEXT('Order Number')
+     A            CUSNUM         7  0       TEXT('Customer Number')
+     A            ORDDAT         8  0       TEXT('Order Date YYYYMMDD')
+     A            ORDTIM         6  0       TEXT('Order Time HHMMSS')
+     A            ORDTYP         1          TEXT('Order Type E=Expedited S=Standard')
+     A            ORDSTS         1          TEXT('Order Status O=Open F=Fulfilled C=Cancelled')
+     A            ORDTOT         9  2       TEXT('Order Total Amount')
+     A          K ORDNUM

@@ -1,0 +1,9 @@
+     A                                      UNIQUE
+     A          R CUSMASR                   TEXT('Customer Master Record')
+     A            CUSNUM         7  0       TEXT('Customer Number')
+     A            CUSNAM        40          TEXT('Customer Name')
+     A            CUSADR        50          TEXT('Customer Address')
+     A            CUSCLS         1          TEXT('Customer Class S=Standard P=Preferred')
+     A            CUSCRL         9  2       TEXT('Customer Credit Limit')
+     A            CUSSTT         1          TEXT('Customer Status A=Active I=Inactive')
+     A          K CUSNUM

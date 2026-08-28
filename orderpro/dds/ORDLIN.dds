@@ -1,0 +1,9 @@
+     A          R ORDLINR                   TEXT('Order Line Record')
+     A            ORDNUM         7  0       TEXT('Order Number')
+     A            LINNUM         3  0       TEXT('Line Number')
+     A            ITMNUM         7          TEXT('Item Number')
+     A            LINQTY         5  0       TEXT('Line Quantity')
+     A            LINPRC         9  2       TEXT('Line Unit Price')
+     A            LINAMT         9  2       TEXT('Line Amount')
+     A          K ORDNUM
+     A          K LINNUM

@@ -1,0 +1,77 @@
+/* =============================================================  */
+/* FULMNT - Fulfillment Batch Job                                  */
+/* ORDERPRO Application - IBM i CL                                 */
+/*                                                                 */
+/* Processes open expedited orders at end of business day.         */
+/* Calls ORDPRC for each unfulfilled order to perform allocation.  */
+/*                                                                 */
+/* CHG-0042: Batch rescheduled to 18:15 to avoid collision with    */
+/* the new 18:00 Preferred customer expedited order cutoff.        */
+/* Orders submitted up to 18:00 are now safely captured before     */
+/* the batch run executes.                                         */
+/*                                                                 */
+/* Last modified: 2024-11-15  R.Castellano  CHG-0042              */
+/* =============================================================  */
+             PGM
+
+             DCL        VAR(&ORDNUM) TYPE(*DEC) LEN(7 0)
+             DCL        VAR(&CUSNUM) TYPE(*DEC) LEN(7 0)
+             DCL        VAR(&ORDTYP) TYPE(*CHAR) LEN(1)
+             DCL        VAR(&ORDSTS) TYPE(*CHAR) LEN(1)
+             DCL        VAR(&RESULT) TYPE(*CHAR) LEN(1)
+             DCL        VAR(&ERRMSG) TYPE(*CHAR) LEN(80)
+             DCL        VAR(&ORDCNT) TYPE(*DEC) LEN(5 0) VALUE(0)
+             DCL        VAR(&ERRCNT) TYPE(*DEC) LEN(5 0) VALUE(0)
+
+             DCLF       FILE(ORDERPRO/ORDHED) OPNID(ORDHEDF)
+
+             OVRDBF     FILE(ORDHED) TOFILE(ORDERPRO/ORDHED) +
+                          SEQONLY(*NO)
+
+/* Read all order header records and process open expedited orders */
+ READLOOP:   RCVF       OPNID(ORDHEDF)
+             MONMSG     MSGID(CPF0864) EXEC(GOTO CMDLBL(ENDJOB))
+
+             /* Process only Open Expedited orders */
+             IF         COND(&ORDSTS *EQ 'O' *AND &ORDTYP *EQ 'E') +
+                          EXEC(DO)
+
+               CALL       PGM(ORDERPRO/ORDPRC) PARM(&ORDNUM &CUSNUM +
+                            &ORDTYP &RESULT)
+
+               IF         COND(&RESULT *EQ '1') EXEC(DO)
+                 CHGVAR     VAR(&ORDCNT) VALUE(&ORDCNT + 1)
+               ENDDO
+
+               IF         COND(&RESULT *NE '1') EXEC(DO)
+                 CHGVAR     VAR(&ERRCNT) VALUE(&ERRCNT + 1)
+                 CHGVAR     VAR(&ERRMSG) VALUE('Fulfillment failed +
+                              for order ' *CAT &ORDNUM)
+                 SNDPGMMSG  MSG(&ERRMSG) TOPGMQ(*EXT)
+               ENDDO
+
+             ENDDO
+
+             GOTO       CMDLBL(READLOOP)
+
+ ENDJOB:     SNDPGMMSG  MSG('FULMNT complete. Fulfilled: ' *CAT +
+                          &ORDCNT *BCAT '  Errors: ' *CAT &ERRCNT) +
+                          TOPGMQ(*EXT)
+
+             DLTOVR     FILE(ORDHED)
+
+             ENDPGM
+
+/* =============================================================  */
+/* Job submission — schedule next run                              */
+/* CHG-0042: moved from 18:00 to 18:15 to ensure all Preferred    */
+/* customer expedited orders (cutoff 18:00) are captured before   */
+/* the batch run executes.                                        */
+/* =============================================================  */
+             PGM
+
+             SBMJOB     JOB(FULMNT) JOBD(ORDERPRO/ORDJBD) +
+                          CMD(CALL PGM(ORDERPRO/FULMNT)) +
+                          SCDTIME(181500) /* Scheduled at 18:15 - after Preferred customer cutoff at 18:00 per CHG-0042 */
+
+             ENDPGM

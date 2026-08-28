@@ -1,0 +1,9 @@
+     A                                      UNIQUE
+     A          R INVMASR                   TEXT('Inventory Master Record')
+     A            ITMNUM         7          TEXT('Item Number')
+     A            ITMDSC        30          TEXT('Item Description')
+     A            QTYOH          7  0       TEXT('Quantity On Hand')
+     A            QTYALC         7  0       TEXT('Quantity Allocated')
+     A            QTYAVL         7  0       TEXT('Quantity Available')
+     A            ITMSTS         1          TEXT('Item Status A=Active D=Discontinued')
+     A          K ITMNUM
