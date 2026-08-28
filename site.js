@@ -19,6 +19,11 @@
     const ibmiSection = document.querySelector('#ibmi');
     if (!ibmiSection || document.querySelector('#sessions')) return;
 
+    const ibmiEyebrow = ibmiSection.querySelector('.eyebrow');
+    if (ibmiEyebrow && ibmiEyebrow.textContent.trim().startsWith('04 /')) {
+      ibmiEyebrow.textContent = ibmiEyebrow.textContent.replace('04 /', '05 /');
+    }
+
     const section = document.createElement('section');
     section.className = 'section ironterm-section';
     section.id = 'sessions';
@@ -29,13 +34,13 @@
           <h2>Inspect the change<br /><em>on the IBM i surface.</em></h2>
         </div>
         <p>
-          Three bounded 5250 fixture replays make the brownfield side of ChangeProof visible: discover the 18:00 schedule, trace the ORDERPRO dependency surface, then verify the remediated 18:15 schedule without overstating target validation.
+          Three bounded 5250 fixture replays make the brownfield side of ChangeProof visible: discover the 18:00 schedule, inspect the actual RPG business rule, then verify the remediated 18:15 schedule without overstating target validation.
         </p>
       </div>
 
       <div class="ironterm-tabs reveal" role="tablist" aria-label="IronTerm evidence sessions">
         <button class="ironterm-tab" role="tab" aria-selected="true" data-session="0"><span>01</span> Discover collision</button>
-        <button class="ironterm-tab" role="tab" aria-selected="false" data-session="1"><span>02</span> Trace dependency</button>
+        <button class="ironterm-tab" role="tab" aria-selected="false" data-session="1"><span>02</span> Trace business rule</button>
         <button class="ironterm-tab" role="tab" aria-selected="false" data-session="2"><span>03</span> Verify remediation</button>
       </div>
 
@@ -71,7 +76,7 @@
       <div class="ironterm-note reveal">
         <b>PROVENANCE</b>
         <span>
-          Static scenario fixtures; no live TN5250 connection is made from GitHub Pages. Screen structure follows Legacy Control Lab's IBM i 7.4-backed <code>DSPJOBSCDE</code> and <code>DSPPGMREF</code> definitions. IronTerm remains a separate GPL-3.0 work and is not redistributed by ChangeProof. <a href="https://github.com/jtflack-grc/legacy-control-lab" target="_blank" rel="noreferrer">Inspect LCL / IronTerm provenance ↗</a>
+          Static scenario fixtures; no live TN5250 connection is made from GitHub Pages. Screen structure follows Legacy Control Lab's IBM i 7.4-backed <code>DSPJOBSCDE</code> and source-display conventions; the RPG shown here is copied from ChangeProof's submitted <code>ORDPRC.rpgle</code>. IronTerm remains a separate GPL-3.0 work and is not redistributed by ChangeProof. <a href="https://github.com/jtflack-grc/legacy-control-lab" target="_blank" rel="noreferrer">Inspect LCL / IronTerm provenance ↗</a>
         </span>
       </div>
     `;
@@ -120,37 +125,43 @@
       },
       {
         screen: [
-          { cls: 'header', text: ' DSPPGMREF                  Display Program References                 ORDERPRO' },
+          { cls: 'header', text: ' DSPPFM                   Display Physical File Member                 ORDERPRO' },
           { text: '' },
-          { html: '      <span class="field-label">Program . . . . . . . . . . . :</span> <span class="field-value">ORDERPRO/ORDPRC</span>' },
+          { html: '      <span class="field-label">File  . . . . . . . . . . . . :</span> <span class="field-value">ORDERPRO/QRPGLESRC</span>' },
+          { html: '      <span class="field-label">Member  . . . . . . . . . . . :</span> <span class="field-value">ORDPRC</span>' },
+          { html: '      <span class="field-label">Source type . . . . . . . . . :</span> <span class="field-value">RPGLE</span>' },
+          { html: '      <span class="field-label">Text  . . . . . . . . . . . . :</span> <span class="field-value">Core Order Processing Program</span>' },
           { text: '' },
-          { cls: 'hi', text: '      Program      Library     File        Library     Usage' },
-          { text: '      ORDPRC       ORDERPRO    CUSMAS      ORDERPRO    Input' },
-          { text: '      ORDPRC       ORDERPRO    ORDHED      ORDERPRO    Input/Update' },
-          { text: '      ORDPRC       ORDERPRO    ORDLIN      ORDERPRO    Input/Update' },
-          { text: '      ORDPRC       ORDERPRO    INVMAS      ORDERPRO    Input/Update' },
-          { text: '' },
-          { cls: 'dim', text: '      Static fixture shows the data surface ChangeProof correlates with CHG-0042.' },
+          { cls: 'dim', text: '      // CHG-0042: Preferred customers have an extended expedited cutoff of 18:00.' },
+          { text: "      dcl-s cutoff packed(6:0) inz(160000);" },
+          { text: "      if inOrdTyp <> 'E';" },
+          { text: "        return '1';" },
+          { text: '      endif;' },
+          { cls: 'hi', text: "      if inCusCls = 'P';" },
+          { cls: 'hi', text: '        cutoff = 180000;' },
+          { text: '      else;' },
+          { text: '        cutoff = 160000;' },
+          { text: '      endif;' },
           { text: '' },
           { cls: 'dim', text: '      F3=Exit   F7=Page up   F8=Page down   F12=Cancel' }
         ],
         rail: {
           kicker: 'SESSION 02 / TRACE',
-          title: 'One rule crosses multiple objects',
-          state: 'TRACE',
+          title: 'The rule is conditional, not a literal',
+          state: 'OBSERVED',
           stateClass: '',
           facts: [
-            ['program', 'ORDERPRO/ORDPRC'],
-            ['customer', 'CUSMAS / CUSCLS'],
-            ['order', 'ORDHED · ORDLIN'],
-            ['inventory', 'INVMAS'],
-            ['target', 'IBM_I', 'purple']
+            ['artifact', 'ORDPRC.rpgle'],
+            ['procedure', 'CHKORDCTF'],
+            ['order type', "ORDTYP = 'E'"],
+            ['customer', "CUSCLS = 'P'"],
+            ['cutoff', '180000', 'green']
           ],
-          conclusion: '<strong>The requested change is not a single literal.</strong> Customer classification, order state, inventory allocation, and batch behavior sit behind the cutoff decision.',
+          conclusion: '<strong>The business rule has three dimensions.</strong> Expedited order type, customer classification, and order time all participate. A blind 160000→180000 replacement would change Standard customers too.',
           conclusionClass: '',
           proof: [
             ['evidenceBasis', 'OBSERVED_SOURCE', 'obs'],
-            ['relationship', 'CORRELATED', 'obs'],
+            ['source', 'SUBMITTED RPGLE', 'obs'],
             ['status', 'REVIEWED', 'obs'],
             ['validationTarget', 'IBM_I', 'target']
           ]
