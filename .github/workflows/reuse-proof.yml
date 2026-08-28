@@ -51,25 +51,45 @@ jobs:
 
       - name: Verify ORDERPRO evidence compatibility
         run: |
+          cp evidence-pack/post-change/traceability.json /tmp/orderpro-preserved-trace.json
           npm run post-change
           node - <<'NODE'
           const fs = require('fs');
+          const preserved = JSON.parse(fs.readFileSync('/tmp/orderpro-preserved-trace.json','utf8'));
           const trace = JSON.parse(fs.readFileSync('evidence-pack/post-change/traceability.json','utf8'));
           const tests = JSON.parse(fs.readFileSync('evidence-pack/post-change/test-results.json','utf8'));
+          const key = f => `${f.artifact}::${f.artifactType}::${f.symbol}::${f.lineRef}`;
+          const oldMap = new Map(preserved.map(f => [key(f),f]));
+          const newMap = new Map(trace.map(f => [key(f),f]));
+          const added = [...newMap].filter(([k]) => !oldMap.has(k)).map(([,f])=>f);
+          const removed = [...oldMap].filter(([k]) => !newMap.has(k)).map(([,f])=>f);
+          const changed = [...newMap].flatMap(([k,f]) => {
+            const old = oldMap.get(k);
+            if (!old) return [];
+            return old.status !== f.status || old.validationTarget !== f.validationTarget || old.evidenceBasis !== f.evidenceBasis
+              ? [{key:k,old:{basis:old.evidenceBasis,status:old.status,target:old.validationTarget},now:{basis:f.evidenceBasis,status:f.status,target:f.validationTarget}}]
+              : [];
+          });
+          const group = list => list.reduce((a,f)=>{const k=`${f.artifactType}/${f.status}/${f.validationTarget}`;a[k]=(a[k]||0)+1;return a;},{});
+          console.log('PRESERVED COUNT',preserved.length,'GROUPS',group(preserved));
+          console.log('REGENERATED COUNT',trace.length,'GROUPS',group(trace));
+          console.log('ADDED RECORDS',JSON.stringify(added,null,2));
+          console.log('REMOVED RECORDS',JSON.stringify(removed,null,2));
+          console.log('SEMANTIC CHANGES',JSON.stringify(changed,null,2));
+
           const resolved = trace.filter(f => f.status === 'RESOLVED').length;
           const target = trace.filter(f => f.status === 'TARGET_VALIDATION_REQUIRED').length;
           const open = trace.filter(f => f.status === 'OPEN').length;
-          if (trace.length !== 83) throw new Error(`ORDERPRO finding count changed: ${trace.length} !== 83`);
-          if (resolved !== 46 || target !== 37 || open !== 0) {
-            throw new Error(`ORDERPRO evidence semantics changed: resolved=${resolved}, target=${target}, open=${open}`);
+          if (tests.numPassedTests !== 16 || tests.numFailedTests !== 0 || tests.numPendingTests !== 3) {
+            throw new Error(`ORDERPRO test receipt changed: ${tests.numPassedTests}/${tests.numFailedTests}/${tests.numPendingTests}`);
           }
           if (trace.some(f => f.id === 'inferred-fulmnt-batch-window-collision')) {
             throw new Error('ORDERPRO post-change evidence unexpectedly contains the baseline collision');
           }
-          if (tests.numPassedTests !== 16 || tests.numFailedTests !== 0 || tests.numPendingTests !== 3) {
-            throw new Error(`ORDERPRO test receipt changed: ${tests.numPassedTests}/${tests.numFailedTests}/${tests.numPendingTests}`);
+          if (trace.length !== 83 || resolved !== 46 || target !== 37 || open !== 0) {
+            throw new Error(`ORDERPRO evidence compatibility changed: findings=${trace.length}, resolved=${resolved}, target=${target}, open=${open}`);
           }
-          console.log('ORDERPRO compatibility verified: 83 findings, 46 resolved, 37 IBM_I target checks, tests 16/0/3.');
+          console.log('ORDERPRO compatibility verified exactly.');
           NODE
 
       - name: Generate independent reuse evidence
@@ -92,18 +112,10 @@ jobs:
           if (mismatch.evidenceBasis !== 'INFERRED' || mismatch.status !== 'OPEN' || mismatch.validationTarget !== 'LOCAL') {
             throw new Error('literal mismatch evidence semantics are incorrect');
           }
-          if (post.some(f => f.id === 'inferred-upstream-timeout-ordering')) {
-            throw new Error('remediated pass still contains timeout mismatch');
-          }
-          if (base.some(f => f.id === 'inferred-upstream-timeout-ordering')) {
-            throw new Error('baseline unexpectedly contains timeout mismatch');
-          }
-          if (baselineTests.numPassedTests !== 1 || baselineTests.numFailedTests !== 1) {
-            throw new Error(`baseline scoped receipt changed: ${baselineTests.numPassedTests}/${baselineTests.numFailedTests}`);
-          }
-          if (literalTests.numPassedTests !== 2 || literalTests.numFailedTests !== 0 || postTests.numPassedTests !== 2 || postTests.numFailedTests !== 0) {
-            throw new Error('literal/remediated scoped acceptance receipts changed');
-          }
+          if (post.some(f => f.id === 'inferred-upstream-timeout-ordering')) throw new Error('remediated pass still contains timeout mismatch');
+          if (base.some(f => f.id === 'inferred-upstream-timeout-ordering')) throw new Error('baseline unexpectedly contains timeout mismatch');
+          if (baselineTests.numPassedTests !== 1 || baselineTests.numFailedTests !== 1) throw new Error(`baseline scoped receipt changed: ${baselineTests.numPassedTests}/${baselineTests.numFailedTests}`);
+          if (literalTests.numPassedTests !== 2 || literalTests.numFailedTests !== 0 || postTests.numPassedTests !== 2 || postTests.numFailedTests !== 0) throw new Error('literal/remediated scoped acceptance receipts changed');
           console.log('Reuse proof verified: baseline 1/1; literal 2/0 + inferred OPEN mismatch; remediation 2/0 and mismatch removed.');
           NODE
 
