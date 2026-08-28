@@ -1066,6 +1066,72 @@
     "relevanceScore": 4
   },
   {
+    "id": "test-tests-regression-cutoff-test-js-cutoff-regression-chg-0042-standard-cust-0",
+    "artifact": "tests/regression/cutoff.test.js",
+    "artifactType": "TEST",
+    "evidenceBasis": "EXECUTED_LOCAL",
+    "status": "RESOLVED",
+    "validationTarget": "LOCAL",
+    "symbol": "Cutoff regression — CHG-0042 Standard customer expedited order at 15:00 is accepted",
+    "finding": "PASSING test: Cutoff regression — CHG-0042 Standard customer expedited order at 15:00 is accepted",
+    "lineRef": "tests/regression/cutoff.test.js:?",
+    "keywords": [
+      "cutoff",
+      "expedited"
+    ],
+    "relevanceScore": 2
+  },
+  {
+    "id": "test-tests-regression-cutoff-test-js-cutoff-regression-chg-0042-standard-cust-1",
+    "artifact": "tests/regression/cutoff.test.js",
+    "artifactType": "TEST",
+    "evidenceBasis": "EXECUTED_LOCAL",
+    "status": "RESOLVED",
+    "validationTarget": "LOCAL",
+    "symbol": "Cutoff regression — CHG-0042 Standard customer expedited order at 17:00 is rejected",
+    "finding": "PASSING test: Cutoff regression — CHG-0042 Standard customer expedited order at 17:00 is rejected",
+    "lineRef": "tests/regression/cutoff.test.js:?",
+    "keywords": [
+      "cutoff",
+      "expedited"
+    ],
+    "relevanceScore": 2
+  },
+  {
+    "id": "test-tests-regression-cutoff-test-js-cutoff-regression-chg-0042-preferred-cus-2",
+    "artifact": "tests/regression/cutoff.test.js",
+    "artifactType": "TEST",
+    "evidenceBasis": "EXECUTED_LOCAL",
+    "status": "RESOLVED",
+    "validationTarget": "LOCAL",
+    "symbol": "Cutoff regression — CHG-0042 Preferred customer expedited order at 17:00 should be accepted (CHG-0042)",
+    "finding": "PASSING test: Cutoff regression — CHG-0042 Preferred customer expedited order at 17:00 should be accepted (CHG-0042)",
+    "lineRef": "tests/regression/cutoff.test.js:?",
+    "keywords": [
+      "cutoff",
+      "preferred",
+      "expedited"
+    ],
+    "relevanceScore": 3
+  },
+  {
+    "id": "test-tests-regression-cutoff-test-js-cutoff-regression-chg-0042-preferred-cus-3",
+    "artifact": "tests/regression/cutoff.test.js",
+    "artifactType": "TEST",
+    "evidenceBasis": "EXECUTED_LOCAL",
+    "status": "RESOLVED",
+    "validationTarget": "LOCAL",
+    "symbol": "Cutoff regression — CHG-0042 Preferred customer expedited order at 19:00 is rejected",
+    "finding": "PASSING test: Cutoff regression — CHG-0042 Preferred customer expedited order at 19:00 is rejected",
+    "lineRef": "tests/regression/cutoff.test.js:?",
+    "keywords": [
+      "cutoff",
+      "preferred",
+      "expedited"
+    ],
+    "relevanceScore": 3
+  },
+  {
     "id": "test-api-tests-orders-test-js-post-orders-accepts-a-valid-standard-ord-0",
     "artifact": "api/tests/orders.test.js",
     "artifactType": "TEST",
@@ -1170,72 +1236,6 @@
     "lineRef": "api/tests/orders.test.js:?",
     "keywords": [],
     "relevanceScore": 0
-  },
-  {
-    "id": "test-tests-regression-cutoff-test-js-cutoff-regression-chg-0042-standard-cust-0",
-    "artifact": "tests/regression/cutoff.test.js",
-    "artifactType": "TEST",
-    "evidenceBasis": "EXECUTED_LOCAL",
-    "status": "RESOLVED",
-    "validationTarget": "LOCAL",
-    "symbol": "Cutoff regression — CHG-0042 Standard customer expedited order at 15:00 is accepted",
-    "finding": "PASSING test: Cutoff regression — CHG-0042 Standard customer expedited order at 15:00 is accepted",
-    "lineRef": "tests/regression/cutoff.test.js:?",
-    "keywords": [
-      "cutoff",
-      "expedited"
-    ],
-    "relevanceScore": 2
-  },
-  {
-    "id": "test-tests-regression-cutoff-test-js-cutoff-regression-chg-0042-standard-cust-1",
-    "artifact": "tests/regression/cutoff.test.js",
-    "artifactType": "TEST",
-    "evidenceBasis": "EXECUTED_LOCAL",
-    "status": "RESOLVED",
-    "validationTarget": "LOCAL",
-    "symbol": "Cutoff regression — CHG-0042 Standard customer expedited order at 17:00 is rejected",
-    "finding": "PASSING test: Cutoff regression — CHG-0042 Standard customer expedited order at 17:00 is rejected",
-    "lineRef": "tests/regression/cutoff.test.js:?",
-    "keywords": [
-      "cutoff",
-      "expedited"
-    ],
-    "relevanceScore": 2
-  },
-  {
-    "id": "test-tests-regression-cutoff-test-js-cutoff-regression-chg-0042-preferred-cus-2",
-    "artifact": "tests/regression/cutoff.test.js",
-    "artifactType": "TEST",
-    "evidenceBasis": "EXECUTED_LOCAL",
-    "status": "RESOLVED",
-    "validationTarget": "LOCAL",
-    "symbol": "Cutoff regression — CHG-0042 Preferred customer expedited order at 17:00 should be accepted (CHG-0042)",
-    "finding": "PASSING test: Cutoff regression — CHG-0042 Preferred customer expedited order at 17:00 should be accepted (CHG-0042)",
-    "lineRef": "tests/regression/cutoff.test.js:?",
-    "keywords": [
-      "cutoff",
-      "preferred",
-      "expedited"
-    ],
-    "relevanceScore": 3
-  },
-  {
-    "id": "test-tests-regression-cutoff-test-js-cutoff-regression-chg-0042-preferred-cus-3",
-    "artifact": "tests/regression/cutoff.test.js",
-    "artifactType": "TEST",
-    "evidenceBasis": "EXECUTED_LOCAL",
-    "status": "RESOLVED",
-    "validationTarget": "LOCAL",
-    "symbol": "Cutoff regression — CHG-0042 Preferred customer expedited order at 19:00 is rejected",
-    "finding": "PASSING test: Cutoff regression — CHG-0042 Preferred customer expedited order at 19:00 is rejected",
-    "lineRef": "tests/regression/cutoff.test.js:?",
-    "keywords": [
-      "cutoff",
-      "preferred",
-      "expedited"
-    ],
-    "relevanceScore": 3
   },
   {
     "id": "test-tests-regression-inventory-test-js-inventory-allocation-regression-order-fo-0",
