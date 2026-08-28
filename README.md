@@ -1,0 +1,125 @@
+# ChangeProof
+
+**AI can write the change. ChangeProof proves what deserves to ship.**
+
+ChangeProof is a proof-of-concept built for the **IBM TechXchange 2026 Pre-conference Dev Day Hackathon**. It demonstrates a complete, auditable change-management lifecycle for a fictional polyglot IBM i brownfield application named **ORDERPRO**.
+
+The scenario begins with a deceptively simple request:
+
+> **CHG-0042:** Preferred customers (`CUSCLS = 'P'`) may submit expedited orders until 6:00 PM instead of the standard 4:00 PM cutoff.
+
+That one-line request crosses a Node.js API, RPGLE business logic, CL scheduling, DDS/Db2 definitions, tests, and operational documentation. ChangeProof uses static analysis, local execution, document inspection, and evidence correlation to show what is affected, what was actually validated, what is inferred, and what still requires IBM i target validation.
+
+The central design principle is simple:
+
+> **The requested change is not necessarily the actual change.**
+
+In the preserved pre-change baseline, ChangeProof discovers an operational consequence not stated in CHG-0042: the fulfillment batch is scheduled for exactly 18:00, the same time as the new Preferred-customer cutoff. That creates a potential batch-window collision. The remediation therefore moves the batch to 18:15 while updating the application behavior, RPGLE logic, customer-class documentation, and regression coverage.
+
+## Demo results
+
+| | Baseline | Post-change |
+|---|---:|---:|
+| Passing tests | **14** | **16** |
+| Failing tests | **2** | **0** |
+| IBM i validation-boundary skips | **3** | **3** |
+| Human-facing Blast Radius rows | **12** | **11** |
+
+The baseline includes an **INFERRED** finding for the 18:00 batch-window collision. The post-change state moves `FULMNT` to `SCDTIME(181500)`, removing the open collision while correctly preserving IBM i runtime validation requirements.
+
+## Evidence model
+
+ChangeProof intentionally separates three questions that are often blurred together in AI-assisted development:
+
+### `evidenceBasis` — How do we know?
+
+- `EXECUTED_LOCAL` — established by running code locally, such as Jest tests or SQLite queries.
+- `OBSERVED_SOURCE` — directly present in source code, configuration, tests, or documentation.
+- `INFERRED` — derived by reasoning across multiple observations.
+
+### `status` — Where is remediation now?
+
+- `OPEN`
+- `RESOLVED`
+- `TARGET_VALIDATION_REQUIRED`
+
+### `validationTarget` — Where must final validation occur?
+
+- `LOCAL`
+- `IBM_I`
+
+An RPGLE source edit can therefore be directly observed without being falsely presented as production-validated. ChangeProof never claims that RPG compilation, CL execution, or Db2 for i runtime behavior occurred when no IBM i runtime was available.
+
+## Repository layout
+
+```text
+api/                  Node.js/Express API facade and API tests
+engine/               ChangeProof analyzers, evidence model, diff, reporter, CLI
+orderpro/             Fictional IBM i brownfield workload
+  rpgle/               RPGLE business logic
+  clle/                CL batch workflow
+  dds/                 DDS definitions
+  sql/db2/             Db2 for i DDL used for static analysis
+  sql/sqlite/          Explicitly labeled local hackathon execution surrogate
+  docs/                Brownfield operational documentation
+tests/regression/     Cross-artifact regression tests
+evidence-pack/
+  baseline/            Preserved PRE-CHG-0042 evidence
+  post-change/         Final POST-CHG-0042 evidence
+bob_sessions/         IBM Bob task/session evidence
+CHANGE_REQUEST.md     Formal CHG-0042 input
+DEMO.md               Three-minute demonstration script
+SUBMISSION.md         Hackathon written submission material
+```
+
+## Important baseline note
+
+The repository is intentionally left in the **post-change CHG-0042 source state**.
+
+`evidence-pack/baseline/` is the preserved pre-change snapshot generated while the source still represented the original 4:00 PM behavior and 18:00 batch schedule.
+
+**Do not run `npm run baseline` against the current post-change source and expect it to recreate that historical state.** Doing so would analyze the current source and overwrite the preserved baseline artifacts.
+
+For demonstration purposes, open the saved baseline evidence directly:
+
+```text
+evidence-pack/baseline/evidence-pack.html
+```
+
+The current post-change state can be analyzed with:
+
+```bash
+npm install
+npm run post-change
+```
+
+## Local surrogate versus IBM i
+
+SQLite exists only to make a portion of the workflow executable during the hackathon. The surrogate schema explicitly states that it is **not equivalent to Db2 for i runtime semantics**.
+
+Real IBM i integration is isolated behind a transport-independent adapter contract. Documented production paths include:
+
+- Db2 access through ODBC / IBM i Node connectivity
+- program interaction through `itoolkit` / XMLSERVICE or SSH where appropriate
+- compile/system commands through SSH or `QSYS2.QCMDEXC` via Db2
+
+No live IBM i connection was required for this proof of concept, and ChangeProof treats that absence as an evidence boundary rather than pretending it does not exist.
+
+## IBM Bob
+
+IBM Bob was a core development component of ChangeProof and was used across architecture, project scaffolding, polyglot source creation, API and test implementation, analyzer development, evidence-pack generation, and iterative remediation. The project consumed the full hackathon allocation of **40 Bobcoins**.
+
+Actual IBM Bob task-session summary screenshots should be stored in `bob_sessions/` alongside the supporting session notes before final hackathon submission.
+
+## Hackathon artifacts
+
+- `evidence-pack/baseline/evidence-pack.html` — preserved before-state report
+- `evidence-pack/post-change/evidence-pack.html` — final after-state report
+- `evidence-pack/*/traceability.json` — machine-readable evidence
+- `evidence-pack/*/test-results.json` — preserved Jest results
+- `SUBMISSION.md` — problem/solution and IBM Bob usage statements
+- `DEMO.md` — timed three-minute demo script
+
+## Scope
+
+ORDERPRO is fictional and all data is synthetic. No client, employer, personal, or confidential data is included.
