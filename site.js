@@ -3,21 +3,23 @@
     if (document.querySelector(`link[href^="${href}"]`)) return;
     const link = document.createElement('link');
     link.rel = 'stylesheet';
-    link.href = `${href}?v=20260828-3`;
+    link.href = `${href}?v=20260828-4`;
     document.head.appendChild(link);
   };
 
   const loadScript = (src) => {
     if (document.querySelector(`script[src^="${src}"]`)) return;
     const script = document.createElement('script');
-    script.src = `${src}?v=20260828-3`;
+    script.src = `${src}?v=20260828-4`;
     document.head.appendChild(script);
   };
 
   loadStyle('ironterm.css');
   loadStyle('review-workspace.css');
+  loadStyle('reuse-proof.css');
   loadScript('orderpro-preview.js');
   loadScript('review-workspace.js');
+  loadScript('reuse-proof.js');
   loadScript('ironterm-experience.js');
 
   let revealObserver = null;
