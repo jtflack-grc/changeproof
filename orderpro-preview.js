@@ -2,7 +2,7 @@
   if (!document.querySelector('link[href^="orderpro-preview.css"]')) {
     const link = document.createElement('link');
     link.rel = 'stylesheet';
-    link.href = 'orderpro-preview.css?v=20260828-2';
+    link.href = 'orderpro-preview.css?v=20260828-3';
     document.head.appendChild(link);
   }
 
@@ -36,7 +36,7 @@
         <h2>First, use the system<br /><em>that needs the change.</em></h2>
       </div>
       <p>
-        ORDERPRO is the synthetic brownfield workload behind CHG-0042. Reproduce the old behavior, apply the ticket literally, and then watch ChangeProof separate a passing functional test from a change that still should not ship.
+        ORDERPRO is the synthetic brownfield workload behind CHG-0042. Reproduce the old behavior, apply the ticket literally, and then use the ChangeProof review workspace to inspect exactly why a passing functional test still leaves the release on HOLD.
       </p>
     </div>
 
@@ -54,14 +54,14 @@
 
     <div class="scenario-hint strong-hint">
       <b>Suggested path:</b> leave the defaults at <code>Hartwell / Preferred / Expedited / 17:00</code> and run all three states.
-      <span><strong>Step 2 is intentionally a split result:</strong> <code>FUNCTIONAL TEST = PASS</code> while <code>RELEASE GATE = HOLD</code> because FULMNT still starts at 18:00.</span>
+      <span><strong>Step 2 is intentionally a split result:</strong> <code>FUNCTIONAL TEST = PASS</code> while <code>RELEASE GATE = HOLD</code> because preserved FULMNT CL evidence contains <code>SCDTIME(180000)</code>. Then click <strong>Prove the HOLD</strong> below.</span>
     </div>
 
     <div class="orderpro-live-actions">
       <span class="orderpro-live-note"><span>Scenario only.</span> Synthetic data · local browser simulation · no live IBM i connection.</span>
       <div class="orderpro-live-buttons">
         <a class="orderpro-launch" href="orderpro/app/" target="_blank" rel="noreferrer">Open full workstation ↗</a>
-        <a class="orderpro-evidence-link" href="#sessions">Inspect with ChangeProof ↓</a>
+        <a class="orderpro-evidence-link" href="#review">Prove the HOLD ↓</a>
       </div>
     </div>
   `;
