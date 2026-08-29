@@ -16,22 +16,24 @@
     if (document.querySelector(`link[href^="${href}"]`)) return;
     const link = document.createElement('link');
     link.rel = 'stylesheet';
-    link.href = `${href}?v=20260828-7`;
+    link.href = `${href}?v=20260829-1`;
     document.head.appendChild(link);
   };
 
   const loadScript = (src) => {
     if (document.querySelector(`script[src^="${src}"]`)) return;
     const script = document.createElement('script');
-    script.src = `${src}?v=20260828-7`;
+    script.src = `${src}?v=20260829-1`;
     script.defer = true;
     script.addEventListener('error',() => showModuleWarning(src),{once:true});
     document.head.appendChild(script);
   };
 
+  loadStyle('portable-core.css');
   loadStyle('ironterm.css');
   loadStyle('review-workspace.css');
   loadStyle('reuse-proof.css');
+  loadScript('portable-core.js');
   loadScript('orderpro-preview.js');
   loadScript('review-workspace.js');
   loadScript('reuse-proof.js');
@@ -65,11 +67,54 @@
     if (element && element.textContent !== value) element.textContent = value;
   };
 
+  const placeAfter = (anchor, element) => {
+    if (anchor && element && anchor.nextElementSibling !== element) {
+      anchor.insertAdjacentElement('afterend', element);
+    }
+  };
+
+  const normalizeNavigation = () => {
+    const nav = document.querySelector('.site-header nav');
+    if (!nav) return;
+
+    ['#problem','#proof','#evidence'].forEach((href) => {
+      const link = nav.querySelector(`a[href="${href}"]`);
+      if (link && link.style.display !== 'none') link.style.display = 'none';
+    });
+
+    const core = nav.querySelector('a[href="#portable-core"]');
+    const reuse = nav.querySelector('a[href="#reuse-proof"]');
+    const order = nav.querySelector('a[href="#orderpro-live"]');
+    const review = nav.querySelector('a[href="#review"]');
+    const ibmi = nav.querySelector('a[href="#ibmi"]');
+
+    if (core && nav.firstElementChild !== core) nav.prepend(core);
+    placeAfter(core, reuse);
+    placeAfter(reuse || core, order);
+    placeAfter(order || reuse || core, review);
+    placeAfter(review || order || reuse || core, ibmi);
+  };
+
   const normalizeExperience = () => {
-    const review = document.querySelector('#review');
+    const portable = document.querySelector('#portable-core');
     const reuse = document.querySelector('#reuse-proof');
-    if (review && reuse && review.nextElementSibling !== reuse) {
-      review.insertAdjacentElement('afterend', reuse);
+    const orderpro = document.querySelector('#orderpro-live');
+    const review = document.querySelector('#review');
+
+    // Judge-facing story: portable product first, independent reuse proof second,
+    // brownfield reference workload third, then drill into its evidence lineage.
+    placeAfter(portable, reuse);
+    placeAfter(reuse || portable, orderpro);
+    placeAfter(orderpro || reuse || portable, review);
+
+    normalizeNavigation();
+
+    const heroPrimary = document.querySelector('.hero-actions .button-primary');
+    if (heroPrimary && portable) {
+      if (heroPrimary.getAttribute('href') !== '#portable-core') heroPrimary.setAttribute('href','#portable-core');
+      if (!heroPrimary.classList.contains('portable-hero-link')) heroPrimary.classList.add('portable-hero-link');
+      heroPrimary.classList.remove('review-hero-link');
+      if (heroPrimary.textContent.trim() !== 'See the portable core ↓') heroPrimary.innerHTML = 'See the portable core <span>↓</span>';
     }
 
     setTextIfChanged(reuse?.querySelector('.reuse-head .eyebrow'), 'Cross-workload / Reuse proof');
