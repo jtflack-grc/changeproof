@@ -16,6 +16,8 @@ on:
       - 'examples/timeout-service/inference.js'
       - 'examples/timeout-service/jest.config.js'
       - 'examples/timeout-service/states/**'
+      - 'portable-core.js'
+      - 'portable-core.css'
       - 'site.js'
       - 'orderpro-preview.js'
       - 'review-workspace.js'
@@ -51,6 +53,7 @@ jobs:
           node --check engine/reporters/profile-pack.js
           node --check examples/timeout-service/inference.js
           node --check examples/timeout-service/changeproof.profile.js
+          node --check portable-core.js
           node --check site.js
           node --check orderpro-preview.js
           node --check review-workspace.js
@@ -121,9 +124,9 @@ jobs:
           lines = text.splitlines()
           lines = [line for line in lines if 'fonts.googleapis.com' not in line and 'fonts.gstatic.com' not in line]
           text = '\n'.join(lines) + '\n'
-          for old in ('20260828-1','20260828-6'):
-              text = text.replace(f'site.css?v={old}', 'site.css?v=20260828-7')
-              text = text.replace(f'site.js?v={old}', 'site.js?v=20260828-7')
+          import re
+          text = re.sub(r'site\.css\?v=[^"\']+', 'site.css?v=20260829-1', text)
+          text = re.sub(r'site\.js\?v=[^"\']+', 'site.js?v=20260829-1', text)
           html.write_text(text, encoding='utf-8')
 
           css = Path('site.css')
@@ -142,6 +145,6 @@ jobs:
           if git diff --cached --quiet; then
             echo 'Generated evidence and Pages shell are already current.'
           else
-            git commit -m 'Refresh evidence and blocker-safe Pages shell [evidence-freeze]'
+            git commit -m 'Refresh evidence and portable-first Pages shell [evidence-freeze]'
             git push
           fi
