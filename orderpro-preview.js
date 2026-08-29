@@ -32,11 +32,11 @@
   section.innerHTML = `
     <div class="orderpro-live-head">
       <div>
-        <p class="eyebrow">Live scenario / ORDERPRO</p>
-        <h2>First, use the system<br /><em>that needs the change.</em></h2>
+        <p class="eyebrow">Brownfield stress test / ORDERPRO</p>
+        <h2>Now point the engine at<br /><em>the difficult workload.</em></h2>
       </div>
       <p>
-        ORDERPRO is the synthetic brownfield workload behind CHG-0042. Reproduce the old behavior, apply the ticket literally, and then use the ChangeProof review workspace to inspect exactly why a passing functional test still leaves the release on HOLD.
+        ORDERPRO is the synthetic brownfield reference workload behind CHG-0042, not the ChangeProof product itself. It exercises the same evidence model against Node.js, RPGLE, CLLE, DDS, Db2, tests, and operational documentation, including claims that cannot honestly be validated away from IBM i.
       </p>
     </div>
 
