@@ -43,7 +43,7 @@
           <h2>One evidence engine.<br /><em>Workloads plug in.</em></h2>
         </div>
         <p>
-          ChangeProof is not an ORDERPRO-specific detector. The reusable artifact is a profile-driven change-evidence runtime: point it at a change request, source surfaces, scoped execution receipts, and optional domain inference rules, and it emits the same reviewable evidence model.
+          ChangeProof is a profile-driven change-evidence runtime: point it at a change request, source surfaces, scoped execution receipts, and optional domain inference rules, and it emits the same reviewable evidence model.
         </p>
       </div>
 
