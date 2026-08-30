@@ -3,6 +3,8 @@
 const fs = require('fs');
 const { EVIDENCE_BASIS, STATUS } = require('./model');
 
+const GENERIC_SYMBOLS = new Set(['comment', 'sentence', 'list_item', 'heading', 'time_expression']);
+
 function readTestCounts(testResultsPath) {
   if (!testResultsPath || !fs.existsSync(testResultsPath)) {
     return { executed: 0, passed: 0, failed: 0, pending: 0 };
@@ -17,6 +19,33 @@ function readTestCounts(testResultsPath) {
   } catch (_) {
     return { executed: 0, passed: 0, failed: 0, pending: 0 };
   }
+}
+
+function representativeRows(findings, { includeTests = false } = {}) {
+  const inferred = findings.filter(f => f.evidenceBasis === EVIDENCE_BASIS.INFERRED);
+  const observed = findings.filter(f =>
+    f.evidenceBasis === EVIDENCE_BASIS.OBSERVED_SOURCE && f.artifactType !== 'TEST'
+  );
+  const bestByArtifact = new Map();
+
+  for (const finding of observed) {
+    const symbol = String(finding.symbol || '');
+    const generic = GENERIC_SYMBOLS.has(symbol.toLowerCase()) || symbol.length < 3;
+    const score = Number(finding.relevanceScore || 0) + (generic ? 0 : 5);
+    const existing = bestByArtifact.get(finding.artifact);
+    if (!existing || score > existing.score) bestByArtifact.set(finding.artifact, { score, finding });
+  }
+
+  const executedNonTests = findings.filter(f =>
+    f.evidenceBasis === EVIDENCE_BASIS.EXECUTED_LOCAL && f.artifactType !== 'TEST'
+  );
+  const tests = includeTests ? findings.filter(f => f.artifactType === 'TEST') : [];
+  return [
+    ...inferred,
+    ...Array.from(bestByArtifact.values()).map(item => item.finding),
+    ...executedNonTests,
+    ...tests
+  ];
 }
 
 function buildImpactReceipt({
@@ -75,4 +104,4 @@ function buildImpactReceipt({
   };
 }
 
-module.exports = { buildImpactReceipt, readTestCounts };
+module.exports = { buildImpactReceipt, readTestCounts, representativeRows };
