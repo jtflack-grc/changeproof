@@ -8,7 +8,9 @@ on:
       - 'engine/evidence/collector.js'
       - 'engine/evidence/model.js'
       - 'engine/evidence/diff.js'
+      - 'engine/evidence/impact.js'
       - 'engine/analyzers/config.js'
+      - 'engine/runner.js'
       - 'engine/profile-runner.js'
       - 'engine/reporters/profile-pack.js'
       - 'examples/timeout-service/CHANGE_REQUEST.md'
@@ -18,6 +20,8 @@ on:
       - 'examples/timeout-service/states/**'
       - 'portable-core.js'
       - 'portable-core.css'
+      - 'impact-receipt.js'
+      - 'impact-receipt.css'
       - 'site.js'
       - 'orderpro-preview.js'
       - 'review-workspace.js'
@@ -49,11 +53,14 @@ jobs:
         run: |
           node --check engine/evidence/core.js
           node --check engine/evidence/collector.js
+          node --check engine/evidence/impact.js
+          node --check engine/runner.js
           node --check engine/profile-runner.js
           node --check engine/reporters/profile-pack.js
           node --check examples/timeout-service/inference.js
           node --check examples/timeout-service/changeproof.profile.js
           node --check portable-core.js
+          node --check impact-receipt.js
           node --check site.js
           node --check orderpro-preview.js
           node --check review-workspace.js
@@ -71,26 +78,24 @@ jobs:
           const fs = require('fs');
           const trace = JSON.parse(fs.readFileSync('evidence-pack/post-change/traceability.json','utf8'));
           const tests = JSON.parse(fs.readFileSync('evidence-pack/post-change/test-results.json','utf8'));
+          const impact = JSON.parse(fs.readFileSync('evidence-pack/post-change/impact.json','utf8'));
           const resolved = trace.filter(f => f.status === 'RESOLVED').length;
           const target = trace.filter(f => f.status === 'TARGET_VALIDATION_REQUIRED').length;
           const open = trace.filter(f => f.status === 'OPEN').length;
           if (trace.length !== 86) throw new Error(`ORDERPRO current finding count changed: ${trace.length} !== 86`);
-          if (resolved !== 56 || target !== 30 || open !== 0) {
-            throw new Error(`ORDERPRO current evidence semantics changed: resolved=${resolved}, target=${target}, open=${open}`);
-          }
-          if (trace.some(f => f.id === 'inferred-fulmnt-batch-window-collision')) {
-            throw new Error('ORDERPRO post-change evidence unexpectedly contains the baseline collision');
-          }
-          if (tests.numPassedTests !== 16 || tests.numFailedTests !== 0 || tests.numPendingTests !== 3) {
-            throw new Error(`ORDERPRO test receipt changed: ${tests.numPassedTests}/${tests.numFailedTests}/${tests.numPendingTests}`);
-          }
-          console.log('ORDERPRO current evidence verified: 86 findings, 56 resolved, 30 target-validation-required, tests 16/0/3.');
+          if (resolved !== 56 || target !== 30 || open !== 0) throw new Error(`ORDERPRO current evidence semantics changed: resolved=${resolved}, target=${target}, open=${open}`);
+          if (trace.some(f => f.id === 'inferred-fulmnt-batch-window-collision')) throw new Error('ORDERPRO post-change evidence unexpectedly contains the baseline collision');
+          if (tests.numPassedTests !== 16 || tests.numFailedTests !== 0 || tests.numPendingTests !== 3) throw new Error(`ORDERPRO test receipt changed: ${tests.numPassedTests}/${tests.numFailedTests}/${tests.numPendingTests}`);
+          if (impact.evidence.findingsProduced !== 86 || impact.review.primaryRows !== 11) throw new Error(`ORDERPRO impact compression changed: ${impact.evidence.findingsProduced} findings -> ${impact.review.primaryRows} rows`);
+          if (impact.execution.executed !== 19 || impact.evidence.targetValidationRequired !== 30) throw new Error(`ORDERPRO impact receipt changed: tests=${impact.execution.executed}, target=${impact.evidence.targetValidationRequired}`);
+          if (!(impact.discovery.filesScanned > 0) || !(impact.discovery.symbolsAnalyzed > 0)) throw new Error('ORDERPRO impact receipt is missing measured discovery telemetry');
+          console.log(`ORDERPRO current evidence verified: 86 findings -> 11 reviewer rows, ${impact.discovery.filesScanned} files, ${impact.discovery.symbolsAnalyzed} symbols, tests 16/0/3.`);
           NODE
 
       - name: Generate independent reuse evidence
         run: npm run reuse-proof
 
-      - name: Verify reusable-workload behavior
+      - name: Verify reusable-workload behavior and impact
         run: |
           node - <<'NODE'
           const fs = require('fs');
@@ -101,34 +106,34 @@ jobs:
           const baselineTests = read('examples/timeout-service/evidence-pack/baseline/test-results.json');
           const literalTests = read('examples/timeout-service/evidence-pack/literal/test-results.json');
           const postTests = read('examples/timeout-service/evidence-pack/post-change/test-results.json');
-
+          const literalImpact = read('examples/timeout-service/evidence-pack/literal/impact.json');
+          const postImpact = read('examples/timeout-service/evidence-pack/post-change/impact.json');
           const mismatch = literal.find(f => f.id === 'inferred-upstream-timeout-ordering');
           if (!mismatch) throw new Error('literal pass did not produce inferred upstream timeout mismatch');
-          if (mismatch.evidenceBasis !== 'INFERRED' || mismatch.status !== 'OPEN' || mismatch.validationTarget !== 'LOCAL') {
-            throw new Error('literal mismatch evidence semantics are incorrect');
-          }
+          if (mismatch.evidenceBasis !== 'INFERRED' || mismatch.status !== 'OPEN' || mismatch.validationTarget !== 'LOCAL') throw new Error('literal mismatch evidence semantics are incorrect');
           if (post.some(f => f.id === 'inferred-upstream-timeout-ordering')) throw new Error('remediated pass still contains timeout mismatch');
           if (base.some(f => f.id === 'inferred-upstream-timeout-ordering')) throw new Error('baseline unexpectedly contains timeout mismatch');
           if (baselineTests.numPassedTests !== 1 || baselineTests.numFailedTests !== 1) throw new Error(`baseline scoped receipt changed: ${baselineTests.numPassedTests}/${baselineTests.numFailedTests}`);
           if (literalTests.numPassedTests !== 2 || literalTests.numFailedTests !== 0 || postTests.numPassedTests !== 2 || postTests.numFailedTests !== 0) throw new Error('literal/remediated scoped acceptance receipts changed');
-          console.log('Reuse proof verified: baseline 1/1; literal 2/0 + inferred OPEN mismatch; remediation 2/0 and mismatch removed.');
+          if (!literalImpact.productivitySignals.acceptanceGreenWithOpenInference || literalImpact.evidence.openInferences !== 1) throw new Error('literal impact receipt does not prove acceptance-green/open-inference behavior');
+          if (postImpact.evidence.openInferences !== 0 || !postImpact.productivitySignals.scopedAcceptanceGreen) throw new Error('post-change impact receipt does not prove green acceptance with inference removed');
+          if (!(literalImpact.discovery.filesScanned > 0) || !(literalImpact.discovery.symbolsAnalyzed > 0)) throw new Error('reuse impact receipt is missing measured discovery telemetry');
+          console.log(`Reuse proof verified: literal 2/0 + 1 OPEN inference across ${literalImpact.discovery.filesScanned} files / ${literalImpact.discovery.symbolsAnalyzed} symbols; remediation 2/0 + 0 open inference.`);
           NODE
 
       - name: Harden Pages delivery
         run: |
           python - <<'PY'
           from pathlib import Path
-
+          import re
           html = Path('index.html')
           text = html.read_text(encoding='utf-8')
           lines = text.splitlines()
           lines = [line for line in lines if 'fonts.googleapis.com' not in line and 'fonts.gstatic.com' not in line]
           text = '\n'.join(lines) + '\n'
-          import re
-          text = re.sub(r'site\.css\?v=[^"\']+', 'site.css?v=20260829-1', text)
-          text = re.sub(r'site\.js\?v=[^"\']+', 'site.js?v=20260829-1', text)
+          text = re.sub(r'site\.css\?v=[^"\']+', 'site.css?v=20260829-2', text)
+          text = re.sub(r'site\.js\?v=[^"\']+', 'site.js?v=20260829-2', text)
           html.write_text(text, encoding='utf-8')
-
           css = Path('site.css')
           css_text = css.read_text(encoding='utf-8')
           marker = '/* BLOCKER-SAFE PROGRESSIVE ENHANCEMENT */'
@@ -143,8 +148,8 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add evidence-pack/post-change examples/timeout-service/evidence-pack index.html site.css
           if git diff --cached --quiet; then
-            echo 'Generated evidence and Pages shell are already current.'
+            echo 'Generated evidence, impact receipts, and Pages shell are already current.'
           else
-            git commit -m 'Refresh evidence and portable-first Pages shell [evidence-freeze]'
+            git commit -m 'Refresh evidence and measured impact receipts [evidence-freeze]'
             git push
           fi
