@@ -6,6 +6,7 @@ const { execFileSync } = require('child_process');
 
 const { collect, parseKeywords } = require('./evidence/collector');
 const { diff }                   = require('./evidence/diff');
+const { buildImpactReceipt, representativeRows } = require('./evidence/impact');
 const { renderMarkdown, renderHtml } = require('./reporters/pack');
 const adapter                    = require('./adapters/mock-adapter');
 
@@ -43,11 +44,12 @@ async function main() {
     process.exit(1);
   }
 
-  const crPath       = path.resolve(REPO_ROOT, args.cr);
-  const passName     = args.pass;
-  const outDir       = path.join(REPO_ROOT, 'evidence-pack', passName);
-  const testJsonPath = path.join(outDir, 'test-results.json');
-  const baselineJson = path.join(REPO_ROOT, 'evidence-pack', 'baseline', 'traceability.json');
+  const startedAt      = Date.now();
+  const crPath         = path.resolve(REPO_ROOT, args.cr);
+  const passName       = args.pass;
+  const outDir         = path.join(REPO_ROOT, 'evidence-pack', passName);
+  const testJsonPath   = path.join(outDir, 'test-results.json');
+  const baselineJson   = path.join(REPO_ROOT, 'evidence-pack', 'baseline', 'traceability.json');
 
   fs.mkdirSync(outDir, { recursive: true });
 
@@ -84,23 +86,45 @@ async function main() {
   const htmlText = renderHtml(findings, crText, diffResult);
   const jsonText = JSON.stringify(findings, null, 2);
 
-  const mdPath   = path.join(outDir, 'evidence-pack.md');
-  const htmlPath = path.join(outDir, 'evidence-pack.html');
-  const jsonPath = path.join(outDir, 'traceability.json');
+  const mdPath      = path.join(outDir, 'evidence-pack.md');
+  const htmlPath    = path.join(outDir, 'evidence-pack.html');
+  const jsonPath    = path.join(outDir, 'traceability.json');
+  const impactPath  = path.join(outDir, 'impact.json');
 
   fs.writeFileSync(mdPath,   mdText,   'utf8');
   fs.writeFileSync(htmlPath, htmlText, 'utf8');
   fs.writeFileSync(jsonPath, jsonText, 'utf8');
 
+  const outputs = [
+    ...(testsRan ? ['test-results.json'] : []),
+    'traceability.json',
+    'evidence-pack.md',
+    'evidence-pack.html',
+    'impact.json'
+  ];
+  const impact = buildImpactReceipt({
+    workload: 'ORDERPRO',
+    pass: passName,
+    elapsedMs: Date.now() - startedAt,
+    collectorStats: findings.stats || {},
+    findings,
+    testResultsPath: testsRan ? testJsonPath : null,
+    reviewerRows: representativeRows(findings).length,
+    outputs
+  });
+  fs.writeFileSync(impactPath, JSON.stringify(impact, null, 2), 'utf8');
+
   console.log(`\n✓ Evidence pack written to evidence-pack/${passName}/`);
   console.log(`  ${path.basename(mdPath)}`);
   console.log(`  ${path.basename(htmlPath)}`);
   console.log(`  ${path.basename(jsonPath)}`);
+  console.log(`  ${path.basename(impactPath)}`);
 
   const open = findings.filter(f => f.status === 'OPEN').length;
   const tvr  = findings.filter(f => f.status === 'TARGET_VALIDATION_REQUIRED').length;
   const res  = findings.filter(f => f.status === 'RESOLVED').length;
   console.log(`\nSummary: ${open} OPEN  |  ${res} RESOLVED  |  ${tvr} TARGET_VALIDATION_REQUIRED`);
+  console.log(`Impact: ${impact.discovery.filesScanned} files / ${impact.discovery.symbolsAnalyzed} symbols / ${impact.execution.executed} tests / ${impact.evidence.findingsProduced} findings → ${impact.review.primaryRows} primary review rows`);
 }
 
 main().catch(err => {
