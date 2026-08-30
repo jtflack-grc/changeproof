@@ -26,3 +26,11 @@ Bob was also used iteratively to inspect generated evidence and remediate implem
 The project consumed the full hackathon allocation of 40 Bobcoins. Actual IBM Bob task-session consumption-summary screenshots are included in bob_sessions/ as required. The Markdown files in that directory are supporting historical session notes.
 
 The final result demonstrates Bob being used across planning, polyglot development, testing, document understanding, code analysis, evidence generation, and iterative remediation rather than only as a code-completion tool.
+
+
+CHANGEProof — SUBMISSION LINKS
+
+Public video URL: https://github.com/jtflack-grc/changeproof/releases/tag/demo-final
+Public repository URL: https://github.com/jtflack-grc/changeproof
+Live experience: https://jtflack-grc.github.io/changeproof/
+Embedded demo: https://jtflack-grc.github.io/changeproof/#demo-video
