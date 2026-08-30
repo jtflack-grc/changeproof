@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-30T00:23:37.757Z",
+  "workload": "REPORT-GW Timeout Service",
+  "pass": "literal",
+  "pipelineElapsedMs": 662,
+  "discovery": {
+    "filesScanned": 3,
+    "symbolsAnalyzed": 15,
+    "sourceFindingsProduced": 6,
+    "adapterEvidenceProduced": 0
+  },
+  "execution": {
+    "executed": 2,
+    "passed": 2,
+    "failed": 0,
+    "pending": 0
+  },
+  "evidence": {
+    "findingsProduced": 9,
+    "inferredFindings": 1,
+    "openInferences": 1,
+    "openFindings": 7,
+    "resolvedFindings": 2,
+    "targetValidationRequired": 0
+  },
+  "review": {
+    "primaryRows": 5,
+    "machineToPrimaryRatio": 1.8,
+    "outputsGenerated": 6,
+    "outputs": [
+      "test-results.json",
+      "traceability.json",
+      "evidence-pack.md",
+      "evidence-pack.html",
+      "summary.json",
+      "impact.json"
+    ]
+  },
+  "productivitySignals": {
+    "scopedAcceptanceGreen": true,
+    "acceptanceGreenWithOpenInference": true,
+    "residualTargetChecksPreserved": 0,
+    "reviewCompressionAvailable": true
+  }
+}

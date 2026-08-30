@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-08-30T00:23:36.237Z",
+  "workload": "ORDERPRO",
+  "pass": "post-change",
+  "pipelineElapsedMs": 1673,
+  "discovery": {
+    "filesScanned": 17,
+    "symbolsAnalyzed": 348,
+    "sourceFindingsProduced": 65,
+    "adapterEvidenceProduced": 2
+  },
+  "execution": {
+    "executed": 19,
+    "passed": 16,
+    "failed": 0,
+    "pending": 3
+  },
+  "evidence": {
+    "findingsProduced": 86,
+    "inferredFindings": 0,
+    "openInferences": 0,
+    "openFindings": 0,
+    "resolvedFindings": 56,
+    "targetValidationRequired": 30
+  },
+  "review": {
+    "primaryRows": 11,
+    "machineToPrimaryRatio": 7.82,
+    "outputsGenerated": 5,
+    "outputs": [
+      "test-results.json",
+      "traceability.json",
+      "evidence-pack.md",
+      "evidence-pack.html",
+      "impact.json"
+    ]
+  },
+  "productivitySignals": {
+    "scopedAcceptanceGreen": true,
+    "acceptanceGreenWithOpenInference": false,
+    "residualTargetChecksPreserved": 30,
+    "reviewCompressionAvailable": true
+  }
+}
