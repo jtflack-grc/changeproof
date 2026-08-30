@@ -16,27 +16,29 @@
     if (document.querySelector(`link[href^="${href}"]`)) return;
     const link = document.createElement('link');
     link.rel = 'stylesheet';
-    link.href = `${href}?v=20260829-1`;
+    link.href = `${href}?v=20260829-2`;
     document.head.appendChild(link);
   };
 
   const loadScript = (src) => {
     if (document.querySelector(`script[src^="${src}"]`)) return;
     const script = document.createElement('script');
-    script.src = `${src}?v=20260829-1`;
+    script.src = `${src}?v=20260829-2`;
     script.defer = true;
     script.addEventListener('error',() => showModuleWarning(src),{once:true});
     document.head.appendChild(script);
   };
 
   loadStyle('portable-core.css');
-  loadStyle('ironterm.css');
-  loadStyle('review-workspace.css');
   loadStyle('reuse-proof.css');
+  loadStyle('impact-receipt.css');
+  loadStyle('review-workspace.css');
+  loadStyle('ironterm.css');
   loadScript('portable-core.js');
+  loadScript('reuse-proof.js');
+  loadScript('impact-receipt.js');
   loadScript('orderpro-preview.js');
   loadScript('review-workspace.js');
-  loadScript('reuse-proof.js');
   loadScript('ironterm-experience.js');
 
   let revealObserver = null;
@@ -84,28 +86,32 @@
 
     const core = nav.querySelector('a[href="#portable-core"]');
     const reuse = nav.querySelector('a[href="#reuse-proof"]');
+    const impact = nav.querySelector('a[href="#impact-receipt"]');
     const order = nav.querySelector('a[href="#orderpro-live"]');
     const review = nav.querySelector('a[href="#review"]');
     const ibmi = nav.querySelector('a[href="#ibmi"]');
 
     if (core && nav.firstElementChild !== core) nav.prepend(core);
     placeAfter(core, reuse);
-    placeAfter(reuse || core, order);
-    placeAfter(order || reuse || core, review);
-    placeAfter(review || order || reuse || core, ibmi);
+    placeAfter(reuse || core, impact);
+    placeAfter(impact || reuse || core, order);
+    placeAfter(order || impact || reuse || core, review);
+    placeAfter(review || order || impact || reuse || core, ibmi);
   };
 
   const normalizeExperience = () => {
     const portable = document.querySelector('#portable-core');
     const reuse = document.querySelector('#reuse-proof');
+    const impact = document.querySelector('#impact-receipt');
     const orderpro = document.querySelector('#orderpro-live');
     const review = document.querySelector('#review');
 
-    // Judge-facing story: portable product first, independent reuse proof second,
-    // brownfield reference workload third, then drill into its evidence lineage.
+    // Judge-facing story: portable product, independent reuse proof, measured
+    // impact, brownfield stress test, then drill into its evidence lineage.
     placeAfter(portable, reuse);
-    placeAfter(reuse || portable, orderpro);
-    placeAfter(orderpro || reuse || portable, review);
+    placeAfter(reuse || portable, impact);
+    placeAfter(impact || reuse || portable, orderpro);
+    placeAfter(orderpro || impact || reuse || portable, review);
 
     normalizeNavigation();
 
