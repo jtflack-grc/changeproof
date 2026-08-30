@@ -32,8 +32,9 @@ The final result demonstrates Bob being used across planning, polyglot developme
 
 ## Submission Fields
 
-**Public video URL:** _add after upload_  
+**Public video URL:** https://github.com/jtflack-grc/changeproof/releases/tag/demo-final  
 **Public repository URL:** https://github.com/jtflack-grc/changeproof  
 **Live experience:** https://jtflack-grc.github.io/changeproof/  
+**Embedded demo:** https://jtflack-grc.github.io/changeproof/#demo-video  
 **Team:** ChangeProof  
 **Team size:** 1
