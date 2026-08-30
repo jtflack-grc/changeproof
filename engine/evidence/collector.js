@@ -47,7 +47,7 @@ function inferBatchWindowCollision({ allSymbols, keywords }) {
  * remain here.
  */
 async function collect({ crPath, repoRoot, testResultsPath, adapter, pass }) {
-  const { findings, keywords } = await collectCore({
+  const { findings, keywords, stats } = await collectCore({
     crPath,
     repoRoot,
     patterns: ORDERPRO_PATTERNS,
@@ -57,6 +57,7 @@ async function collect({ crPath, repoRoot, testResultsPath, adapter, pass }) {
     pendingValidationTarget: VALIDATION_TARGET.IBM_I
   });
 
+  let adapterEvidenceProduced = 0;
   if (adapter) {
     try {
       const rows = await adapter.querySql(
@@ -76,11 +77,20 @@ async function collect({ crPath, repoRoot, testResultsPath, adapter, pass }) {
           keywords: keywords.filter(keyword => keywordMatches(keyword, `CUSCLS='${row.CUSCLS}'`)),
           relevanceScore: 2
         }));
+        adapterEvidenceProduced += 1;
       });
     } catch (_) {
       // Adapter evidence is additive; static/test evidence remains reviewable.
     }
   }
+
+  // Preserve the historical array API while carrying measured telemetry for
+  // impact receipts. Array metadata is not serialized into traceability.json.
+  findings.stats = {
+    ...stats,
+    adapterEvidenceProduced,
+    totalFindings: findings.length
+  };
 
   return findings;
 }
