@@ -262,6 +262,7 @@ async function collectCore({
   }
 
   const findings = deduplicateByLine(rawFindings);
+  const sourceFindingsProduced = findings.length;
   const context = {
     allSymbols,
     keywords,
@@ -280,13 +281,25 @@ async function collectCore({
     else findings.push(produced);
   }
 
-  findings.push(...parseJestResults(testResultsPath, keywords, {
+  const testFindings = parseJestResults(testResultsPath, keywords, {
     repoRoot,
     pendingValidationTarget,
     artifactPathMapper,
     pass
-  }));
-  return { findings, symbols: allSymbols, keywords };
+  });
+  findings.push(...testFindings);
+
+  return {
+    findings,
+    symbols: allSymbols,
+    keywords,
+    stats: {
+      filesScanned: seenFiles.size,
+      symbolsAnalyzed: allSymbols.length,
+      sourceFindingsProduced,
+      testFindingsIngested: testFindings.length
+    }
+  };
 }
 
 module.exports = {
