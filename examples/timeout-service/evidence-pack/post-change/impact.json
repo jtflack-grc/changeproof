@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-30T00:23:38.459Z",
+  "generatedAt": "2026-08-30T00:24:34.626Z",
   "workload": "REPORT-GW Timeout Service",
   "pass": "post-change",
-  "pipelineElapsedMs": 665,
+  "pipelineElapsedMs": 652,
   "discovery": {
     "filesScanned": 3,
     "symbolsAnalyzed": 15,

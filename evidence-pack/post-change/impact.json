@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-08-30T00:23:36.237Z",
+  "generatedAt": "2026-08-30T00:24:32.401Z",
   "workload": "ORDERPRO",
   "pass": "post-change",
-  "pipelineElapsedMs": 1673,
+  "pipelineElapsedMs": 1727,
   "discovery": {
     "filesScanned": 17,
     "symbolsAnalyzed": 348,
