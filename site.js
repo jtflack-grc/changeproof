@@ -16,24 +16,26 @@
     if (document.querySelector(`link[href^="${href}"]`)) return;
     const link = document.createElement('link');
     link.rel = 'stylesheet';
-    link.href = `${href}?v=20260829-2`;
+    link.href = `${href}?v=20260829-3`;
     document.head.appendChild(link);
   };
 
   const loadScript = (src) => {
     if (document.querySelector(`script[src^="${src}"]`)) return;
     const script = document.createElement('script');
-    script.src = `${src}?v=20260829-2`;
+    script.src = `${src}?v=20260829-3`;
     script.defer = true;
     script.addEventListener('error',() => showModuleWarning(src),{once:true});
     document.head.appendChild(script);
   };
 
+  loadStyle('demo-video.css');
   loadStyle('portable-core.css');
   loadStyle('reuse-proof.css');
   loadStyle('impact-receipt.css');
   loadStyle('review-workspace.css');
   loadStyle('ironterm.css');
+  loadScript('demo-video.js');
   loadScript('portable-core.js');
   loadScript('reuse-proof.js');
   loadScript('impact-receipt.js');
@@ -84,6 +86,7 @@
       if (link && link.style.display !== 'none') link.style.display = 'none';
     });
 
+    const demo = nav.querySelector('a[href="#demo-video"]');
     const core = nav.querySelector('a[href="#portable-core"]');
     const reuse = nav.querySelector('a[href="#reuse-proof"]');
     const impact = nav.querySelector('a[href="#impact-receipt"]');
@@ -91,27 +94,32 @@
     const review = nav.querySelector('a[href="#review"]');
     const ibmi = nav.querySelector('a[href="#ibmi"]');
 
-    if (core && nav.firstElementChild !== core) nav.prepend(core);
-    placeAfter(core, reuse);
-    placeAfter(reuse || core, impact);
-    placeAfter(impact || reuse || core, order);
-    placeAfter(order || impact || reuse || core, review);
-    placeAfter(review || order || impact || reuse || core, ibmi);
+    if (demo && nav.firstElementChild !== demo) nav.prepend(demo);
+    placeAfter(demo, core);
+    placeAfter(core || demo, reuse);
+    placeAfter(reuse || core || demo, impact);
+    placeAfter(impact || reuse || core || demo, order);
+    placeAfter(order || impact || reuse || core || demo, review);
+    placeAfter(review || order || impact || reuse || core || demo, ibmi);
   };
 
   const normalizeExperience = () => {
+    const signal = document.querySelector('.signal-strip');
+    const demo = document.querySelector('#demo-video');
     const portable = document.querySelector('#portable-core');
     const reuse = document.querySelector('#reuse-proof');
     const impact = document.querySelector('#impact-receipt');
     const orderpro = document.querySelector('#orderpro-live');
     const review = document.querySelector('#review');
 
-    // Judge-facing story: portable product, independent reuse proof, measured
-    // impact, brownfield stress test, then drill into its evidence lineage.
-    placeAfter(portable, reuse);
-    placeAfter(reuse || portable, impact);
-    placeAfter(impact || reuse || portable, orderpro);
-    placeAfter(orderpro || impact || reuse || portable, review);
+    // Judge-facing story: official demo, portable product, independent reuse proof,
+    // measured impact, brownfield stress test, then drill into evidence lineage.
+    placeAfter(signal, demo);
+    placeAfter(demo || signal, portable);
+    placeAfter(portable || demo || signal, reuse);
+    placeAfter(reuse || portable || demo || signal, impact);
+    placeAfter(impact || reuse || portable || demo || signal, orderpro);
+    placeAfter(orderpro || impact || reuse || portable || demo || signal, review);
 
     normalizeNavigation();
 
