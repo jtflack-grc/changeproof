@@ -6,6 +6,7 @@ const { execFileSync } = require('child_process');
 
 const { collectCore } = require('./evidence/core');
 const { diff } = require('./evidence/diff');
+const { buildImpactReceipt, representativeRows } = require('./evidence/impact');
 const { renderMarkdown, renderHtml } = require('./reporters/profile-pack');
 
 const REPO_ROOT = path.resolve(__dirname, '..');
@@ -54,6 +55,7 @@ async function main() {
     process.exit(1);
   }
 
+  const startedAt = Date.now();
   const profilePath = path.resolve(REPO_ROOT, args.profile);
   if (!fs.existsSync(profilePath)) throw new Error(`Profile not found: ${args.profile}`);
   const profile = require(profilePath);
@@ -80,7 +82,7 @@ async function main() {
   if (!testsRan) console.warn('      No scoped test receipt was produced.');
 
   console.log('\n[2/4] Profile-driven evidence collection...');
-  const { findings } = await collectCore({
+  const { findings, stats } = await collectCore({
     crPath,
     repoRoot: REPO_ROOT,
     patterns,
@@ -108,9 +110,15 @@ async function main() {
 
   console.log('\n[4/4] Rendering workload-neutral evidence pack...');
   const changeRequest = fs.readFileSync(crPath, 'utf8');
-  fs.writeFileSync(path.join(outDir, 'traceability.json'), JSON.stringify(findings, null, 2), 'utf8');
-  fs.writeFileSync(path.join(outDir, 'evidence-pack.md'), renderMarkdown(findings, changeRequest, profile, diffResult), 'utf8');
-  fs.writeFileSync(path.join(outDir, 'evidence-pack.html'), renderHtml(findings, changeRequest, profile, diffResult), 'utf8');
+  const tracePath = path.join(outDir, 'traceability.json');
+  const markdownPath = path.join(outDir, 'evidence-pack.md');
+  const htmlPath = path.join(outDir, 'evidence-pack.html');
+  const summaryPath = path.join(outDir, 'summary.json');
+  const impactPath = path.join(outDir, 'impact.json');
+
+  fs.writeFileSync(tracePath, JSON.stringify(findings, null, 2), 'utf8');
+  fs.writeFileSync(markdownPath, renderMarkdown(findings, changeRequest, profile, diffResult), 'utf8');
+  fs.writeFileSync(htmlPath, renderHtml(findings, changeRequest, profile, diffResult), 'utf8');
 
   const summary = {
     profile: profile.id,
@@ -127,9 +135,30 @@ async function main() {
       newFindings: diffResult.newFindings.length
     } : null
   };
-  fs.writeFileSync(path.join(outDir, 'summary.json'), JSON.stringify(summary, null, 2), 'utf8');
+  fs.writeFileSync(summaryPath, JSON.stringify(summary, null, 2), 'utf8');
+
+  const outputs = [
+    ...(testsRan ? ['test-results.json'] : []),
+    'traceability.json',
+    'evidence-pack.md',
+    'evidence-pack.html',
+    'summary.json',
+    'impact.json'
+  ];
+  const impact = buildImpactReceipt({
+    workload: profile.name,
+    pass,
+    elapsedMs: Date.now() - startedAt,
+    collectorStats: stats,
+    findings,
+    testResultsPath: testsRan ? testJsonPath : null,
+    reviewerRows: representativeRows(findings, { includeTests: true }).length,
+    outputs
+  });
+  fs.writeFileSync(impactPath, JSON.stringify(impact, null, 2), 'utf8');
 
   console.log(`\n✓ ${profile.id}/${pass} evidence written to ${path.relative(REPO_ROOT, outDir)}`);
+  console.log(`Impact: ${impact.discovery.filesScanned} files / ${impact.discovery.symbolsAnalyzed} symbols / ${impact.execution.executed} tests / ${impact.evidence.findingsProduced} findings → ${impact.review.primaryRows} primary review rows`);
 }
 
 function countBy(items, key) {
